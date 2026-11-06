@@ -305,27 +305,20 @@ export default function KelebekSystemAModule({
   // Grup adları fiziksel derslik adı değildir; ancak seçmeli sınavlarda
   // öğrenci katılımını belirlemek için parantez içindeki grup korunmalıdır.
   const physicalRoomName = (value: unknown) => String(value || "").replace(/\s*\([^)]*\)\s*$/, "").trim();
-  const normalizeRoom = (value: unknown) =>
-    physicalRoomName(value).replace(/[\s\-\/]/g, "").toLocaleUpperCase("tr-TR");
-  const normalizeGroup = (value: unknown) =>
-    String(value || "").trim().toLocaleUpperCase("tr-TR").replace(/[^A-ZÇĞİÖŞÜ0-9]/g, "");
+  const normalizeRoom = (value: unknown) => physicalRoomName(value).replace(/[\s\-\/]/g, "").toLocaleUpperCase("tr-TR");
+  const normalizeGroup = (value: unknown) => String(value || "").trim().toLocaleUpperCase("tr-TR").replace(/[^A-ZÇĞİÖŞÜ0-9]/g, "");
   const matchesExamClassroom = (student: any, examClassroom: string) => {
     if (normalizeRoom(student?.classroom) !== normalizeRoom(examClassroom)) return false;
     const examGroupText = String(examClassroom || "").match(/\(([^)]*)\)\s*$/)?.[1]?.trim() || "";
-    if (!examGroupText) return true; // Ortak ders: şubenin tüm öğrencileri.
-    const actualGroupText = String(student?.group || student?.groupName ||
-      String(student?.classroom || "").match(/\(([^)]*)\)\s*$/)?.[1] || "").trim();
-    if (!actualGroupText) return false; // Grubu bilinmeyen öğrenci seçmeli sınava alınmaz.
+    if (!examGroupText) return true;
+    const actualGroupText = String(student?.group || student?.groupName || String(student?.classroom || "").match(/\(([^)]*)\)\s*$/)?.[1] || "").trim();
+    if (!actualGroupText) return false;
     const allowedGroups = examGroupText.split(/[,;/]+/).map(normalizeGroup).filter(Boolean);
     const actualGroups = actualGroupText.split(/[,;/]+/).map(normalizeGroup).filter(Boolean);
-    return actualGroups.some((actual) => allowedGroups.some((allowed) =>
-      actual === allowed || (actual.length >= 4 && allowed.length >= 4 &&
-        (actual.includes(allowed) || allowed.includes(actual)))));
+    return actualGroups.some((actual) => allowedGroups.some((allowed) => actual === allowed || (actual.length >= 4 && allowed.length >= 4 && (actual.includes(allowed) || allowed.includes(actual)))));
   };
-  const allSchoolClassrooms = useMemo(() => {
-    const unique = Array.from(new Set(students.map((s) => physicalRoomName(s.classroom)).filter(Boolean)));
-    return unique.sort(compareClassroomNames);
-  }, [students]);
+  const [buildingClassrooms, setBuildingClassrooms] = useState<string[]>([]);
+  const allSchoolClassrooms = useMemo(() => [...buildingClassrooms].sort(compareClassroomNames), [buildingClassrooms]);
 
   const [classCapacities, setClassCapacities] = useState<{[roomName: string]: number}>({});
   const [classStudentCapacities, setClassStudentCapacities] = useState<{[roomName: string]: number}>({});
@@ -365,11 +358,10 @@ export default function KelebekSystemAModule({
         });
       });
 
-      const plannedRooms = (selectedBSlot?.exams || []).flatMap((exam: any) =>
-        (exam.classrooms || []).map((room: string) => physicalRoomName(room)));
+      const plannedRooms = (selectedBSlot?.exams || []).flatMap((exam: any) => (exam.classrooms || []).map((room: string) => physicalRoomName(room)));
       const uniqueBuildingRooms = Array.from(new Set(roomsFromBuildings)).sort(compareClassroomNames);
       setBuildingClassrooms(uniqueBuildingRooms);
-      Array.from(new Set([...uniqueBuildingRooms, ...allSchoolClassrooms, ...plannedRooms])).forEach((cls) => {
+      Array.from(new Set([...uniqueBuildingRooms, ...plannedRooms])).forEach((cls) => {
         const normalizedKey = normalizeClassroomKey(cls);
         const room = roomByName.get(normalizedKey);
         if (!room) {
@@ -439,12 +431,9 @@ export default function KelebekSystemAModule({
 
   const plannedSalonNames = useMemo(() => {
     const rooms = new Set<string>();
-    (selectedBSlot?.exams || []).forEach((exam: any) => {
-      (exam.classrooms || []).forEach((cls: string) => {
-        const name = physicalRoomName(cls);
-        if (name) rooms.add(normalizeRoom(name));
-      });
-    });
+    (selectedBSlot?.exams || []).forEach((exam: any) => (exam.classrooms || []).forEach((cls: string) => {
+      const name = physicalRoomName(cls); if (name) rooms.add(normalizeRoom(name));
+    }));
     return rooms;
   }, [selectedBSlot]);
 
