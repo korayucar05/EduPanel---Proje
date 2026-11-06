@@ -344,7 +344,9 @@ export default function KelebekSystemAModule({
         });
       });
 
-      allSchoolClassrooms.forEach((cls) => {
+      const plannedRooms = (selectedBSlot?.exams || []).flatMap((exam: any) =>
+        (exam.classrooms || []).map((room: string) => physicalRoomName(room)));
+      Array.from(new Set([...allSchoolClassrooms, ...plannedRooms])).forEach((cls) => {
         const normalizedKey = normalizeClassroomKey(cls);
         const room = roomByName.get(normalizedKey);
         if (!room) {
@@ -410,7 +412,7 @@ export default function KelebekSystemAModule({
     const onLayoutChanged = () => { void refreshClassroomCapacities(); };
     window.addEventListener("enstitu-school-building-layout-changed", onLayoutChanged);
     return () => window.removeEventListener("enstitu-school-building-layout-changed", onLayoutChanged);
-  }, [allSchoolClassrooms]);
+  }, [allSchoolClassrooms, selectedBSlot]);
 
   const defaultSalons = useMemo(() => {
     if (!selectedBSlot?.exams) return [];
