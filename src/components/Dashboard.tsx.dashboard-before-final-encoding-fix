@@ -1,0 +1,1643 @@
+import React from "react";
+import { motion, AnimatePresence } from "motion/react";
+import {
+  Users,
+  GraduationCap,
+  BookOpen,
+  Percent,
+  TrendingUp,
+  Award,
+  ArrowUpRight,
+  Megaphone,
+  Bell,
+  Activity,
+  Calendar,
+  Clock,
+  Trash2,
+  Plus,
+  Pencil,
+  Check,
+  Play,
+  Pause,
+  ChevronUp,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Settings,
+  Cake,
+  Sparkles,
+  Star,
+  UserCheck,
+  X,
+} from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  LineChart,
+  Line,
+  Legend,
+} from "recharts";
+import {
+  attendanceTrends,
+  gradeDistribution,
+  performanceByBranch,
+  initialAnnouncements,
+} from "../data";
+import { Student, Teacher, Course, Announcement, Classroom } from "../types";
+import { compareClassroomNames } from "../utils/classroomSort";
+import ExecutiveDashboardHero from "./dashboard/ExecutiveDashboardHero";
+import RoleBasedDashboardPortal from "./dashboard/RoleBasedDashboardPortal";
+import type { CloudRole } from "../core/auth";
+import type { PanelUser } from "../lib/accessControl";
+import { teacherService } from "../modules/teacher";
+
+import { sqliteStorage } from "../core/state/SyncStateStore";
+import { LessonCountdownWidget, ActiveScheduleStatusWidget, exportCardAsJPEG } from "./dashboard/DashboardLiveWidgets";
+
+interface DashboardProps {
+  stats: any;
+  students: Student[];
+  teachers: Teacher[];
+  courses: Course[];
+  classrooms: Classroom[];
+  setActiveTab: (tab: any) => void;
+  setTeachers: React.Dispatch<React.SetStateAction<Teacher[]>>;
+  announcements: Announcement[];
+  setAnnouncements: React.Dispatch<React.SetStateAction<Announcement[]>>;
+  currentUser?: PanelUser;
+}
+export default function Dashboard({
+  stats,
+  students,
+  teachers,
+  courses,
+  classrooms,
+  setActiveTab,
+  setTeachers,
+  announcements,
+  setAnnouncements,
+  currentUser,
+}: DashboardProps) {
+  const [tickerDirection, setTickerDirection] = React.useState<"ltr" | "rtl">("ltr");
+  const [tickerSpeed, setTickerSpeed] = React.useState<"slow" | "normal" | "fast">("normal");
+  const [isTickerPlaying, setIsTickerPlaying] = React.useState(true);
+  const [showSettings, setShowSettings] = React.useState(false);
+  const [resolvedDashboardRole, setResolvedDashboardRole] = React.useState<CloudRole>(() =>
+    currentUser?.role === "super_admin" ? "super_admin" : currentUser?.role === "principal" ? "principal" : "teacher",
+  );
+
+  // States for custom rotating widgets
+  const [globalTickerIndex, setGlobalTickerIndex] = React.useState(0);
+  const [selectedLeaveDates, setSelectedLeaveDates] = React.useState<string[]>([]);
+  const [calendarYear, setCalendarYear] = React.useState(() => new Date().getFullYear());
+  const [calendarMonth, setCalendarMonth] = React.useState(() => new Date().getMonth());
+  const [dutyTickerIndex, setDutyTickerIndex] = React.useState(0);
+  const [onLeaveTickerIndex, setOnLeaveTickerIndex] = React.useState(0);
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = React.useState(false);
+  const [selectedLeaveTeacherId, setSelectedLeaveTeacherId] = React.useState("");
+  const [leaveReasonText, setLeaveReasonText] = React.useState("");
+
+  // States for Birthday Modal (Doğum Günü Tebriği)
+  const [isBirthdayModalOpen, setIsBirthdayModalOpen] = React.useState(false);
+  const [selectedBirthdayStudentId, setSelectedBirthdayStudentId] = React.useState<string | null>(null);
+  const [selectedBirthdayCardTheme, setSelectedBirthdayCardTheme] = React.useState<string>("tezhib-gold");
+  const [birthdayCustomMessage, setBirthdayCustomMessage] = React.useState<string>("");
+
+  // States for Dashboard Announcement Modal
+  const [isAnnouncementModalOpen, setIsAnnouncementModalOpen] = React.useState(false);
+  const [newAnnTitle, setNewAnnTitle] = React.useState("");
+  const [newAnnContent, setNewAnnContent] = React.useState("");
+  const [newAnnTag, setNewAnnTag] = React.useState<"Önemli" | "Genel" | "Etkinlik">("Genel");
+
+  const handleAddAnnouncement = () => {
+    if (!newAnnTitle.trim() || !newAnnContent.trim()) {
+      alert("Lütfen tüm alanları doldurun!");
+      return;
+    }
+    const newAnn: Announcement = {
+      id: `ANN-${Math.floor(100 + Math.random() * 900)}`,
+      title: newAnnTitle.trim(),
+      content: newAnnContent.trim(),
+      date: new Date().toISOString().split("T")[0],
+      tag: newAnnTag,
+    };
+    setAnnouncements((prev) => [newAnn, ...prev]);
+    setNewAnnTitle("");
+    setNewAnnContent("");
+    setNewAnnTag("Genel");
+    setIsAnnouncementModalOpen(false);
+  };
+
+  const handleDeleteAnnouncement = (id: string) => {
+    if (window.confirm("Bu duyuruyu silmek istediğinizden emin misiniz?")) {
+      setAnnouncements((prev) => prev.filter((ann) => ann.id !== id));
+    }
+  };
+
+  // Compute some insights from current live states
+  const activeCount = students.filter((s) => s.status === "Aktif").length;
+  const criticalAbsencesCount = students.filter((s) => Number(s.absences || 0) > 10).length;
+
+  // Custom styled Tooltip for Recharts
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-slate-900 text-white p-3 rounded-xl border border-slate-800 shadow-xl text-xs leading-none">
+          <p className="font-bold text-slate-300 mb-1.5">{label}</p>
+          {payload.map((p: any, idx: number) => (
+            <p key={idx} className="mt-1" style={{ color: p.color || p.fill }}>
+              {p.name}:{" "}
+              <span className="font-mono font-bold text-white">{p.value}%</span>
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
+
+  // State for Duty Assignments (Nöbetçi Öğretmenler)
+  const [dutyAssignments, setDutyAssignments] = React.useState<any[]>(() => {
+    try {
+      const saved = sqliteStorage.getItem("school_duty_assignments_v1");
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.error(e);
+    }
+    return [
+      { id: "duty-1", day: "Pazartesi", location: "Bahçe Nöbeti", teacherName: "Ahmet Yılmaz" },
+      { id: "duty-2", day: "Pazartesi", location: "Zemin Kat & Kantin", teacherName: "Ayşe Demir" },
+      { id: "duty-3", day: "Salı", location: "1. Kat Koridor", teacherName: "Mehmet Kaya" },
+      { id: "duty-4", day: "Salı", location: "Bahçe Nöbeti", teacherName: "Fatma Şahin" },
+      { id: "duty-5", day: "Çarşamba", location: "2. Kat Koridor", teacherName: "Mustafa Çelik" },
+      { id: "duty-6", day: "Çarşamba", location: "Zemin Kat & Giriş", teacherName: "Zeynep Öztürk" },
+      { id: "duty-7", day: "Perşembe", location: "Bahçe Nöbeti", teacherName: "Ali Yıldız" },
+      { id: "duty-8", day: "Perşembe", location: "1. Kat Koridor", teacherName: "Elif Arslan" },
+      { id: "duty-9", day: "Cuma", location: "Bahçe Nöbeti", teacherName: "Murat Aydın" },
+      { id: "duty-10", day: "Cuma", location: "Zemin Kat & Kantin", teacherName: "Seda Yıldırım" },
+    ];
+  });
+
+  // Sync / Load from localforage
+  React.useEffect(() => {
+    async function loadDuties() {
+      try {
+        const lf = (await import("../core/state/AppStateService")).default;
+        const saved = await lf.getItem<any[]>("school_duty_assignments_v1");
+        if (saved && Array.isArray(saved)) {
+          setDutyAssignments(saved);
+        }
+      } catch (e) {
+        console.error("Dashboard failed to load duty assignments", e);
+      }
+    }
+    loadDuties();
+  }, []);
+
+  const [showDutyModal, setShowDutyModal] = React.useState(false);
+  const [newDutyDay, setNewDutyDay] = React.useState<string>("Pazartesi");
+  const [newDutyLocation, setNewDutyLocation] = React.useState<string>("");
+  const [newDutyTeacherName, setNewDutyTeacherName] = React.useState<string>("");
+
+  // Save duty assignments to sqliteStorage helper
+  const saveDuties = (updated: any[]) => {
+    setDutyAssignments(updated);
+    try {
+      sqliteStorage.setItem("school_duty_assignments_v1", JSON.stringify(updated));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // Grouped duties list for 5-second slide ticker
+  const groupedDuties = React.useMemo(() => {
+    const groups: Record<string, { day: string; location: string; teachers: string[] }> = {};
+    dutyAssignments.forEach((a) => {
+      if (!a.day || !a.location) return;
+      const key = `${a.day}_${a.location}`;
+      if (!groups[key]) {
+        groups[key] = { day: a.day, location: a.location, teachers: [] };
+      }
+      if (a.teacherName && !groups[key].teachers.includes(a.teacherName)) {
+        groups[key].teachers.push(a.teacherName);
+      }
+    });
+    return Object.values(groups);
+  }, [dutyAssignments]);
+
+  // 1. Get on-leave teachers
+  const onLeaveTeachers = React.useMemo(() => {
+    return teachers.filter((t) => t.status === "İzinli");
+  }, [teachers]);
+
+  // Tickers interval
+  React.useEffect(() => {
+    if (groupedDuties.length <= 1) {
+      setDutyTickerIndex(0);
+      return;
+    }
+    const timer = setInterval(() => {
+      setDutyTickerIndex((prev) => (prev + 1) % groupedDuties.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [groupedDuties]);
+
+  React.useEffect(() => {
+    if (onLeaveTeachers.length <= 1) {
+      setOnLeaveTickerIndex(0);
+      return;
+    }
+    const timer = setInterval(() => {
+      setOnLeaveTickerIndex((prev) => (prev + 1) % onLeaveTeachers.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [onLeaveTeachers]);
+
+  // Synchronized global ticker interval (10 seconds)
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setGlobalTickerIndex((prev) => prev + 1);
+    }, 10000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Turkish date formatter helper
+  const formatTurkishDate = (dStr: string) => {
+    if (!dStr) return "";
+    const parts = dStr.split("-");
+    if (parts.length !== 3) return dStr;
+    const year = parts[0];
+    const month = parseInt(parts[1]) - 1;
+    const day = parseInt(parts[2]);
+    const months = [
+      "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
+      "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"
+    ];
+    return `${day} ${months[month]}`;
+  };
+
+  // Handle saving teacher on-leave reason and dates
+  const handleSaveLeave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedLeaveTeacherId) {
+      alert("Lütfen bir öğretmen seçin.");
+      return;
+    }
+    const selectedTeacher = teachers.find(t => t.id === selectedLeaveTeacherId);
+    if (!selectedTeacher) return;
+
+    if (!setTeachers) {
+      alert("Öğretmen verisi güncellenemedi.");
+      return;
+    }
+
+    try {
+      const updatedTeacher = await teacherService.updateTeacher(selectedTeacher.id, {
+        ...selectedTeacher,
+        status: "İzinli",
+        leaveReason: leaveReasonText,
+        leaveDates: selectedLeaveDates,
+      });
+      setTeachers((prev) => prev.map((teacher) => teacher.id === selectedTeacher.id ? updatedTeacher : teacher));
+      alert(`${selectedTeacher.name} isimli öğretmen başarıyla izinli olarak işaretlendi.`);
+      setIsLeaveModalOpen(false);
+      setLeaveReasonText("");
+      setSelectedLeaveTeacherId("");
+      setSelectedLeaveDates([]);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Öğretmen izin bilgisi kaydedilemedi.");
+    }
+  };
+
+  const handleRemoveLeave = async () => {
+    if (!selectedLeaveTeacherId) return;
+    const selectedTeacher = teachers.find(t => t.id === selectedLeaveTeacherId);
+    if (!selectedTeacher || !setTeachers) return;
+
+    try {
+      const updatedTeacher = await teacherService.updateTeacher(selectedTeacher.id, {
+        ...selectedTeacher,
+        status: "Aktif",
+        leaveReason: undefined,
+        leaveDates: undefined,
+      });
+      setTeachers((prev) => prev.map((teacher) => teacher.id === selectedTeacher.id ? updatedTeacher : teacher));
+      alert(`${selectedTeacher.name} tekrar aktif duruma getirildi.`);
+      setIsLeaveModalOpen(false);
+      setLeaveReasonText("");
+      setSelectedLeaveTeacherId("");
+      setSelectedLeaveDates([]);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Öğretmen izin bilgisi güncellenemedi.");
+    }
+  };
+
+  const selectedTeacherObj = teachers.find(t => t.id === selectedLeaveTeacherId);
+  const isSelectedTeacherOnLeave = selectedTeacherObj?.status === "İzinli";
+
+  // Pre-populate reason and dates if selected teacher is already on leave
+  React.useEffect(() => {
+    if (selectedTeacherObj) {
+      setLeaveReasonText(selectedTeacherObj.leaveReason || "");
+      setSelectedLeaveDates(selectedTeacherObj.leaveDates || []);
+    } else {
+      setLeaveReasonText("");
+      setSelectedLeaveDates([]);
+    }
+  }, [selectedLeaveTeacherId, selectedTeacherObj]);
+
+  // 2. Get high-achieving "Örnek Öğrenciler" (Model Students list for rotating spotlight)
+  const featuredStudents = React.useMemo(() => {
+    if (!students || students.length === 0) return [];
+    const activeWithGpa = students.filter(s => s.status === "Aktif" && s.gpa !== undefined && s.gpa > 0);
+    if (activeWithGpa.length > 0) {
+      // Sort descending by GPA
+      return [...activeWithGpa].sort((a, b) => (b.gpa || 0) - (a.gpa || 0)).slice(0, 5);
+    }
+    return students.slice(0, 5);
+  }, [students]);
+
+  const featuredStudent = featuredStudents[0] || null;
+
+  // 3. Get student birthdays parsing DOB or generating fallback beautiful ones
+  const allStudentBirthdays = React.useMemo(() => {
+    const monthsTr = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+    
+    // Filter real students who have dob
+    const withDob = students.filter(s => s.dob && s.dob.trim() !== "");
+    if (withDob.length === 0) return [];
+
+    const today = new Date();
+    const todayYear = today.getFullYear();
+    const todayMonth = today.getMonth();
+    const todayDate = today.getDate();
+
+    return withDob.map(s => {
+      const cleanDob = s.dob!.trim();
+      let bYear = 2010;
+      let bMonth = 0;
+      let bDay = 1;
+      
+      if (cleanDob.includes('.')) {
+        const parts = cleanDob.split('.');
+        bDay = parseInt(parts[0]) || 1;
+        bMonth = (parseInt(parts[1]) || 1) - 1;
+        const y = parseInt(parts[2]) || 2010;
+        bYear = y < 100 ? (y > 26 ? 1900 + y : 2000 + y) : y;
+      } else if (cleanDob.includes('/')) {
+        const parts = cleanDob.split('/');
+        bDay = parseInt(parts[0]) || 1;
+        bMonth = (parseInt(parts[1]) || 1) - 1;
+        const y = parseInt(parts[2]) || 2010;
+        bYear = y < 100 ? (y > 26 ? 1900 + y : 2000 + y) : y;
+      } else if (cleanDob.includes('-')) {
+        const parts = cleanDob.split('-');
+        if (parts[0].length === 4) {
+          bYear = parseInt(parts[0]) || 2010;
+          bMonth = (parseInt(parts[1]) || 1) - 1;
+          bDay = parseInt(parts[2]) || 1;
+        } else {
+          bDay = parseInt(parts[0]) || 1;
+          bMonth = (parseInt(parts[1]) || 1) - 1;
+          const y = parseInt(parts[2]) || 2010;
+          bYear = y < 100 ? (y > 26 ? 1900 + y : 2000 + y) : y;
+        }
+      }
+
+      const age = todayYear - bYear;
+      
+      let nextBday = new Date(todayYear, bMonth, bDay);
+      if (nextBday < new Date(todayYear, todayMonth, todayDate)) {
+        nextBday = new Date(todayYear + 1, bMonth, bDay);
+      }
+      
+      const diffTime = nextBday.getTime() - today.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      let label = `${bDay} ${monthsTr[bMonth]}`;
+      if (bMonth === todayMonth && bDay === todayDate) {
+        label = "Bugün ğŸ‰";
+      } else if (diffDays === 1) {
+        label = "Yarın ğŸ‚";
+      }
+
+      return {
+        name: s.name,
+        date: label,
+        age,
+        classroom: s.classroom,
+        avatar: s.avatar,
+        daysUntilNext: diffDays,
+        id: s.id,
+        parentName: s.parentName,
+        phone: s.phone,
+        parentPhone: s.parentPhone
+      };
+    }).sort((a, b) => a.daysUntilNext - b.daysUntilNext);
+  }, [students]);
+
+  const studentBirthdays = React.useMemo(() => allStudentBirthdays.slice(0, 5), [allStudentBirthdays]);
+  const todaysBirthdays = React.useMemo(() => allStudentBirthdays.filter(b => b.daysUntilNext === 0), [allStudentBirthdays]);
+
+
+  // Synchronize birthday custom message template when selected student changes
+  React.useEffect(() => {
+    if (isBirthdayModalOpen && todaysBirthdays.length > 0) {
+      setBirthdayCustomMessage(`Sevgili, {isim}\n\nBugün {yas}. doğum gününü en içten dileklerimizle kutluyoruz! Bu yeni yaşında da hayallerinin peşinden cesaretle koş. Hayallerine doğru attığın her adımda seni destekliyor, başarılarının artarak devam etmesini diliyoruz. Yeni yaşın sana ve ailene mutluluk, sağlık getirsin.`);
+
+
+
+
+    }
+  }, [isBirthdayModalOpen, todaysBirthdays]);
+
+
+  return (
+    <div id="dashboard-tab" className="p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
+
+      {/* Main KPI Stat Cards Grid (Four distinct cards) at the very top */}
+      <div
+        id="stats-grid"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+      >
+        {/* Card 1: Öğretmen Nöbet Bilgileri (Orange background, rotates 10s if multiple) */}
+        <div
+          id="stat-students"
+          className="bg-orange-50 border border-orange-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-orange-300 transition-all group relative overflow-hidden flex flex-col justify-between h-[180px]"
+        >
+          <div className="flex-1 flex flex-col justify-between">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black text-orange-700 uppercase tracking-wider select-none shrink-0">
+                Nöbetçi Öğretmen
+              </span>
+            </div>
+
+            <div className="mt-2 flex-1 flex flex-col justify-center relative overflow-hidden">
+              <AnimatePresence mode="wait">
+                {groupedDuties.length > 0 ? (
+                  (() => {
+                    const currentDuty = groupedDuties[globalTickerIndex % groupedDuties.length];
+                    return (
+                      <motion.div
+                        key={`duty-ticker-${globalTickerIndex % groupedDuties.length}-${currentDuty.day}-${currentDuty.location}`}
+                        variants={{
+                          initial: { opacity: 0, y: -16 },
+                          animate: { opacity: 1, y: 0 },
+                          exit: { opacity: 0, y: 16 }
+                        }}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={{ duration: 0.4 }}
+                        className="absolute inset-0 flex flex-col items-center justify-center text-center w-full"
+                      >
+                        <h4 className="text-sm font-extrabold text-slate-800 truncate leading-snug w-full text-center">
+                          {currentDuty.teachers.join(" & ")}
+                        </h4>
+                        <p className="text-[11px] text-slate-500 font-bold block truncate w-full text-center mt-1">
+                          {currentDuty.day} - {currentDuty.location}
+                        </p>
+                      </motion.div>
+                    );
+                  })()
+                ) : (
+                  <motion.div
+                    key="duty-empty"
+                    className="absolute inset-0 flex flex-col items-center justify-center text-center text-slate-400 italic text-xs font-bold w-full"
+                  >
+                    Sistemde nöbet ataması bulunamadı.
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 2: İzinli Öğretmenler Bilgisi (Blue background, rotates 10s if multiple) */}
+        <div
+          id="stat-teachers"
+          className="bg-blue-50 border border-blue-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-blue-300 transition-all group relative overflow-hidden flex flex-col justify-between h-[180px]"
+        >
+          <div className="flex-1 flex flex-col justify-between">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black text-blue-700 uppercase tracking-wider select-none shrink-0">
+                İzinli Öğretmen
+              </span>
+              
+              <div className="flex items-center gap-2 shrink-0">
+                <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${onLeaveTeachers.length > 0 ? "text-amber-700 bg-amber-100 border-amber-200 animate-pulse" : "text-blue-700 bg-blue-100 border-blue-200"}`}>
+                  {onLeaveTeachers.length > 0 ? `${onLeaveTeachers.length} İzinli` : "Tam Kadro"}
+                </span>
+                
+                {/* Tiny Circular Button on top right */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsLeaveModalOpen(true);
+                  }}
+                  className="w-6 h-6 rounded-full bg-blue-100 hover:bg-blue-200 border border-blue-200 text-blue-600 transition-all flex items-center justify-center shadow-sm cursor-pointer active:scale-90"
+                  title="Yeni İzin Kaydet"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-2 flex-1 flex flex-col justify-center relative overflow-hidden">
+              <AnimatePresence mode="wait">
+                {onLeaveTeachers.length > 0 ? (
+                  (() => {
+                    const currentTeacher = onLeaveTeachers[globalTickerIndex % onLeaveTeachers.length];
+                    return (
+                      <motion.div
+                        key={`leave-ticker-${globalTickerIndex % onLeaveTeachers.length}-${currentTeacher.id}`}
+                        variants={{
+                          initial: { opacity: 0, y: 16 },
+                          animate: { opacity: 1, y: 0 },
+                          exit: { opacity: 0, y: -16 }
+                        }}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={{ duration: 0.4 }}
+                        className="absolute inset-0 flex flex-col items-center justify-center text-center w-full"
+                      >
+                        <h4 className="text-sm font-extrabold text-slate-800 tracking-tight leading-snug truncate w-full text-center">
+                          {currentTeacher.name}
+                        </h4>
+                        <p className="text-[11px] text-slate-500 font-bold block truncate w-full text-center mt-1">
+                          {currentTeacher.branch}
+                        </p>
+                        {currentTeacher.leaveDates && currentTeacher.leaveDates.length > 0 && (
+                          <p className="text-[9px] text-blue-700 font-black leading-none truncate mt-1.5 w-full text-center">
+                            {currentTeacher.leaveDates.map(formatTurkishDate).join(", ")}
+                          </p>
+                        )}
+                      </motion.div>
+                    );
+                  })()
+                ) : (
+                  <motion.div
+                    key="leave-empty"
+                    className="absolute inset-0 flex flex-col items-center justify-center text-center w-full"
+                  >
+                    <p className="text-xs text-blue-700 font-bold flex items-center justify-center gap-1">
+                      <Check className="w-3.5 h-3.5" /> Tüm öğretmenler görevinin başında.
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 3: Örnek Öğrenci Spotlight (Pink background, rotates 10s if multiple) */}
+        <div
+          id="stat-example-student"
+          className="bg-pink-50 border border-pink-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-pink-300 transition-all group relative overflow-hidden flex flex-col justify-between h-[180px]"
+        >
+          <div className="flex-1 flex flex-col justify-between">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black text-pink-700 uppercase tracking-wider select-none shrink-0">
+                Örnek Öğrenci
+              </span>
+            </div>
+            
+            <div className="mt-2 flex-1 flex flex-col justify-center relative overflow-hidden">
+              <AnimatePresence mode="wait">
+                {featuredStudents.length > 0 ? (
+                  (() => {
+                    const currentStudent = featuredStudents[globalTickerIndex % featuredStudents.length];
+                    return (
+                      <motion.div
+                        key={`student-ticker-${globalTickerIndex % featuredStudents.length}-${currentStudent.id}`}
+                        variants={{
+                          initial: { opacity: 0, y: 16 },
+                          animate: { opacity: 1, y: 0 },
+                          exit: { opacity: 0, y: -16 }
+                        }}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={{ duration: 0.4 }}
+                        className="absolute inset-0 flex flex-col items-center justify-center text-center w-full"
+                      >
+                        {currentStudent.avatar && (
+                          <div className="flex items-center justify-center gap-2 mb-1.5">
+                            <img
+                              src={currentStudent.avatar}
+                              alt={currentStudent.name}
+                              referrerPolicy="no-referrer"
+                              className="w-10 h-10 rounded-full object-cover border-2 border-pink-200 shadow-sm"
+                            />
+                          </div>
+                        )}
+
+                        <h4 className="text-sm font-extrabold text-slate-800 truncate leading-snug w-full text-center">
+                          {currentStudent.name}
+                        </h4>
+
+                        <p className="text-[11px] text-slate-500 font-bold block truncate w-full text-center mt-0.5">
+                          {currentStudent.classroom} Sınıfı
+                        </p>
+
+                        <div className="flex items-center justify-center gap-3 mt-1.5 text-[9px] font-bold">
+                          {currentStudent.gpa !== undefined && (
+                            <span className="text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">
+                              Ort: {currentStudent.gpa}
+                            </span>
+                          )}
+                          <span className="text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-100">
+                            {currentStudent.absences || 0} G. Devamsızlık
+                          </span>
+                        </div>
+                      </motion.div>
+                    );
+                  })()
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center text-center text-slate-400 italic text-xs font-bold w-full">
+                    Öğrenci bulunmamaktadır.
+                  </div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 4: Öğrenci Doğum Günü Bilgileri (Green background, rotates 10s if multiple) */}
+        <div
+          id="stat-birthdays"
+          className="bg-emerald-50 border border-emerald-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all group relative overflow-hidden flex flex-col justify-between h-[180px]"
+        >
+          <div className="flex-1 flex flex-col justify-between">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black text-emerald-700 uppercase tracking-wider select-none shrink-0">
+                Mutlu Yıllar
+              </span>
+            </div>
+
+            <div className="mt-2 flex-1 flex flex-col justify-center relative overflow-hidden">
+              <AnimatePresence mode="wait">
+                {todaysBirthdays.length > 0 ? (
+                  (() => {
+                    const currentBday = todaysBirthdays[globalTickerIndex % todaysBirthdays.length];
+                    return (
+                      <motion.div
+                        key={`bday-ticker-${globalTickerIndex % todaysBirthdays.length}-${currentBday.name}`}
+                        variants={{
+                          initial: { opacity: 0, y: 16 },
+                          animate: { opacity: 1, y: 0 },
+                          exit: { opacity: 0, y: -16 }
+                        }}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={{ duration: 0.4 }}
+                        className="absolute inset-0 flex flex-col items-center justify-center text-center w-full"
+                      >
+                        <h4 className="text-sm font-extrabold text-slate-800 truncate leading-snug w-full text-center">
+                          {currentBday.name}
+                        </h4>
+                        <p className="text-[11px] text-slate-500 font-bold block truncate w-full text-center mt-1">
+                          Sınıf: {currentBday.classroom}
+                        </p>
+                      </motion.div>
+                    );
+                  })()
+                ) : (
+                  <motion.div
+                    key="bday-empty"
+                    className="absolute inset-0 flex flex-col items-center justify-center text-center text-slate-400 italic text-xs font-bold w-full px-2"
+                  >
+                    Bugün doğum günü olan öğrenci bulunmuyor.
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+
+          {/* Interactive small green reminder area in bottom-right */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              const activeBday = todaysBirthdays.length > 0 ? todaysBirthdays[globalTickerIndex % todaysBirthdays.length] : null;
+              if (activeBday) {
+                setSelectedBirthdayStudentId(activeBday.id || null);
+              }
+              setIsBirthdayModalOpen(true);
+            }}
+            className="absolute bottom-3.5 right-3.5 z-10 w-8 h-8 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white rounded-full flex items-center justify-center shadow-md shadow-emerald-600/20 hover:shadow-lg transition-all duration-200 cursor-pointer group/reminder"
+            title="Doğum Günü Tebrik Gönderimi"
+          >
+            {/* Pulsing circle ring */}
+            <span className="absolute -inset-0.5 rounded-full border border-emerald-500 animate-ping opacity-60 pointer-events-none group-hover/reminder:animate-none"></span>
+            <Bell className="w-3.5 h-3.5 text-emerald-50" />
+          </button>
+        </div>
+      </div>
+
+      {/* Lesson Countdown Timer Widget - Full Width */}
+      <div className="mb-6">
+        <LessonCountdownWidget />
+      </div>
+
+      {/* Main Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+        {/* Left Column: Live Active Schedule sequential layout */}
+        <div className="flex flex-col h-full justify-between">
+          {/* Active Schedule Status Widget */}
+          <div className="flex flex-col">
+            <ActiveScheduleStatusWidget teachers={teachers} students={students} />
+          </div>
+        </div>
+
+        {/* Right Column: Duyuru Alanı */}
+        <div
+          id="dashboard-announcements-card"
+          className="bg-white border border-slate-150 shadow-sm rounded-2xl p-6 flex flex-col h-full min-h-[480px] relative overflow-hidden group/card"
+        >
+          {/* Card Header */}
+          <div className="flex items-center justify-between mb-4 shrink-0">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
+                <Megaphone className="w-5 h-5 animate-pulse" />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-slate-800 text-sm">Duyuru Panosu</h3>
+                <p className="text-[10px] text-slate-400 mt-0.5">Okul içi güncel duyuru ve bilgilendirmeler</p>
+              </div>
+            </div>
+            
+            {/* Small button to open modal in top-right corner */}
+            <button
+              onClick={() => setIsAnnouncementModalOpen(true)}
+              className="p-2 bg-slate-50 hover:bg-teal-50 hover:text-teal-600 border border-slate-100 text-slate-500 rounded-xl transition-all shadow-sm flex items-center gap-1 text-xs font-bold cursor-pointer hover:scale-105"
+              title="Yeni Duyuru Ekle"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Duyuru Yaz</span>
+            </button>
+          </div>
+
+          {/* Card Content - Scrollable Announcement List */}
+          <div className="flex-1 overflow-y-auto space-y-3 pr-1 max-h-[360px] custom-scrollbar">
+            {announcements.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full text-slate-400 text-xs py-12">
+                <Bell className="w-8 h-8 text-slate-300 mb-2" />
+                <span className="italic">Kayıtlı duyuru bulunmuyor.</span>
+              </div>
+            ) : (
+              announcements.map((ann) => (
+                <div
+                  key={ann.id}
+                  className="p-4 bg-slate-50/70 border border-slate-100 rounded-xl hover:border-teal-100 hover:bg-white transition-all group/item relative shadow-[0_1px_2px_rgba(0,0,0,0.01)]"
+                >
+                  <div className="flex items-start justify-between gap-2 mb-1.5">
+                    <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border shrink-0 ${
+                      ann.tag === "Önemli"
+                        ? "bg-rose-50 text-rose-700 border-rose-100"
+                        : ann.tag === "Etkinlik"
+                        ? "bg-purple-50 text-purple-700 border-purple-100"
+                        : "bg-teal-50 text-teal-700 border-teal-100"
+                    }`}>
+                      {ann.tag}
+                    </span>
+                    <span className="text-[10px] font-bold text-slate-400 font-mono flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      {ann.date ? new Date(ann.date).toLocaleDateString('tr-TR') : ""}
+                    </span>
+                  </div>
+                  
+                  <h4 className="font-extrabold text-slate-800 text-xs leading-snug mb-1">{ann.title}</h4>
+                  <p className="text-[11px] text-slate-600 leading-relaxed whitespace-pre-wrap">{ann.content}</p>
+
+                  {/* Elegant floating delete button */}
+                  <button
+                    onClick={() => handleDeleteAnnouncement(ann.id)}
+                    className="absolute top-3 right-3 p-1 rounded-lg text-slate-300 hover:text-rose-500 hover:bg-rose-50 opacity-0 group-hover/item:opacity-100 transition-all cursor-pointer"
+                    title="Duyuruyu Sil"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Genel Durum ek alanları: ana görünümün altında tutulur. */}
+      <RoleBasedDashboardPortal
+        currentUser={currentUser}
+        students={students as unknown as Array<Record<string, any>>}
+        teachers={teachers as unknown as Array<Record<string, any>>}
+        courses={courses as unknown as Array<Record<string, any>>}
+        classrooms={classrooms as unknown as Array<Record<string, any>>}
+        stats={stats}
+        onNavigate={setActiveTab}
+        onRoleResolved={setResolvedDashboardRole}
+      />
+
+      {(resolvedDashboardRole === "super_admin" || resolvedDashboardRole === "principal" || resolvedDashboardRole === "assistant_principal") && (
+        <ExecutiveDashboardHero
+          stats={stats}
+          students={students as unknown as Array<Record<string, any>>}
+          announcements={announcements as unknown as Array<Record<string, any>>}
+          onNavigate={setActiveTab}
+          taskScope={{
+            schoolId: currentUser?.schoolId || "school-main",
+            userId: currentUser?.id || "system",
+            userName: currentUser?.fullName || "Sistem",
+          }}
+        />
+      )}
+
+      {/* Alert Ribbon for important notices like high absences */}
+      {criticalAbsencesCount > 0 && (
+        <div
+          id="attendance-warning-ribbon"
+          className="flex items-center justify-between bg-rose-50 border border-rose-200/60 rounded-2xl p-4 shadow-sm animate-pulse"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+              <Activity className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-rose-800">
+                Akademik Devamsızlık Uyarısı!
+              </p>
+              <p className="text-xs text-rose-600 mt-0.5">
+                Şu anda{" "}
+                <span className="font-bold underline">
+                  {criticalAbsencesCount}
+                </span>{" "}
+                öğrenci 10 günden fazla devamsızlık yapmış durumda.
+                Velilerin uyarılması gerekebilir.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setActiveTab("students")}
+            className="text-xs font-bold text-rose-700 bg-rose-100 hover:bg-rose-200/80 border border-rose-200 px-3.5 py-1.5 rounded-xl cursor-pointer transition-all shrink-0"
+          >
+            Öğrencileri İncele
+          </button>
+        </div>
+      )}
+
+      {/* Polish Modal to Edit Duty Assignments (Nöbet Planı) */}
+      <AnimatePresence>
+        {showDutyModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-3xl border border-slate-150 w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            >
+              {/* Header */}
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                    <Calendar className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-slate-800 text-base">Nöbetçi Öğretmen Çizelgesi</h3>
+                    <p className="text-xs text-slate-400 mt-0.5">Nöbetçi öğretmen atamalarını ekleyin veya kaldırın</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowDutyModal(false)}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Body */}
+              <div className="p-6 overflow-y-auto space-y-6 flex-1">
+                {/* Add Duty Assignment Form */}
+                <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4.5">
+                  <h4 className="text-xs font-black text-slate-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                    <Plus className="w-4 h-4 text-indigo-500" />
+                    <span>Yeni Nöbet Ataması Ekle</span>
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {/* Day Selection */}
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Nöbet Günü</label>
+                      <select
+                        value={newDutyDay}
+                        onChange={(e) => setNewDutyDay(e.target.value)}
+                        className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 outline-none focus:border-indigo-500 transition-colors"
+                      >
+                        <option value="Pazartesi">Pazartesi</option>
+                        <option value="Salı">Salı</option>
+                        <option value="Çarşamba">Çarşamba</option>
+                        <option value="Perşembe">Perşembe</option>
+                        <option value="Cuma">Cuma</option>
+                      </select>
+                    </div>
+
+                    {/* Location Field */}
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Nöbet Yeri / Alanı</label>
+                      <input
+                        type="text"
+                        placeholder="Örn: Bahçe Nöbeti, 1. Kat"
+                        value={newDutyLocation}
+                        onChange={(e) => setNewDutyLocation(e.target.value)}
+                        className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 outline-none focus:border-indigo-500 transition-colors placeholder:text-slate-300"
+                      />
+                    </div>
+
+                    {/* Teacher Dropdown */}
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Görevli Öğretmen</label>
+                      <select
+                        value={newDutyTeacherName}
+                        onChange={(e) => setNewDutyTeacherName(e.target.value)}
+                        className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 outline-none focus:border-indigo-500 transition-colors"
+                      >
+                        <option value="">Öğretmen Seçin</option>
+                        {teachers.map(t => (
+                          <option key={t.id} value={t.name}>{t.name} ({t.branch})</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!newDutyLocation.trim() || !newDutyTeacherName.trim()) {
+                          alert("Lütfen tüm alanları doldurun!");
+                          return;
+                        }
+                        const newDuty = {
+                          id: `duty-${Date.now()}`,
+                          day: newDutyDay,
+                          location: newDutyLocation,
+                          teacherName: newDutyTeacherName
+                        };
+                        saveDuties([...dutyAssignments, newDuty]);
+                        setNewDutyLocation("");
+                        setNewDutyTeacherName("");
+                      }}
+                      className="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs px-4 py-2 rounded-xl transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Atama Ekle</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Duty List */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-black text-slate-700 uppercase tracking-wider">Mevcut Nöbet Atamaları</h4>
+                  <div className="border border-slate-100 rounded-2xl overflow-hidden">
+                    <div className="max-h-[300px] overflow-y-auto">
+                      {dutyAssignments.length === 0 ? (
+                        <p className="text-xs text-slate-400 italic p-6 text-center">Henüz nöbet ataması tanımlanmamış.</p>
+                      ) : (
+                        <table className="w-full text-left border-collapse">
+                          <thead>
+                            <tr className="bg-slate-50 border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                              <th className="p-3.5">Gün</th>
+                              <th className="p-3.5">Nöbet Alanı</th>
+                              <th className="p-3.5">Öğretmen</th>
+                              <th className="p-3.5 text-right">İşlem</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100 text-xs">
+                            {dutyAssignments.map((duty) => (
+                              <tr key={duty.id} className="hover:bg-slate-50/40 transition-colors">
+                                <td className="p-3.5 font-bold text-indigo-600">{duty.day}</td>
+                                <td className="p-3.5 text-slate-600 font-semibold">ğŸ“ {duty.location}</td>
+                                <td className="p-3.5 text-slate-800 font-extrabold">ğŸ‘¤ {duty.teacherName}</td>
+                                <td className="p-3.5 text-right">
+                                  <button
+                                    onClick={() => {
+                                      const filtered = dutyAssignments.filter(d => d.id !== duty.id);
+                                      saveDuties(filtered);
+                                    }}
+                                    className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg cursor-pointer transition-colors"
+                                    title="Sil"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="p-4 border-t border-slate-100 bg-slate-50 flex justify-end">
+                <button
+                  onClick={() => setShowDutyModal(false)}
+                  className="bg-slate-800 hover:bg-slate-900 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl transition-all cursor-pointer shadow-sm"
+                >
+                  Tamamlandı
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Interactive Modal to Save Teacher Leave Status */}
+      <AnimatePresence>
+        {isLeaveModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-3xl border border-slate-150 w-full max-w-lg shadow-2xl overflow-hidden flex flex-col"
+            >
+              {/* Header */}
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                    <Clock className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-slate-800 text-base">Öğretmen İzin Kaydı</h3>
+                    <p className="text-xs text-slate-400 mt-0.5">Öğretmenlerin izin ve rapor durumlarını yönetin</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsLeaveModalOpen(false)}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Form Body */}
+              <form onSubmit={handleSaveLeave} className="p-6 space-y-4">
+                {/* Teacher Dropdown */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-wide">ÖĞRETMEN SEÇİN</label>
+                  <select
+                    value={selectedLeaveTeacherId}
+                    onChange={(e) => setSelectedLeaveTeacherId(e.target.value)}
+                    required
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-700 outline-none focus:border-indigo-500 transition-colors"
+                  >
+                    <option value="">Öğretmen Seçin...</option>
+                    {teachers.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.name} ({t.branch}) - [{t.status}]
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Status Indicator */}
+                {selectedTeacherObj && (
+                  <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs flex items-center justify-between">
+                    <div>
+                      <span className="font-bold text-slate-500">Mevcut Durum:</span>
+                      <span className={`ml-2 font-black ${isSelectedTeacherOnLeave ? "text-amber-600" : "text-emerald-600"}`}>
+                        {selectedTeacherObj.status}
+                      </span>
+                    </div>
+                    {isSelectedTeacherOnLeave && (
+                      <button
+                        type="button"
+                        onClick={handleRemoveLeave}
+                        className="text-[10px] font-black text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100/80 px-2 py-1 rounded-md transition-all cursor-pointer"
+                      >
+                        İzni İptal Et (Aktif Yap)
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {/* Leave Reason Field */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-wide">İZİN SEBEBİ</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Örn: Sağlık Raporu, Senelik İzin"
+                    value={leaveReasonText}
+                    onChange={(e) => setLeaveReasonText(e.target.value)}
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-700 outline-none focus:border-indigo-500 transition-colors placeholder:text-slate-300"
+                  />
+                </div>
+
+                {/* Leave Calendar Selection */}
+                <div className="flex flex-col gap-1.5 border-t border-slate-100 pt-4">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-wide">
+                    İZİNLİ GÜNLERİ SEÇİN (TAKVİM)
+                  </label>
+                  {!selectedLeaveTeacherId ? (
+                    <div className="bg-amber-50/50 border border-amber-200/40 rounded-xl p-3 text-amber-700 text-xs font-semibold text-center">
+                      Lütfen takvimi kullanmak için önce bir öğretmen seçin.
+                    </div>
+                  ) : (
+                    <div className="bg-slate-50 border border-slate-200 p-3 rounded-2xl">
+                      {/* Month & Year Navigation Header */}
+                      <div className="flex items-center justify-between mb-3">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (calendarMonth === 0) {
+                              setCalendarMonth(11);
+                              setCalendarYear((y) => y - 1);
+                            } else {
+                              setCalendarMonth((m) => m - 1);
+                            }
+                          }}
+                          className="p-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
+                        >
+                          <ChevronLeft className="w-3.5 h-3.5" />
+                        </button>
+                        <span className="text-xs font-extrabold text-slate-800">
+                          {["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"][calendarMonth]} {calendarYear}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (calendarMonth === 11) {
+                              setCalendarMonth(0);
+                              setCalendarYear((y) => y + 1);
+                            } else {
+                              setCalendarMonth((m) => m + 1);
+                            }
+                          }}
+                          className="p-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
+                        >
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      {/* Weekday Labels Grid */}
+                      <div className="grid grid-cols-7 gap-1 text-center mb-1.5">
+                        {["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"].map((dayName) => (
+                          <span key={dayName} className="text-[10px] font-bold text-slate-400">
+                            {dayName}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Days Grid */}
+                      <div className="grid grid-cols-7 gap-1">
+                        {(() => {
+                          const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+                          const firstDayIndex = new Date(calendarYear, calendarMonth, 1).getDay();
+                          // Adjust firstDayIndex so Monday is 0, Sunday is 6
+                          const startOffset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+
+                          const daySlots: Array<number | null> = [];
+                          for (let i = 0; i < startOffset; i++) {
+                            daySlots.push(null);
+                          }
+                          for (let d = 1; d <= daysInMonth; d++) {
+                            daySlots.push(d);
+                          }
+
+                          return daySlots.map((dayNum, slotIdx) => {
+                            if (dayNum === null) {
+                              return <div key={`empty-${slotIdx}`} className="aspect-square" />;
+                            }
+
+                            const formattedDateStr = `${calendarYear}-${(calendarMonth + 1).toString().padStart(2, "0")}-${dayNum.toString().padStart(2, "0")}`;
+                            const isDateSelected = selectedLeaveDates.includes(formattedDateStr);
+
+                            return (
+                              <button
+                                key={`day-${dayNum}`}
+                                type="button"
+                                onClick={() => {
+                                  setSelectedLeaveDates((prev) =>
+                                    prev.includes(formattedDateStr)
+                                      ? prev.filter((d) => d !== formattedDateStr)
+                                      : [...prev, formattedDateStr]
+                                  );
+                                }}
+                                className={`aspect-square text-[11px] font-bold rounded-xl transition-all flex items-center justify-center border cursor-pointer ${
+                                  isDateSelected
+                                    ? "bg-amber-400 text-slate-900 border-amber-500 shadow-sm font-black ring-2 ring-amber-300 animate-pulse"
+                                    : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
+                                }`}
+                              >
+                                {dayNum}
+                              </button>
+                            );
+                          });
+                        })()}
+                      </div>
+
+                      {/* Selected Days Count & Clear Action */}
+                      {selectedLeaveDates.length > 0 && (
+                        <div className="mt-3 pt-2.5 border-t border-slate-200/60 flex items-center justify-between text-[10px]">
+                          <span className="text-slate-500 font-bold">
+                            Seçilen Günler ({selectedLeaveDates.length}):
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedLeaveDates([])}
+                            className="text-rose-600 hover:text-rose-700 font-bold cursor-pointer"
+                          >
+                            Tümünü Temizle
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer Buttons */}
+                <div className="pt-4 flex items-center justify-end gap-2 border-t border-slate-100 mt-6">
+                  <button
+                    type="button"
+                    onClick={() => setIsLeaveModalOpen(false)}
+                    className="bg-slate-100 hover:bg-slate-200 text-slate-600 font-extrabold text-xs px-4 py-2.5 rounded-xl transition-all cursor-pointer"
+                  >
+                    Vazgeç
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>{isSelectedTeacherOnLeave ? "İzni Güncelle" : "İzinli Kaydet"}</span>
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Birthday Greetings Modal (Doğum Günü Kartı Hazırlama) */}
+      <AnimatePresence>
+        {isBirthdayModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white rounded-3xl border border-slate-150 w-full max-w-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            >
+              {/* Header */}
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-emerald-50/50">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center border border-emerald-200 animate-bounce" style={{ animationDuration: "2s" }}>
+                    <Cake className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-slate-800 text-base">Doğum Günü Tebrik Kartı Hazırlama</h3>
+                    <p className="text-xs text-slate-400 mt-0.5">Öğrencileriniz için tebrik kartları hazırlayın ve kolayca iletin</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsBirthdayModalOpen(false)}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Body */}
+              <div className="p-6 overflow-y-auto space-y-5 flex-1">
+                {/* Students List */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-wide">BUGÜN DOĞAN ÖĞRENCİLER</label>
+                  {todaysBirthdays.length > 0 ? (
+                    <div className="flex flex-col gap-2 max-h-40 overflow-y-auto pr-2">
+                      {todaysBirthdays.map((b) => (
+                        <div key={b.id || b.name} className="flex items-center gap-3 p-3 bg-emerald-50/50 border border-emerald-100 rounded-xl">
+                          <div className="w-8 h-8 rounded-full bg-emerald-200 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0">
+                            {b.name.charAt(0)}
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-slate-700">{b.name}</p>
+                            <p className="text-[10px] text-slate-500 font-semibold">{b.classroom} Sınıfı • {b.age} Yaşına Girdi</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-xs text-rose-500 font-semibold p-3 bg-rose-50 rounded-xl border border-rose-100">
+                      Bugün doğum günü olan öğrenci bulunmamaktadır.
+                    </div>
+                  )}
+                </div>
+
+                {/* Theme Selection */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-wide">KART TEMASI SEÇİN (10 TASARIM)</label>
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                    {[
+                      { id: "tezhib-gold", label: "ğŸ•Œ Tezhib (Altın)", bg: "bg-amber-50", activeBg: "bg-amber-600 text-white" },
+                      { id: "tezhib-navy", label: "ğŸ•Œ Tezhib (Lacivert)", bg: "bg-indigo-50", activeBg: "bg-indigo-700 text-white" },
+                      { id: "modern-minimal", label: "✨ Modern Sade", bg: "bg-slate-50", activeBg: "bg-slate-800 text-white" },
+                      { id: "modern-geometric", label: "ğŸ“ Geometrik", bg: "bg-pink-50", activeBg: "bg-pink-600 text-white" },
+                      { id: "aesthetic-watercolor", label: "ğŸ¨ Sulu Boya", bg: "bg-teal-50", activeBg: "bg-teal-600 text-white" },
+                      { id: "aesthetic-abstract", label: "ğŸ–¼ï¸ Soyut Sanat", bg: "bg-orange-50", activeBg: "bg-orange-600 text-white" },
+                      { id: "simple-linen", label: "ğŸ§µ Keten Doku", bg: "bg-stone-50", activeBg: "bg-stone-600 text-white" },
+                      { id: "simple-charcoal", label: "ğŸŒ‘ Füme", bg: "bg-gray-50", activeBg: "bg-gray-800 text-white" },
+                      { id: "vintage-paper", label: "ğŸ“œ Antik Kağıt", bg: "bg-yellow-50", activeBg: "bg-yellow-800 text-white" },
+                      { id: "floral-soft", label: "ğŸŒ¸ Çiçeksi", bg: "bg-rose-50", activeBg: "bg-rose-600 text-white" }
+                    ].map((t) => (
+                      <button
+                        key={t.id}
+                        type="button"
+                        onClick={() => setSelectedBirthdayCardTheme(t.id)}
+                        className={`px-2 py-2 rounded-xl text-[10px] font-extrabold border transition-all text-center cursor-pointer ${
+                          selectedBirthdayCardTheme === t.id ? t.activeBg : t.bg + " hover:bg-slate-100"
+                        }`}
+                      >
+                        {t.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Live Card Preview */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-wide">DİJİTAL KART ÖNİZLEME</label>
+                  {(() => {
+                    const selectedStudent = todaysBirthdays[0];
+                    if (!selectedStudent) {
+                      return (
+                        <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 text-center text-xs text-slate-400 italic">
+                          Bugün doğum günü olan öğrenci bulunamadı.
+                        </div>
+                      );
+                    }
+                    
+                    const themeConfigs: Record<string, any> = {
+                      "tezhib-gold": {
+                        cardBg: "bg-neutral-900 border-amber-600 text-white",
+                        accentText: "text-amber-400", badgeBg: "bg-amber-900/40 border-amber-600/50 text-amber-200",
+                        borderColor: "border-amber-600/50", titleText: "text-white font-sans", sparkleColor: "text-amber-300", pattern: null
+                      },
+                      "tezhib-navy": {
+                        cardBg: "bg-slate-900 border-blue-600 text-white",
+                        accentText: "text-blue-300", badgeBg: "bg-blue-900/40 border-blue-600/50 text-blue-200",
+                        borderColor: "border-blue-600/50", titleText: "text-white font-sans", sparkleColor: "text-blue-300", pattern: null
+                      },
+                      "modern-minimal": {
+                        cardBg: "bg-white border-slate-300 text-slate-800",
+                        accentText: "text-blue-600", badgeBg: "bg-slate-100 border-slate-200 text-slate-600",
+                        borderColor: "border-slate-300", titleText: "text-slate-800", sparkleColor: "text-blue-400", pattern: null
+                      },
+                      "modern-geometric": {
+                        cardBg: "bg-white border-pink-500 text-slate-800",
+                        accentText: "text-pink-500", badgeBg: "bg-pink-50 border-pink-200 text-pink-600",
+                        borderColor: "border-pink-500", titleText: "text-slate-800", sparkleColor: "text-pink-400", pattern: null
+                      },
+                      "aesthetic-watercolor": {
+                        cardBg: "bg-teal-50 border-teal-400 text-teal-900",
+                        accentText: "text-teal-600", badgeBg: "bg-teal-100 border-teal-200 text-teal-700",
+                        borderColor: "border-teal-400", titleText: "text-teal-900", sparkleColor: "text-teal-500", pattern: null
+                      },
+                      "aesthetic-abstract": {
+                        cardBg: "bg-orange-50 border-orange-400 text-orange-950",
+                        accentText: "text-orange-600", badgeBg: "bg-orange-100 border-orange-200 text-orange-700",
+                        borderColor: "border-orange-400", titleText: "text-orange-950", sparkleColor: "text-orange-500", pattern: null
+                      },
+                      "simple-linen": {
+                        cardBg: "bg-stone-50 border-stone-400 text-stone-800",
+                        accentText: "text-stone-600", badgeBg: "bg-stone-100 border-stone-200 text-stone-700",
+                        borderColor: "border-stone-400", titleText: "text-stone-800", sparkleColor: "text-stone-500", pattern: null
+                      },
+                      "simple-charcoal": {
+                        cardBg: "bg-gray-800 border-gray-400 text-white",
+                        accentText: "text-gray-200", badgeBg: "bg-gray-700 border-gray-500 text-white",
+                        borderColor: "border-gray-400", titleText: "text-white", sparkleColor: "text-gray-300", pattern: null
+                      },
+                      "vintage-paper": {
+                        cardBg: "bg-amber-50 border-amber-700 text-amber-950",
+                        accentText: "text-amber-800", badgeBg: "bg-amber-100 border-amber-300 text-amber-900",
+                        borderColor: "border-amber-700", titleText: "text-amber-950", sparkleColor: "text-amber-600", pattern: null
+                      },
+                      "floral-soft": {
+                        cardBg: "bg-rose-50 border-rose-400 text-rose-950",
+                        accentText: "text-rose-600", badgeBg: "bg-rose-100 border-rose-200 text-rose-700",
+                        borderColor: "border-rose-400", titleText: "text-rose-950", sparkleColor: "text-rose-400", pattern: null
+                      }
+                    };
+
+                    const themeConfig = themeConfigs[selectedBirthdayCardTheme] || themeConfigs["tezhib-gold"];
+                    
+                    return (
+                      <div className={`p-6 rounded-[28px] border flex flex-col justify-between min-h-[210px] ${themeConfig.cardBg} relative overflow-hidden transition-all duration-500 hover:scale-[1.01]`}>
+                        {themeConfig.pattern}
+                        
+                        <div className="flex justify-between items-start relative z-10">
+                          <div className="space-y-1">
+                            <h4 className="text-lg font-black tracking-tight leading-tight pt-1.5 flex items-center gap-1.5">
+                              {selectedStudent.name} (Örnek Görünüm)
+                              <Sparkles className={`w-4 h-4 shrink-0 ${themeConfig.sparkleColor} animate-pulse`} />
+                            </h4>
+                            <p className="text-[11px] font-extrabold opacity-85">{selectedStudent.classroom} Sınıfı</p>
+                          </div>
+                          
+                          <div className="w-12 h-12 bg-white/10 border border-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-2xl shadow-xl">
+                            ğŸ‚
+                          </div>
+                        </div>
+                        
+                        <div className={`mt-4 border-t ${themeConfig.borderColor} pt-3.5 flex flex-col relative z-10`}>
+                          <p className="text-[12px] font-bold leading-relaxed whitespace-pre-wrap text-justify">
+                            {(birthdayCustomMessage || "")
+                              .replace(/{isim}/g, selectedStudent.name)
+                              .replace(/{yas}/g, String(selectedStudent.age || ""))}
+                          </p>
+                          <div className="mt-4 flex items-center justify-between">
+                            <span className="text-[9px] font-extrabold opacity-75 tracking-wider">
+                              {selectedStudent.date}
+                            </span>
+                            <span className={`text-[9px] font-black uppercase tracking-widest ${themeConfig.accentText}`}>
+                              © OKUL YÖNETİMİ
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+
+                {/* Custom message textarea */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-wide">KART MESAJI (DÜZENLENEBİLİR)</label>
+                  <textarea
+                    rows={4}
+                    value={birthdayCustomMessage}
+                    onChange={(e) => setBirthdayCustomMessage(e.target.value)}
+                    placeholder="Tebrik mesajı yazın..."
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all resize-none"
+                  />
+                </div>
+              </div>
+
+              {/* Footer Buttons */}
+              <div className="pt-4 p-6 flex items-center justify-end gap-2 border-t border-slate-100 bg-slate-50/50">
+                <button
+                  type="button"
+                  onClick={() => setIsBirthdayModalOpen(false)}
+                  className="bg-slate-100 hover:bg-slate-200 text-slate-600 font-extrabold text-xs px-4 py-2.5 rounded-xl transition-all cursor-pointer"
+                >
+                  Vazgeç
+                </button>
+                <button
+                  type="button"
+                  disabled={todaysBirthdays.length === 0}
+                  onClick={() => {
+                    if (todaysBirthdays.length > 0) {
+                      todaysBirthdays.forEach(student => {
+                        const defaultTemplate = `Sevgili, {isim}\n\nBugün {yas}. doğum gününü en içten dileklerimizle kutluyoruz! Bu yeni yaşında da hayallerinin peşinden cesaretle koş. Hayallerine doğru attığın her adımda seni destekliyor, başarılarının artarak devam etmesini diliyoruz. Yeni yaşın sana ve ailene mutluluk, sağlık getirsin.`;
+                        const template = birthdayCustomMessage || defaultTemplate;
+                        const finalMsg = template
+                          .replace(/{isim}/g, student.name)
+                          .replace(/{yas}/g, String(student.age || ""));
+                        
+                        const savedSchoolName = sqliteStorage.getItem("schoolName") || "Ordu Lisesi";
+                        exportCardAsJPEG(student, selectedBirthdayCardTheme, finalMsg, savedSchoolName);
+                      });
+
+                      setIsBirthdayModalOpen(false);
+                    }
+                  }}
+                  className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:pointer-events-none active:scale-95 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Check className="w-3.5 h-3.5" />
+                  <span>{todaysBirthdays.length > 1 ? `Tümü İçin Kart Hazırla (${todaysBirthdays.length})` : "Kartı Hazırla"}</span>
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Dashboard Announcement Management Modal (Açılır Pencere) */}
+      <AnimatePresence>
+        {isAnnouncementModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-3xl border border-slate-150 w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            >
+              {/* Header */}
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
+                    <Megaphone className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-slate-800 text-base">Yeni Duyuru Yaz</h3>
+                    <p className="text-xs text-slate-400 mt-0.5">Duyuru detaylarını girerek panoya ekleyin</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsAnnouncementModalOpen(false)}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Body */}
+              <div className="p-6 overflow-y-auto space-y-4 flex-1">
+                {/* Title */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-wide">Duyuru Başlığı</label>
+                  <input
+                    type="text"
+                    placeholder="Örn: 1. Dönem Veli Bilgilendirme Toplantısı"
+                    value={newAnnTitle}
+                    onChange={(e) => setNewAnnTitle(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-700 outline-none focus:border-teal-500 transition-colors placeholder:text-slate-300"
+                  />
+                </div>
+
+                {/* Tag Selection */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-wide">Duyuru Kategorisi</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(["Genel", "Önemli", "Etkinlik"] as const).map((tag) => (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => setNewAnnTag(tag)}
+                        className={`py-2 px-3 rounded-xl border text-xs font-extrabold transition-all ${
+                          newAnnTag === tag
+                            ? tag === "Önemli"
+                              ? "bg-rose-50 border-rose-200 text-rose-700 shadow-sm"
+                              : tag === "Etkinlik"
+                              ? "bg-purple-50 border-purple-200 text-purple-700 shadow-sm"
+                              : "bg-teal-50 border-teal-200 text-teal-700 shadow-sm"
+                            : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50"
+                        }`}
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-wide">Duyuru İçeriği</label>
+                  <textarea
+                    rows={5}
+                    placeholder="Duyurunun detaylı metnini buraya yazın..."
+                    value={newAnnContent}
+                    onChange={(e) => setNewAnnContent(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold text-slate-700 outline-none focus:border-teal-500 transition-colors placeholder:text-slate-300 resize-none"
+                  />
+                </div>
+              </div>
+
+              {/* Footer Buttons */}
+              <div className="pt-4 p-6 flex items-center justify-end gap-2 border-t border-slate-100 bg-slate-50/50">
+                <button
+                  type="button"
+                  onClick={() => setIsAnnouncementModalOpen(false)}
+                  className="bg-slate-100 hover:bg-slate-200 text-slate-600 font-extrabold text-xs px-4 py-2.5 rounded-xl transition-all cursor-pointer"
+                >
+                  Vazgeç
+                </button>
+                <button
+                  type="button"
+                  onClick={handleAddAnnouncement}
+                  className="bg-teal-600 hover:bg-teal-700 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Check className="w-3.5 h-3.5" />
+                  <span>Duyuruyu Yayınla</span>
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+

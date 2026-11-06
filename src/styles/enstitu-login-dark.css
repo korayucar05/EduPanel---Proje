@@ -1,0 +1,201 @@
+/* e-Nstitü giriş ekranı — gerçek LoginPanel yapısına göre final tasarım */
+
+.enstitu-login-theme {
+  min-height: 100vh !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.enstitu-login-theme,
+.enstitu-login-theme * {
+  box-sizing: border-box;
+}
+
+/* Sağ taraftaki ana kart beyaz dış çerçeve olarak kalır. */
+.enstitu-login-shell {
+  background: #ffffff !important;
+}
+
+/*
+ * İstenen tek parça siyah alan:
+ * logo + Güvenli Giriş + Hoş Geldiniz + açıklama + form.
+ * Brand panel ile form arasında boşluk bırakılmaz.
+ */
+.enstitu-login-brand-panel {
+  margin: 0 !important;
+  background: #000000 !important;
+  color: #ffffff !important;
+  border-color: #000000 !important;
+  border-bottom: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  padding: 8px 14px 8px !important;
+}
+
+.enstitu-login-brand-panel img[src="/enstitu-login-logo.png"] {
+  display: block !important;
+  width: 100% !important;
+  max-width: 270px !important;
+  height: auto !important;
+  max-height: 285px !important;
+  object-fit: contain !important;
+  margin: 0 auto !important;
+  background: #000000 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.enstitu-login-brand-panel h1,
+.enstitu-login-brand-panel p {
+  color: #ffffff !important;
+}
+
+.enstitu-login-brand-panel span {
+  color: #14b8a6 !important;
+}
+
+/* Form, brand panelin doğrudan devamıdır. */
+.enstitu-login-form {
+  margin: 0 !important;
+  padding: 8px 14px 16px !important;
+  background: #000000 !important;
+  color: #ffffff !important;
+  border-left: 1px solid #000000 !important;
+  border-right: 1px solid #000000 !important;
+  border-bottom: 1px solid #000000 !important;
+  border-bottom-left-radius: 22px !important;
+  border-bottom-right-radius: 22px !important;
+  overflow-y: auto !important;
+}
+
+.enstitu-login-form label > span {
+  color: #ffffff !important;
+}
+
+/* Üç alanın tamamı aynı sarı zemin ve siyah çerçeve. */
+.enstitu-login-form input,
+.enstitu-login-form select {
+  background: #f6c744 !important;
+  color: #050505 !important;
+  border: 3px solid #050505 !important;
+  border-radius: 16px !important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.14),
+    0 3px 0 rgba(0,0,0,.70) !important;
+}
+
+.enstitu-login-form input::placeholder {
+  color: rgba(5,5,5,.48) !important;
+  opacity: 1 !important;
+}
+
+.enstitu-login-form input:focus,
+.enstitu-login-form select:focus {
+  border-color: #050505 !important;
+  outline: 2px solid #f8d76d !important;
+  outline-offset: 1px !important;
+  box-shadow: 0 0 0 4px rgba(246,199,68,.18) !important;
+}
+
+.enstitu-login-form svg {
+  color: #050505 !important;
+  stroke: #050505 !important;
+}
+
+.enstitu-login-form button[type="button"] {
+  color: #ffffff !important;
+}
+
+/* Şifre göz butonu sarı alanın üzerinde siyah görünür. */
+.enstitu-login-form label button[type="button"] {
+  color: #050505 !important;
+}
+
+.enstitu-login-form button[type="submit"] {
+  background: linear-gradient(135deg, #0f766e, #0d9488) !important;
+  color: #ffffff !important;
+  border: 1px solid #14b8a6 !important;
+}
+
+/* Alt yardım alanı siyah kartın dışında ve beyaz zeminde kalır. */
+.enstitu-login-shell > div:last-child {
+  background: #ffffff !important;
+  color: #94a3b8 !important;
+}
+
+/* Dış sayfa kesinlikle siyaha dönmez. */
+.enstitu-login-theme main,
+.enstitu-login-theme section {
+  background-color: #ffffff;
+}
+
+@media (max-width: 640px) {
+  .enstitu-login-shell {
+    padding: 10px !important;
+  }
+
+  .enstitu-login-brand-panel img[src="/enstitu-login-logo.png"] {
+    max-width: 245px !important;
+    max-height: 260px !important;
+  }
+
+  .enstitu-login-brand-panel {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .enstitu-login-form {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+}
+
+
+/* ===== Son düzenleme: yüksek tek panel + sürgüsüz form + sol alan kaldırıldı ===== */
+
+.enstitu-login-theme {
+  background: #ffffff !important;
+}
+
+.enstitu-login-theme main {
+  min-height: 100vh !important;
+  background: #ffffff !important;
+}
+
+.enstitu-login-shell {
+  min-height: 760px !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.enstitu-login-brand-panel {
+  flex: 0 0 auto !important;
+}
+
+.enstitu-login-form {
+  flex: 0 0 auto !important;
+  min-height: 280px !important;
+  height: auto !important;
+  overflow: visible !important;
+  overflow-y: visible !important;
+  scrollbar-width: none !important;
+}
+
+.enstitu-login-form::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Siyah panelin şifre/giriş butonu tarafında yeterli yüksekliği olsun. */
+.enstitu-login-brand-panel + .enstitu-login-form {
+  padding-bottom: 22px !important;
+}
+
+/* Yalnız giriş paneli görünür; eski masaüstü okul fotoğrafı alanı DOM'dan kaldırıldı. */
+@media (min-width: 1024px) {
+  .enstitu-login-theme > main {
+    display: block !important;
+  }
+}

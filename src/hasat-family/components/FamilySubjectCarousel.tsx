@@ -1,0 +1,8 @@
+import React from "react";
+import {ArrowDownRight,ArrowRight,ArrowUpRight,BookOpen} from "lucide-react";
+import {HasatCard,HasatSectionHeader} from "../../design-system";
+import type {FamilySubjectMetric} from "./familyTypes";
+
+export function FamilySubjectCarousel({subjects,onOpen}:{subjects:FamilySubjectMetric[];onOpen?:(subject:FamilySubjectMetric)=>void}){
+  return <section><HasatSectionHeader eyebrow="Dersler" title="Ders Bazlı Durum" action={<span className="text-[10px] font-bold text-slate-400">Yatay kaydırın</span>}/><div className="-mx-4 mt-3 flex snap-x gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">{subjects.map((subject,index)=>{const TrendIcon=subject.trend>0?ArrowUpRight:subject.trend<0?ArrowDownRight:ArrowRight;return <HasatCard key={`${subject.name}-${index}`} onClick={()=>onOpen?.(subject)} className="min-w-[160px] snap-start p-4"><div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-700"><BookOpen className="h-5 w-5"/></div><h3 className="mt-3 truncate text-sm font-black text-slate-900">{subject.name}</h3><div className="mt-3 flex items-end justify-between gap-2"><div><strong className="text-2xl font-black text-slate-900">{Math.round(subject.score)}</strong><span className="ml-1 text-[9px] font-bold text-slate-400">puan</span></div><span className={`flex items-center gap-1 text-[10px] font-black ${subject.trend>0?"text-emerald-600":subject.trend<0?"text-rose-600":"text-slate-400"}`}><TrendIcon className="h-3.5 w-3.5"/>{subject.trend>=0?"+":""}{subject.trend.toFixed(1)}</span></div><p className="mt-2 text-[10px] font-semibold text-slate-500">{subject.net.toFixed(2)} net</p></HasatCard>;})}</div></section>;
+}

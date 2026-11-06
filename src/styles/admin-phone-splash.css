@@ -1,0 +1,46 @@
+.admin-phone-splash{position:fixed;inset:0;z-index:2147483647;background:#fff;overflow:hidden;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}
+.admin-phone-splash-card{position:absolute;inset:0;overflow:hidden;background:#fff}
+.admin-phone-splash-photo{position:absolute;inset:0 0 36% 0;overflow:hidden;background:#e9ecef}
+.admin-phone-splash-photo>img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.02) contrast(1.01)}
+.admin-phone-splash.is-teacher .admin-phone-splash-photo>img{object-position:center 40%;transform:scale(.92);transform-origin:center bottom}
+.admin-phone-splash.is-admin .admin-phone-splash-photo>img{object-position:center 34%}
+.admin-phone-splash-panel{position:absolute;z-index:3;left:0;right:0;bottom:0;height:39%;min-height:330px;padding:64px 24px calc(18px + env(safe-area-inset-bottom));text-align:center;overflow:visible;background:linear-gradient(180deg,#0b70c9 0%,#07539d 45%,#053c77 100%)}
+.admin-phone-splash.is-teacher .admin-phone-splash-panel{height:37%;min-height:315px;background:linear-gradient(180deg,#0cae70 0%,#07845d 48%,#056b50 100%)}
+.admin-phone-splash-wave{position:absolute;left:-12%;width:124%;height:100px;border-radius:50%;pointer-events:none}
+.admin-phone-splash-wave-a{top:-47px;background:rgba(91,190,245,.72);transform:rotate(-2.2deg)}
+.admin-phone-splash-wave-b{top:-29px;background:rgba(41,147,218,.62);transform:rotate(2.3deg)}
+.admin-phone-splash-wave-c{top:-12px;background:rgba(12,102,187,.58);transform:rotate(-1deg)}
+.admin-phone-splash.is-teacher .admin-phone-splash-wave-a{background:rgba(111,238,145,.72)}
+.admin-phone-splash.is-teacher .admin-phone-splash-wave-b{background:rgba(44,196,111,.66)}
+.admin-phone-splash.is-teacher .admin-phone-splash-wave-c{background:rgba(7,139,89,.62)}
+.admin-phone-splash-wave-logo{position:absolute;z-index:5;top:-63px;left:50%;transform:translateX(-50%);width:86px;display:flex;flex-direction:column;align-items:center;gap:0;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.28)}
+.admin-phone-splash-wave-logo img{width:76px;height:70px;object-fit:contain;display:block;filter:drop-shadow(0 3px 6px rgba(0,0,0,.2))}
+.admin-phone-splash-wave-logo span{margin-top:-7px;font-size:11px;font-weight:800;letter-spacing:.18em}
+.admin-phone-splash-role{position:relative;z-index:6;font-size:clamp(24px,6.4vw,31px);font-weight:950;letter-spacing:.02em;line-height:1;margin-top:0;text-shadow:0 2px 5px rgba(0,0,0,.16)}
+.admin-phone-splash-rule{position:relative;z-index:6;width:44px;height:4px;border-radius:99px;background:#fff;margin:14px auto 14px}
+.admin-phone-splash-greeting{position:relative;z-index:6;font-size:clamp(18px,5vw,24px);line-height:1.15;font-weight:900}
+.admin-phone-splash-subtitle{position:relative;z-index:6;margin-top:10px;font-size:clamp(13px,3.5vw,16px);font-weight:650}
+.admin-phone-splash-progress{position:relative;z-index:6;width:min(82vw,360px);height:10px;border-radius:999px;background:rgba(255,255,255,.28);overflow:hidden;margin:19px auto 0}
+.admin-phone-splash-progress span{display:block;width:0;height:100%;border-radius:inherit;background:#57d7ff;animation:enstituSplashProgress 4.75s linear forwards}
+.admin-phone-splash.is-teacher .admin-phone-splash-progress span{background:#71f39b}
+.admin-phone-splash-loading{position:relative;z-index:6;margin-top:9px;font-size:12px;font-weight:800;letter-spacing:.13em;opacity:.94}
+.admin-phone-splash-school{position:absolute;z-index:6;left:24px;right:24px;bottom:calc(14px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:center;gap:12px}
+.admin-phone-splash-school>img{width:56px;height:56px;object-fit:contain;flex:0 0 56px}
+.admin-phone-splash-school>div{display:flex;flex-direction:column;text-align:left;border-left:1px solid rgba(255,255,255,.75);padding-left:12px}
+.admin-phone-splash-school strong{font-family:Georgia,serif;font-size:22px;font-weight:500;line-height:1.05}.admin-phone-splash-school span{font-family:"Segoe Script","Bradley Hand",cursive;font-size:11px;margin-top:4px}
+@keyframes enstituSplashProgress{from{width:5%}to{width:100%}}
+@media (min-width:768px){.admin-phone-splash{display:none}}
+@media (max-height:760px){.admin-phone-splash-photo{inset:0 0 39% 0}.admin-phone-splash-panel,.admin-phone-splash.is-teacher .admin-phone-splash-panel{height:41%;min-height:300px;padding-top:55px}.admin-phone-splash-wave-logo{top:-56px}.admin-phone-splash-role{font-size:22px}.admin-phone-splash-rule{margin:10px auto}.admin-phone-splash-greeting{font-size:18px}.admin-phone-splash-subtitle{margin-top:7px;font-size:12px}.admin-phone-splash-progress{margin-top:12px}.admin-phone-splash-school>img{width:48px;height:48px}.admin-phone-splash-school strong{font-size:19px}}
+
+/* HARD EXIT: React zamanlayıcısı mobil/PWA tarafından geciktirilse dahi
+   splash 5 saniyeden sonra ana ekranı asla örtemez. */
+.admin-phone-splash {
+  animation: enstituSplashHardExit 0.18s ease 5s forwards !important;
+}
+@keyframes enstituSplashHardExit {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}

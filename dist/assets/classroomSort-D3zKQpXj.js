@@ -1,0 +1,1 @@
+var e=e=>{let t=String(e||``).match(/(?:^|\D)(\d{1,2})(?:\D|$)/);return t?Number(t[1]):2**53-1},t=(t,n)=>{let r=String(t||``).trim(),i=String(n||``).trim();return e(r)-e(i)||r.localeCompare(i,`tr`,{numeric:!0,sensitivity:`base`})},n=(n,r)=>{let i=e(n.level||n.name),a=e(r.level||r.name);return i===a?t(n.name,r.name):i-a},r=e=>[...e].sort(n);export{n,r,t};

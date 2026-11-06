@@ -1,0 +1,33 @@
+export const clamp=(value:number,min=0,max=100)=>
+  Math.max(min,Math.min(max,value));
+
+export const average=(values:number[])=>values.length
+  ?values.reduce((sum,value)=>sum+value,0)/values.length
+  :0;
+
+export const slope=(values:number[])=>{
+  if(values.length<2)return 0;
+  const n=values.length;
+  const xMean=(n-1)/2;
+  const yMean=average(values);
+  let numerator=0;
+  let denominator=0;
+  for(let index=0;index<n;index+=1){
+    numerator+=(index-xMean)*(values[index]-yMean);
+    denominator+=(index-xMean)**2;
+  }
+  return denominator?numerator/denominator:0;
+};
+
+export const directionFrom=(change:number)=>{
+  if(change>.5)return"rising" as const;
+  if(change<-.5)return"falling" as const;
+  return"stable" as const;
+};
+
+export const riskLevelFrom=(score:number)=>{
+  if(score>=75)return"critical" as const;
+  if(score>=58)return"high" as const;
+  if(score>=38)return"medium" as const;
+  return"low" as const;
+};

@@ -1,0 +1,1 @@
+import{c as e}from"./PdfEngine-CiuNLCr_.js";function t(t,n){return{margin:[20,0,20,6],columns:[{text:`e-Nstitü • Hedefli Akademik Süreç Analiz Takibi`,fontSize:7,color:e.muted},{text:`${t} / ${n}`,alignment:`right`,fontSize:7,color:e.muted}]}}export{t};

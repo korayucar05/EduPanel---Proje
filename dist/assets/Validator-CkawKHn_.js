@@ -1,0 +1,1 @@
+var e=class{static validate(e,t){let n=t.flatMap(t=>{let n=t(e);return n==null?[]:Array.isArray(n)?n:[n]});return{valid:n.length===0,issues:n}}static required(e,t=String(e)){return n=>{let r=n[e];return r==null||String(r).trim()===``?{field:String(e),message:`${t} zorunludur.`}:null}}};export{e as t};

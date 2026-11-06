@@ -1,0 +1,255 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Share+Tech+Mono&family=VT323&family=Oxanium:wght@700;800;900&family=Caveat:wght@400;700&family=Dancing+Script:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Great+Vibes&display=swap');
+@import "./reports-v2/theme/premiumReportDesign.css";
+
+@import "tailwindcss";
+
+@font-face {
+  font-family: "MergeOne";
+  src: url("/fonts/MergeOne-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@theme {
+  --font-orbitron: "Orbitron", "JetBrains Mono", monospace;
+  --font-share: "Share Tech Mono", monospace;
+  --font-vt323: "VT323", monospace;
+  --font-oxanium: "Oxanium", "Orbitron", sans-serif;
+}
+
+@layer utilities {
+  .bg-theme-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30c0-8.284 6.716-15 15-15s15 6.716 15 15c0 8.284-6.716 15-15 15s-15-6.716-15-15zm0 0c0-8.284-6.716-15-15-15S0 21.716 0 30c0 8.284 6.716 15 15 15s15-6.716 15-15zm0 0c-8.284 0-15-6.716-15-15s6.716-15 15-15 15 6.716 15 15-6.716 15-15 15zm0 0c8.284 0 15 6.716 15 15s-6.716 15-15 15-15-6.716-15-15 6.716-15 15-15z' fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .bg-theme-pattern::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% -20%, rgba(255,255,255,0.06) 0%, transparent 60%);
+  }
+  
+  .water-ripple-hover {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .water-ripple-hover::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    padding-top: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+  }
+  
+  .water-ripple-hover:active::after {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+    transition: 0s;
+  }
+  
+  .water-ripple-hover:hover::after {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+
+  .leaf-water-button {
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .leaf-water-button > :not(.absolute) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .leaf-water-button::before {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    inset: 45% -35% -65%;
+    border-radius: 42% 48% 45% 52%;
+    background: repeating-radial-gradient(ellipse at 50% 100%, rgba(255,255,255,.18) 0 2px, transparent 3px 12px);
+    opacity: .55;
+    animation: menu-water-drift 7s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+
+  .leaf-water-button::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    top: 17%;
+    left: 13%;
+    width: 9px;
+    height: 5px;
+    border-radius: 90% 12% 90% 12%;
+    background: rgba(148, 163, 184, .48);
+    box-shadow: 7px 3px 0 -2px rgba(255,255,255,.32);
+    transform: rotate(-18deg);
+    animation: menu-leaf-float 8s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes menu-water-drift {
+    from { transform: translate3d(-5%, 4%, 0) rotate(-1deg); }
+    to { transform: translate3d(8%, -5%, 0) rotate(2deg); }
+  }
+
+  @keyframes menu-leaf-float {
+    0% { transform: translate3d(0, 0, 0) rotate(-18deg); opacity: .28; }
+    50% { transform: translate3d(115px, 7px, 0) rotate(10deg); opacity: .55; }
+    100% { transform: translate3d(225px, 0, 0) rotate(-8deg); opacity: .2; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .leaf-water-button::before,
+    .leaf-water-button::after { animation: none; }
+  }
+}
+
+@media print {
+  body, html {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-color: white !important;
+    color: black !important;
+  }
+  
+  .break-inside-avoid {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  
+  .break-after-page {
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 10mm 10mm 10mm 10mm;
+  }
+}
+
+.edupanel-performance .animate-ping,
+.edupanel-performance .animate-pulse,
+.edupanel-performance .animate-bounce {
+  animation: none !important;
+}
+
+.edupanel-performance .leaf-water-button::before,
+.edupanel-performance .leaf-water-button::after {
+  animation: none !important;
+}
+
+#students-tab.student-new-record-mode > :not(#student-modal-overlay) {
+  display: none !important;
+}
+
+#students-tab.student-excel-record-mode > :not(#student-excel-registration-card) {
+  display: none !important;
+}
+
+#student-modal-container.student-embedded-card form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 1rem;
+}
+
+#student-modal-container.student-embedded-card form > .pt-4 {
+  grid-column: 1 / -1;
+}
+
+#student-modal-container.student-embedded-card .student-form-section {
+  min-width: 0;
+  height: 100%;
+  border-width: 1px;
+  border-radius: 1.25rem;
+  padding: 1rem;
+  box-shadow: 0 8px 24px -20px rgb(15 23 42 / 0.45);
+}
+
+#student-modal-container.student-embedded-card .student-form-section > * + * {
+  margin-top: 0.75rem;
+}
+
+#student-modal-container.student-embedded-card .student-form-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid rgb(148 163 184 / 0.25);
+}
+
+#student-modal-container.student-embedded-card .student-form-section-title strong,
+#student-modal-container.student-embedded-card .student-form-section-title small {
+  display: block;
+}
+
+#student-modal-container.student-embedded-card .student-form-section-title strong {
+  font-size: 0.8rem;
+}
+
+#student-modal-container.student-embedded-card .student-form-section-title small {
+  margin-top: 0.1rem;
+  color: rgb(100 116 139);
+  font-size: 0.625rem;
+}
+
+#student-modal-container.student-embedded-card .student-form-section-number {
+  display: flex;
+  width: 1.8rem;
+  height: 1.8rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.65rem;
+  color: white;
+  font-weight: 900;
+}
+
+@media (max-width: 1024px) {
+  #student-modal-container.student-embedded-card form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media print {
+  body * { visibility: hidden !important; }
+  #hasat-student-report-v2,
+  #hasat-student-report-v2 * { visibility: visible !important; }
+  #hasat-student-report-v2 {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 210mm !important;
+    min-height: 297mm !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  @page { size: A4 portrait; margin: 0; }
+}
+
+/* e-Nstitü mobil açılış: portal yüklenirken beyaz boş ekran gösterme. */
+html, body, #root {
+  background: #ffffff;
+}
+html.enstitu-portal-startup,
+html.enstitu-portal-startup body,
+html.enstitu-portal-startup #root {
+  background: #ffffff !important;
+}

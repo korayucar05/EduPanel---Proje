@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="e-Nstitü amblemi">
+  <defs><linearGradient id="field" x1="48" y1="26" x2="204" y2="232" gradientUnits="userSpaceOnUse"><stop stop-color="#d5a62e"/><stop offset="1" stop-color="#8f5b12"/></linearGradient></defs>
+  <circle cx="128" cy="128" r="112" fill="#fff8ed" stroke="#9f1717" stroke-width="10"/>
+  <path d="M77 57v142M179 57v142M79 127h98" fill="none" stroke="#9f1717" stroke-width="23" stroke-linecap="round"/>
+  <path d="M128 211V73" stroke="url(#field)" stroke-width="7" stroke-linecap="round"/>
+  <g fill="url(#field)"><path d="m124 86-32-22c1 22 11 34 32 36Z"/><path d="m132 105 32-22c-1 22-11 34-32 36Z"/><path d="m124 126-34-20c3 22 13 33 34 34Z"/><path d="m132 146 34-20c-3 22-13 33-34 34Z"/><path d="m124 166-32-18c3 20 13 31 32 32Z"/></g>
+  <circle cx="128" cy="55" r="10" fill="#d5a62e"/>
+</svg>

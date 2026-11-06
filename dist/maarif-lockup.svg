@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" role="img" aria-label="e-Nstitü - Hedefli Akademik Süreç Analiz Takibi">
+  <defs><linearGradient id="gold" x1="300" y1="70" x2="620" y2="380" gradientUnits="userSpaceOnUse"><stop stop-color="#e2b75a"/><stop offset="1" stop-color="#b77b1f"/></linearGradient></defs>
+  <g transform="translate(275 10) scale(1.36)">
+    <path d="M39 115A91 91 0 0 1 217 115" fill="none" stroke="#062b4d" stroke-width="12"/><path d="m128 29 5 16 16 5-16 5-5 17-5-17-16-5 16-5Z" fill="url(#gold)"/><path d="M92 97h23v28H92zm34-35h25v63h-25zm36-24h26v87h-26z" fill="#062b4d"/><circle cx="139" cy="128" r="15" fill="#062b4d" stroke="#fff" stroke-width="5"/><circle cx="68" cy="148" r="13" fill="url(#gold)"/><circle cx="203" cy="148" r="13" fill="url(#gold)"/><path d="M82 151c-17 1-32 7-46 17l-9-19c24-9 41-10 55 2Zm107 0c17 1 32 7 46 17l9-19c-24-9-41-10-55 2Z" fill="url(#gold)"/><path d="M25 174c40-3 72 8 104 53-28-23-59-27-91-20Zm206 0c-40-3-72 8-104 53 28-23 59-27 91-20Z" fill="#062b4d"/><path d="M35 181c34 0 63 12 90 42M221 181c-34 0-63 12-90 42" fill="none" stroke="#fff" stroke-width="5"/><path d="m128 218-19-48 19-28 19 28Z" fill="#062b4d"/><circle cx="128" cy="176" r="8" fill="#fff"/><path d="M128 184v35" stroke="#fff" stroke-width="4"/>
+  </g>
+  <text x="450" y="430" text-anchor="middle" fill="#a10f0f" font-family="Caveat, Segoe Print, cursive" font-size="148" font-weight="700">e-Nstitü</text>
+  <path d="M95 467h305m100 0h305" stroke="url(#gold)" stroke-width="4"/><circle cx="450" cy="467" r="7" fill="url(#gold)"/>
+  <text x="450" y="518" text-anchor="middle" fill="#173a5b" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="600">Hedefli Akademik Süreç Analiz Takibi</text>
+</svg>

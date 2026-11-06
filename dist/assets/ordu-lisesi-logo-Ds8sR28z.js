@@ -1,0 +1,1 @@
+var e=`/assets/ordu-lisesi-logo-DraRcKCa.png`;export{e as t};

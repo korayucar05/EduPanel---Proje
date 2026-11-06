@@ -1,0 +1,35 @@
+.mobile-role-splash{position:fixed;inset:0;z-index:2147483647;overflow:hidden;background:#f7f8f9;color:#fff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column}
+.mobile-role-top{position:absolute;z-index:3;top:max(18px,env(safe-area-inset-top));left:0;right:0;height:25%;display:flex;justify-content:center;align-items:flex-start;padding-top:4px;pointer-events:none}
+.mobile-role-enstitu{width:min(45vw,210px);height:auto;object-fit:contain;filter:drop-shadow(0 5px 12px rgba(0,0,0,.12));margin-top:2px}
+.mobile-role-slogan{position:absolute;right:7%;top:16px;color:#0b3154;font-family:"Segoe Script","Bradley Hand",cursive;font-size:clamp(13px,4.1vw,19px);line-height:1.18;text-align:left}
+.mobile-role-photo-wrap{position:absolute;inset:0 0 35% 0;overflow:hidden;background:#eee}
+.mobile-role-photo{width:100%;height:100%;object-fit:cover;object-position:center 38%;display:block;filter:saturate(.98)}
+.mobile-role-panel{position:absolute;left:0;right:0;bottom:0;height:40%;min-height:285px;background:var(--panel);overflow:hidden;border-radius:42% 42% 0 0 / 10% 10% 0 0;box-shadow:0 -12px 30px rgba(0,0,0,.12)}
+.mobile-role-wave{position:absolute;left:-8%;width:116%;height:34%;border-radius:50%;transform:translateY(-42%);opacity:.9}
+.mobile-role-wave-back{top:0;background:rgba(255,255,255,.13)}
+.mobile-role-wave-front{top:4%;background:rgba(255,255,255,.09);transform:translateY(-54%) rotate(-2deg)}
+.mobile-role-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:center;padding:0 24px calc(12px + env(safe-area-inset-bottom));text-align:center}
+.mobile-role-badge{width:76px;height:76px;margin-top:-38px;border-radius:50%;border:3px solid rgba(255,255,255,.75);background:rgba(0,0,0,.13);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(0,0,0,.2)}
+.mobile-role-title{font-size:19px;font-weight:900;letter-spacing:.03em;margin-top:4px;text-shadow:0 2px 5px rgba(0,0,0,.18)}
+.mobile-role-divider{width:34px;height:3px;background:#fff;border-radius:99px;margin:6px 0 9px}
+.mobile-role-greeting{font-size:clamp(17px,5vw,24px);line-height:1.16;font-weight:800;white-space:normal}
+.mobile-role-sub{font-size:14px;line-height:1.25;margin-top:8px;opacity:.98}
+.mobile-role-progress{width:min(82vw,310px);height:13px;border-radius:99px;background:rgba(255,255,255,.28);margin-top:12px;overflow:hidden}
+.mobile-role-progress span{display:block;width:43%;height:100%;background:var(--accent);border-radius:99px;animation:mobile-role-progress 6.2s ease-in-out forwards}
+.mobile-role-loading{font-size:12px;letter-spacing:.08em;margin-top:7px;opacity:.92}
+.mobile-role-school{display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:8px}
+.mobile-role-school img{width:54px;height:54px;object-fit:contain;border-radius:50%}
+.mobile-role-school-copy{display:flex;flex-direction:column;text-align:left;border-left:1px solid rgba(255,255,255,.72);padding-left:11px}
+.mobile-role-school-copy strong{font-family:Georgia,serif;font-size:20px;font-weight:500;line-height:1.05}
+.mobile-role-school-copy span{font-family:"Segoe Script","Bradley Hand",cursive;font-size:12px;margin-top:3px}
+@keyframes mobile-role-progress{from{width:6%}to{width:96%}}
+@media (min-width:768px){.mobile-role-splash{display:none}}
+@media (max-height:700px){.mobile-role-photo-wrap{inset:0 0 33% 0}.mobile-role-panel{height:43%;min-height:250px}.mobile-role-badge{width:64px;height:64px;margin-top:-32px}.mobile-role-greeting{font-size:17px}.mobile-role-sub{font-size:12px}.mobile-role-school img{width:46px;height:46px}.mobile-role-school-copy strong{font-size:17px}}
+/* 08.09.2026 teacher splash: generated green composition preserved */
+.mobile-role-top.is-teacher{display:none}
+.mobile-role-splash:has(.mobile-role-top.is-teacher) .mobile-role-photo-wrap{inset:0 0 35% 0;background:#e8e0d2}
+.mobile-role-splash:has(.mobile-role-top.is-teacher) .mobile-role-photo{object-position:center 44%;filter:none}
+.mobile-role-splash:has(.mobile-role-top.is-teacher) .mobile-role-panel{background:linear-gradient(180deg,#149c61 0%,#087c59 48%,#005746 100%)}
+.mobile-role-splash:has(.mobile-role-top.is-teacher) .mobile-role-wave-back{background:linear-gradient(100deg,rgba(123,235,111,.92),rgba(39,188,104,.80))}
+.mobile-role-splash:has(.mobile-role-top.is-teacher) .mobile-role-wave-front{background:linear-gradient(100deg,rgba(59,203,106,.76),rgba(4,137,88,.72))}
+.mobile-role-splash:has(.mobile-role-top.is-teacher) .mobile-role-badge{background:linear-gradient(180deg,#22a85f,#08764f);border-color:rgba(255,255,255,.92)}

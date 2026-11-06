@@ -1,0 +1,456 @@
+
+/*
+ * e-Nstitü Premium Report Design System — Phase 1
+ * Bütün V2 raporlarına ortak ve baskıda korunabilir tasarım dili uygular.
+ */
+
+:root {
+  --hasat-navy: #082f58;
+  --hasat-blue: #2563eb;
+  --hasat-cyan: #0891b2;
+  --hasat-teal: #059669;
+  --hasat-green: #16a34a;
+  --hasat-amber: #f59e0b;
+  --hasat-orange: #f97316;
+  --hasat-violet: #7c3aed;
+  --hasat-rose: #e11d48;
+  --hasat-ink: #14213d;
+  --hasat-muted: #64748b;
+  --hasat-border: #d9e2ef;
+  --hasat-shadow: 0 14px 40px rgba(15, 42, 72, .10);
+  --hasat-soft-shadow: 0 5px 18px rgba(15, 42, 72, .07);
+}
+
+#hasat-student-report-v2,
+#hasat-student-report-v2-premium,
+#hasat-institution-report-v2,
+#hasat-branch-report-v2,
+#hasat-item-analysis-report-v2 {
+  color: var(--hasat-ink);
+  background:
+    radial-gradient(circle at 96% 2%, rgba(37,99,235,.08), transparent 20%),
+    radial-gradient(circle at 3% 97%, rgba(5,150,105,.07), transparent 18%),
+    #ffffff !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+#hasat-institution-report-v2 > section,
+#hasat-branch-report-v2 > section,
+#hasat-item-analysis-report-v2 > section {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(203, 213, 225, .9);
+  box-shadow: var(--hasat-shadow);
+}
+
+#hasat-student-report-v2::before,
+#hasat-student-report-v2-premium::before,
+#hasat-institution-report-v2 > section::before,
+#hasat-branch-report-v2 > section::before,
+#hasat-item-analysis-report-v2 > section::before {
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 10px;
+  background: linear-gradient(90deg,
+    var(--hasat-navy) 0%,
+    var(--hasat-blue) 24%,
+    var(--hasat-cyan) 45%,
+    var(--hasat-teal) 68%,
+    var(--hasat-amber) 100%);
+}
+
+#hasat-institution-report-v2 > section > *,
+#hasat-branch-report-v2 > section > *,
+#hasat-item-analysis-report-v2 > section > * {
+  position: relative;
+  z-index: 1;
+}
+
+#hasat-student-report-v2 .rounded-\[15px\],
+#hasat-student-report-v2-premium .rounded-\[15px\],
+#hasat-institution-report-v2 .rounded-2xl,
+#hasat-branch-report-v2 .rounded-2xl,
+#hasat-item-analysis-report-v2 .rounded-2xl {
+  border-color: var(--hasat-border) !important;
+  box-shadow: var(--hasat-soft-shadow) !important;
+  background-image: linear-gradient(145deg, rgba(255,255,255,.98), rgba(247,250,255,.96));
+}
+
+#hasat-institution-report-v2 section:first-of-type .grid > div:nth-child(7n+1),
+#hasat-branch-report-v2 section:first-of-type .grid > div:nth-child(7n+1),
+#hasat-item-analysis-report-v2 section:first-of-type .grid > div:nth-child(6n+1) {
+  border-top: 4px solid var(--hasat-blue) !important;
+}
+#hasat-institution-report-v2 section:first-of-type .grid > div:nth-child(7n+2),
+#hasat-branch-report-v2 section:first-of-type .grid > div:nth-child(7n+2),
+#hasat-item-analysis-report-v2 section:first-of-type .grid > div:nth-child(6n+2) {
+  border-top: 4px solid var(--hasat-teal) !important;
+}
+#hasat-institution-report-v2 section:first-of-type .grid > div:nth-child(7n+3),
+#hasat-branch-report-v2 section:first-of-type .grid > div:nth-child(7n+3),
+#hasat-item-analysis-report-v2 section:first-of-type .grid > div:nth-child(6n+3) {
+  border-top: 4px solid var(--hasat-violet) !important;
+}
+#hasat-institution-report-v2 section:first-of-type .grid > div:nth-child(7n+4),
+#hasat-branch-report-v2 section:first-of-type .grid > div:nth-child(7n+4),
+#hasat-item-analysis-report-v2 section:first-of-type .grid > div:nth-child(6n+4) {
+  border-top: 4px solid var(--hasat-orange) !important;
+}
+#hasat-institution-report-v2 section:first-of-type .grid > div:nth-child(7n+5),
+#hasat-branch-report-v2 section:first-of-type .grid > div:nth-child(7n+5),
+#hasat-item-analysis-report-v2 section:first-of-type .grid > div:nth-child(6n+5) {
+  border-top: 4px solid var(--hasat-rose) !important;
+}
+#hasat-institution-report-v2 section:first-of-type .grid > div:nth-child(7n+6),
+#hasat-branch-report-v2 section:first-of-type .grid > div:nth-child(7n+6),
+#hasat-item-analysis-report-v2 section:first-of-type .grid > div:nth-child(6n+6) {
+  border-top: 4px solid var(--hasat-amber) !important;
+}
+#hasat-institution-report-v2 section:first-of-type .grid > div:nth-child(7n+7),
+#hasat-branch-report-v2 section:first-of-type .grid > div:nth-child(7n+7) {
+  border-top: 4px solid var(--hasat-green) !important;
+}
+
+#hasat-institution-report-v2 h1,
+#hasat-branch-report-v2 h1,
+#hasat-item-analysis-report-v2 h1,
+#hasat-student-report-v2 h1,
+#hasat-student-report-v2-premium h1 {
+  letter-spacing: -.025em;
+  text-shadow: 0 1px 0 rgba(255,255,255,.8);
+}
+
+#hasat-institution-report-v2 .border-l-4,
+#hasat-branch-report-v2 .border-l-4,
+#hasat-item-analysis-report-v2 .border-l-4 {
+  background:
+    linear-gradient(110deg, rgba(8,47,88,.98), rgba(37,99,235,.94) 48%, rgba(5,150,105,.90)) !important;
+  border-left-color: #fbbf24 !important;
+  color: #ffffff !important;
+  box-shadow: 0 12px 30px rgba(37,99,235,.20) !important;
+}
+
+#hasat-institution-report-v2 .border-l-4 *,
+#hasat-branch-report-v2 .border-l-4 *,
+#hasat-item-analysis-report-v2 .border-l-4 * {
+  color: #ffffff !important;
+}
+
+#hasat-institution-report-v2 h2,
+#hasat-institution-report-v2 h3,
+#hasat-branch-report-v2 h2,
+#hasat-branch-report-v2 h3,
+#hasat-item-analysis-report-v2 h2,
+#hasat-item-analysis-report-v2 h3 {
+  color: var(--hasat-navy) !important;
+}
+
+#hasat-institution-report-v2 thead,
+#hasat-branch-report-v2 thead,
+#hasat-item-analysis-report-v2 thead {
+  background: linear-gradient(90deg, var(--hasat-navy), var(--hasat-blue), var(--hasat-teal)) !important;
+}
+
+#hasat-institution-report-v2 tbody tr:nth-child(even),
+#hasat-branch-report-v2 tbody tr:nth-child(even),
+#hasat-item-analysis-report-v2 tbody tr:nth-child(even) {
+  background-color: #f1f6fc !important;
+}
+
+#hasat-student-report-v2 .grid-cols-6 > div:nth-child(6n+1) {
+  background: linear-gradient(155deg, #ffffff, #edf5ff) !important;
+}
+#hasat-student-report-v2 .grid-cols-6 > div:nth-child(6n+2) {
+  background: linear-gradient(155deg, #ffffff, #ecfdf5) !important;
+}
+#hasat-student-report-v2 .grid-cols-6 > div:nth-child(6n+3) {
+  background: linear-gradient(155deg, #ffffff, #f3efff) !important;
+}
+#hasat-student-report-v2 .grid-cols-6 > div:nth-child(6n+4) {
+  background: linear-gradient(155deg, #ffffff, #fff7ed) !important;
+}
+#hasat-student-report-v2 .grid-cols-6 > div:nth-child(6n+5) {
+  background: linear-gradient(155deg, #ffffff, #ecfeff) !important;
+}
+#hasat-student-report-v2 .grid-cols-6 > div:nth-child(6n+6) {
+  background: linear-gradient(155deg, #ffffff, #fff1f5) !important;
+}
+
+#hasat-student-report-v2 header {
+  position: relative;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: linear-gradient(112deg, rgba(8,47,88,.98), rgba(37,99,235,.93) 55%, rgba(5,150,105,.88));
+  box-shadow: 0 14px 34px rgba(8,47,88,.18);
+}
+
+#hasat-student-report-v2 header h1,
+#hasat-student-report-v2 header h2,
+#hasat-student-report-v2 header p {
+  color: #ffffff !important;
+}
+
+#hasat-student-report-v2 header .bg-white {
+  background-color: rgba(255,255,255,.94) !important;
+}
+
+#hasat-student-report-v2 header .bg-white strong,
+#hasat-student-report-v2 header .bg-white span {
+  color: var(--hasat-navy) !important;
+}
+
+#hasat-student-report-v2-premium {
+  position: relative;
+  overflow: hidden;
+}
+
+#hasat-student-report-v2-premium header {
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: linear-gradient(112deg, var(--hasat-violet), var(--hasat-blue) 55%, var(--hasat-teal));
+  color: white;
+  box-shadow: 0 14px 34px rgba(67,56,202,.18);
+}
+
+#hasat-student-report-v2-premium header * {
+  color: #ffffff !important;
+}
+
+#hasat-student-report-v2 footer,
+#hasat-student-report-v2-premium footer,
+#hasat-institution-report-v2 footer,
+#hasat-branch-report-v2 footer,
+#hasat-item-analysis-report-v2 footer {
+  background: linear-gradient(90deg, #f8fbff, #eef7ff, #effcf7) !important;
+  border-color: #d4e3f3 !important;
+}
+
+@media print {
+  #hasat-student-report-v2,
+  #hasat-student-report-v2-premium,
+  #hasat-institution-report-v2,
+  #hasat-branch-report-v2,
+  #hasat-item-analysis-report-v2,
+  #hasat-institution-report-v2 > section,
+  #hasat-branch-report-v2 > section,
+  #hasat-item-analysis-report-v2 > section {
+    box-shadow: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+
+/* Aşama 2: Ortak React bileşenleri */
+.hasat-premium-card {
+  box-shadow: 0 7px 24px rgba(15,42,72,.075);
+  background-image: linear-gradient(145deg,rgba(255,255,255,.99),rgba(246,250,255,.97));
+}
+.hasat-premium-header {
+  box-shadow: 0 15px 38px rgba(8,47,88,.18);
+}
+
+
+/* Aşama 3: Öğrenci deneyimi */
+.hasat-student-premium-header {
+  background:
+    radial-gradient(circle at 88% 20%, rgba(255,255,255,.18), transparent 24%),
+    linear-gradient(115deg,#061f3b 0%,#2563eb 48%,#0891b2 72%,#059669 100%);
+  box-shadow: 0 16px 40px rgba(8,47,88,.20);
+}
+.hasat-subject-card {
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.hasat-motivation-banner {
+  background:
+    radial-gradient(circle at 95% 0%,rgba(124,58,237,.12),transparent 28%),
+    linear-gradient(110deg,#eff6ff,#ecfeff 46%,#ecfdf5);
+  box-shadow: 0 8px 24px rgba(37,99,235,.09);
+}
+
+
+/* Aşama 4: Ortak grafik sistemi */
+.hasat-chart-surface {
+  background: linear-gradient(180deg,#ffffff,#f8fbff);
+  border: 1px solid #dbe5f1;
+  border-radius: 16px;
+}
+#hasat-student-report-v2 svg,
+#hasat-student-report-v2-premium svg,
+#hasat-institution-report-v2 svg,
+#hasat-branch-report-v2 svg,
+#hasat-item-analysis-report-v2 svg {
+  overflow: visible;
+}
+
+
+/* Aşama 5: tablo, durum ve eylem standardı */
+.hasat-premium-table {
+  box-shadow: 0 8px 25px rgba(15,42,72,.075);
+}
+.hasat-premium-table-head {
+  background: linear-gradient(90deg,#082f58,#2563eb 55%,#059669);
+}
+.hasat-premium-table tbody tr:nth-child(even) {
+  background-color: #f4f8fd;
+}
+.hasat-premium-table tbody tr:hover {
+  background-color: #eaf3ff;
+}
+.hasat-premium-status-card {
+  box-shadow: 0 5px 16px rgba(15,42,72,.055);
+}
+
+
+/* Aşama 6: son baskı ve kurumsal kimlik */
+.hasat-premium-page,
+#hasat-student-report-v2,
+#hasat-student-report-v2-premium,
+#hasat-institution-report-v2-page-1,
+#hasat-institution-report-v2-page-2,
+#hasat-branch-report-v2 > section,
+#hasat-item-analysis-report-v2 > section {
+  page-break-inside: avoid;
+  break-inside: avoid;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.hasat-premium-footer {
+  background:
+    linear-gradient(90deg,#f8fbff 0%,#eef6ff 45%,#effcf7 100%);
+  box-shadow: 0 5px 16px rgba(15,42,72,.055);
+}
+
+.hasat-premium-identity-mark {
+  position: absolute;
+  right: -42px;
+  top: 62px;
+  z-index: 2;
+  transform: rotate(90deg);
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.hasat-premium-identity-mark span {
+  display: block;
+  border-radius: 999px;
+  background: linear-gradient(90deg,#082f58,#2563eb,#059669);
+  padding: 5px 18px;
+  color: #ffffff;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  opacity: .88;
+}
+
+@media print {
+  @page {
+    margin: 0;
+  }
+
+  body {
+    margin: 0 !important;
+    background: #ffffff !important;
+  }
+
+  .hasat-premium-page,
+  #hasat-student-report-v2,
+  #hasat-student-report-v2-premium,
+  #hasat-institution-report-v2-page-1,
+  #hasat-institution-report-v2-page-2,
+  #hasat-branch-report-v2 > section,
+  #hasat-item-analysis-report-v2 > section {
+    margin: 0 auto !important;
+    box-shadow: none !important;
+  }
+
+  .hasat-premium-footer {
+    box-shadow: none !important;
+  }
+}
+
+
+/* Akademik DNA 1.0 */
+#hasat-student-report-v2-dna {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 95% 2%,rgba(124,58,237,.08),transparent 22%),
+    radial-gradient(circle at 2% 96%,rgba(5,150,105,.07),transparent 20%),
+    #ffffff;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+
+/* Hedef Motoru 1.0 */
+#hasat-student-report-v2-target {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 95% 2%,rgba(249,115,22,.10),transparent 22%),
+    radial-gradient(circle at 2% 96%,rgba(37,99,235,.07),transparent 20%),
+    #ffffff;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+
+/* Kişiye Özel AI Değerlendirme 1.0 */
+#hasat-student-report-v2-ai {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 95% 2%,rgba(5,150,105,.10),transparent 22%),
+    radial-gradient(circle at 2% 96%,rgba(124,58,237,.07),transparent 20%),
+    #ffffff;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+
+/* Veli Destek Asistanı 1.0 */
+#hasat-student-report-v2-parent {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 95% 2%,rgba(22,163,74,.10),transparent 22%),
+    radial-gradient(circle at 2% 96%,rgba(37,99,235,.06),transparent 20%),
+    #ffffff;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+
+/* Başarı Tahmin Motoru 1.0 */
+#hasat-student-report-v2-prediction {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 95% 2%,rgba(8,47,88,.10),transparent 22%),
+    radial-gradient(circle at 2% 96%,rgba(22,163,74,.06),transparent 20%),
+    #ffffff;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+
+/* Öğretmen Değerlendirme Alanı 1.0 */
+#hasat-student-report-v2-teacher {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 95% 2%,rgba(124,58,237,.10),transparent 22%),
+    radial-gradient(circle at 2% 96%,rgba(8,47,88,.06),transparent 20%),
+    #ffffff;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}

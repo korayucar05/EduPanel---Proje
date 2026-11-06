@@ -1,0 +1,1 @@
+var e=new Map,t={get length(){return e.size},getItem(t){let n=String(t);return e.has(n)?e.get(n):null},setItem(t,n){e.set(String(t),String(n))},removeItem(t){e.delete(String(t))},clear(){e.clear()},key(t){return Array.from(e.keys())[t]??null}};export{t};

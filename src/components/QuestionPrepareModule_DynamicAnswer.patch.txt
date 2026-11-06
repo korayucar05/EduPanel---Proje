@@ -1,0 +1,16 @@
+
+// QuestionPrepareModule entegrasyon notu
+// Dinamik cevap alanları:
+//
+// Seçilen kart sayısı kadar alan oluşturulur.
+// Örnek:
+// 1_ [ ]
+// 2_ [ ]
+// 3_ [ ]
+//
+// Cevaplar girildiğinde:
+// 1_A.jpg
+// 2_B.jpg
+// 3_C.jpg
+//
+// mantığına bağlanır.

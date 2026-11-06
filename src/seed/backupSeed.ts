@@ -1,0 +1,10206 @@
+/* Bu dosya okul_yonetim_sistemi_yedek_2026-07-07.json yedeğinden otomatik oluşturuldu. */
+const backupSeed = {
+  "school_students": [
+    {
+      "id": "10",
+      "name": "İLKER MUHİPOĞLU",
+      "classroom": "9 - A",
+      "phone": "905350852552",
+      "parentName": "ERTAN",
+      "parentPhone": "905336417083",
+      "dob": "2009-02-11",
+      "pob": "İstanbul",
+      "address": "Örnek Mah. Çiçek Sok. No:1",
+      "oob": 95.5,
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "102",
+      "name": "MURAT HÜDAYİ SIRTIKARA",
+      "classroom": "9 - A",
+      "phone": "905364092417",
+      "parentName": "MUHAMMET",
+      "parentPhone": "905053870801",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "107",
+      "name": "ZEYNEP ORANLI",
+      "classroom": "9 - A",
+      "phone": "905421541152",
+      "parentName": "EMİNE",
+      "parentPhone": "905413494494",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "110",
+      "name": "ESİLA ZAİMOĞLU",
+      "classroom": "9 - A",
+      "phone": "905398891432",
+      "parentName": "ENGİN",
+      "parentPhone": "905356091432",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "111",
+      "name": "MUSTAFA EMİR KILIÇ",
+      "classroom": "9 - A",
+      "phone": "905340379880",
+      "parentName": "MEHMET",
+      "parentPhone": "905052787012",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "113",
+      "name": "UFUK EMİR YILDIRIM",
+      "classroom": "9 - A",
+      "phone": "",
+      "parentName": "GÜLBEDEN",
+      "parentPhone": "905368529652",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "116",
+      "name": "BURAK EYİGÜN",
+      "classroom": "9 - A",
+      "phone": "905010790352",
+      "parentName": "HALİT",
+      "parentPhone": "905337053650",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "122",
+      "name": "TUĞÇE NUR ACET",
+      "classroom": "9 - A",
+      "phone": "905528417458",
+      "parentName": "RAMAZAN",
+      "parentPhone": "905432213018",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "127",
+      "name": "ASYA NEHİR MERCAN",
+      "classroom": "9 - A",
+      "phone": "905317092805",
+      "parentName": "ZEHRA",
+      "parentPhone": "905389458991",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "128",
+      "name": "ELİF DENİZ AŞIK",
+      "classroom": "9 - A",
+      "phone": "905333158388",
+      "parentName": "AYHAN",
+      "parentPhone": "905052542461",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "136",
+      "name": "CEYLİN BELİNAY İLHAN",
+      "classroom": "9 - A",
+      "phone": "905437845567",
+      "parentName": "CANSU",
+      "parentPhone": "905425395567",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "137",
+      "name": "YAĞMUR ECEM ERDOĞDU",
+      "classroom": "9 - A",
+      "phone": "905462323050",
+      "parentName": "NACİYE",
+      "parentPhone": "905372323003",
+      "dob": "2010-06-27",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "143",
+      "name": "EYLÜL ÖZDEMİR",
+      "classroom": "9 - A",
+      "phone": "905392508052",
+      "parentName": "HATİCE",
+      "parentPhone": "905353072943",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "147",
+      "name": "YUNUSEMRE KAYMAK",
+      "classroom": "9 - A",
+      "phone": "905459315052",
+      "parentName": "TEKİN",
+      "parentPhone": "905385455945",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "152",
+      "name": "TOLGA GÖKBAYRAK",
+      "classroom": "9 - A",
+      "phone": "905515046052",
+      "parentName": "SERAP",
+      "parentPhone": "905334900831",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "156",
+      "name": "ATLAS DENİZ KAŞDAN",
+      "classroom": "9 - A",
+      "phone": "905421200652",
+      "parentName": "MUHSİNE",
+      "parentPhone": "905446470648",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "157",
+      "name": "MELEK YILMAZ",
+      "classroom": "9 - A",
+      "phone": "905345055915",
+      "parentName": "ENGİN",
+      "parentPhone": "905358748964",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "201",
+      "name": "EFE MİRZA UZAN",
+      "classroom": "9 - A",
+      "phone": "905458786991",
+      "parentName": "NURİYE",
+      "parentPhone": "905417287072",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "209",
+      "name": "HACER ESRA KESKİN",
+      "classroom": "9 - A",
+      "phone": "905312607616",
+      "parentName": "MİNE",
+      "parentPhone": "905388675567",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "212",
+      "name": "KAYRA YUSUF GÜR",
+      "classroom": "9 - A",
+      "phone": "905015404252",
+      "parentName": "EMEL",
+      "parentPhone": "905533301225",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "216",
+      "name": "POYRAZ ARSLANTÜRK",
+      "classroom": "9 - A",
+      "phone": "905011610552",
+      "parentName": "NESLİHAN",
+      "parentPhone": "905052270452",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "217",
+      "name": "ÖMER BATU ÇABUK",
+      "classroom": "9 - A",
+      "phone": "905525710769",
+      "parentName": "MİHRİBAN",
+      "parentPhone": "905050248769",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "222",
+      "name": "BEDİRHAN LAFCI",
+      "classroom": "9 - A",
+      "phone": "905516827711",
+      "parentName": "ÖZLEM",
+      "parentPhone": "905385011321",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "306",
+      "name": "İBRAHİM ALİYAZICIOĞLU",
+      "classroom": "9 - A",
+      "phone": "905465680611",
+      "parentName": "DAMLA",
+      "parentPhone": "905446161333",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "312",
+      "name": "İSMAİL EREN Öztabak",
+      "classroom": "9 - A",
+      "phone": "905421842853",
+      "parentName": "NİDA",
+      "parentPhone": "905465410257",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "443",
+      "name": "KAYRA ÇINAR ŞEN",
+      "classroom": "9 - A",
+      "phone": "905466713483",
+      "parentName": "METİN ÇETİN ŞEN",
+      "parentPhone": "905302602150",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "599",
+      "name": "MUHAMMET EMİN ÇELİK",
+      "classroom": "9 - A",
+      "phone": "905345608952",
+      "parentName": "YAŞAR",
+      "parentPhone": "905367441686",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "1122",
+      "name": "EYÜP EREN SERİN",
+      "classroom": "9 - A",
+      "phone": "905551497611",
+      "parentName": "ÜMMÜHAN",
+      "parentPhone": "905050890577",
+      "dob": "2011-06-27",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "317",
+      "name": "ECRİN MUHLİSE PALABIYIK",
+      "classroom": "9 - B",
+      "phone": "905315088252",
+      "parentName": "SELDA",
+      "parentPhone": "905349626166",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "332",
+      "name": "YUSUF ZİYA KARAKOÇ",
+      "classroom": "9 - B",
+      "phone": "905327366463",
+      "parentName": "SELİME",
+      "parentPhone": "905323518785",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "335",
+      "name": "ÖMER HÜDAİ BİLGİN",
+      "classroom": "9 - B",
+      "phone": "905431725223",
+      "parentName": "MİNE",
+      "parentPhone": "905055271904",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "340",
+      "name": "TUĞCE BULGAN",
+      "classroom": "9 - B",
+      "phone": "905514977552",
+      "parentName": "MEHMET",
+      "parentPhone": "905343679878",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "344",
+      "name": "ÖMER SALİH YÜCESOY",
+      "classroom": "9 - B",
+      "phone": "905518444919",
+      "parentName": "ERGÜN",
+      "parentPhone": "905306575602",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "349",
+      "name": "YAĞMUR GÜL OYUN",
+      "classroom": "9 - B",
+      "phone": "905431242152",
+      "parentName": "ARZU",
+      "parentPhone": "905426208905",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "351",
+      "name": "BERRA GÜNDOĞDU",
+      "classroom": "9 - B",
+      "phone": "905399412990",
+      "parentName": "ÖZGÜL",
+      "parentPhone": "905422329730",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "355",
+      "name": "YUNUS EMRE ALTUNTAŞ",
+      "classroom": "9 - B",
+      "phone": "905536907395",
+      "parentName": "ESENGÜL",
+      "parentPhone": "905056055948",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "356",
+      "name": "SİNEM ÖZTÜRK",
+      "classroom": "9 - B",
+      "phone": "905376875261",
+      "parentName": "YILMAZ",
+      "parentPhone": "905359479590",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "357",
+      "name": "ERDEM BİNGÜL",
+      "classroom": "9 - B",
+      "phone": "905399320560",
+      "parentName": "HATİCE",
+      "parentPhone": "905399320560",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "359",
+      "name": "YUSUF BURAK COŞKUN",
+      "classroom": "9 - B",
+      "phone": "905412014483",
+      "parentName": "NİHAL",
+      "parentPhone": "905445527414",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "367",
+      "name": "İPEKNAZ KARABULUT",
+      "classroom": "9 - B",
+      "phone": "905415905876",
+      "parentName": "ALİCAN",
+      "parentPhone": "905334975183",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "373",
+      "name": "BİLGE DURMAZ",
+      "classroom": "9 - B",
+      "phone": "905527886762",
+      "parentName": "SABRİYE",
+      "parentPhone": "905395443426",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "376",
+      "name": "ZEYNEP SU CÖRÜT",
+      "classroom": "9 - B",
+      "phone": "905412129832",
+      "parentName": "DÖNDÜ",
+      "parentPhone": "905052997438",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "377",
+      "name": "ALTAY BAYRAMLI",
+      "classroom": "9 - B",
+      "phone": "905417930652",
+      "parentName": "NİLÜFER",
+      "parentPhone": "905342144870",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "383",
+      "name": "FATMANUR KULAÇ",
+      "classroom": "9 - B",
+      "phone": "905333112313",
+      "parentName": "ERSİN",
+      "parentPhone": "905352646080",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "384",
+      "name": "SERKAN YÜCEDEN",
+      "classroom": "9 - B",
+      "phone": "905010525231",
+      "parentName": "BAŞAK",
+      "parentPhone": "905431751422",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "387",
+      "name": "ARDA ŞAŞMAZ",
+      "classroom": "9 - B",
+      "phone": "905065356087",
+      "parentName": "AYDIN",
+      "parentPhone": "905443206087",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "394",
+      "name": "DURSUN ERAY ÇELİK",
+      "classroom": "9 - B",
+      "phone": "905359428394",
+      "parentName": "YELİZ",
+      "parentPhone": "905313890793",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "399",
+      "name": "ÖMER ASAF UZUNLAR",
+      "classroom": "9 - B",
+      "phone": "905526653106",
+      "parentName": "HAYDAR",
+      "parentPhone": "905347653106",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "436",
+      "name": "BÜŞRA YAĞMUR AKBAŞ",
+      "classroom": "9 - B",
+      "phone": "905318269202",
+      "parentName": "MUSTAFA",
+      "parentPhone": "905363045493",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "442",
+      "name": "SELİN FATMA KOÇAK",
+      "classroom": "9 - B",
+      "phone": "905421285352",
+      "parentName": "SİBEL",
+      "parentPhone": "905377285330",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "447",
+      "name": "YUSUF EGE KILIÇ",
+      "classroom": "9 - B",
+      "phone": "905063808476",
+      "parentName": "ENVER",
+      "parentPhone": "905325278476",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "456",
+      "name": "ÖMER TUNA GÜNDOĞDU",
+      "classroom": "9 - B",
+      "phone": "905536870484",
+      "parentName": "AYŞE",
+      "parentPhone": "905536870484",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "476",
+      "name": "ZEYNEP SU CÖRÜT",
+      "classroom": "9 - B",
+      "phone": "905412129832",
+      "parentName": "DÖNDÜ",
+      "parentPhone": "905052997438",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "485",
+      "name": "RAHMETULLAH GENÇ",
+      "classroom": "9 - B",
+      "phone": "905010522798",
+      "parentName": "MAHMUT",
+      "parentPhone": "905362614613",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "663",
+      "name": "İCLAL GÜNYELİ",
+      "classroom": "9 - B",
+      "phone": "905334541202",
+      "parentName": "GÖNÜL",
+      "parentPhone": "905307179452",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "1102",
+      "name": "EYLÜL ÇAVUŞ",
+      "classroom": "9 - B",
+      "phone": "",
+      "parentName": "YÜCENUR",
+      "parentPhone": "905458993252",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "1133",
+      "name": "ECRİN NİSA DEMİR",
+      "classroom": "9 - B",
+      "phone": "905521798252",
+      "parentName": "YUSUF",
+      "parentPhone": "905052424263",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "419",
+      "name": "DEFNE KESİCİ",
+      "classroom": "9 - C",
+      "phone": "905382820715",
+      "parentName": "NURCAN",
+      "parentPhone": "905443273840",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "449",
+      "name": "ELİF BAYAZIT YILDIRIM",
+      "classroom": "9 - C",
+      "phone": "905356218278",
+      "parentName": "MURUVVET",
+      "parentPhone": "905412429326",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "451",
+      "name": "ARDA CANDAN",
+      "classroom": "9 - C",
+      "phone": "905522926512",
+      "parentName": "GÜNGÖR",
+      "parentPhone": "905418526512",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "453",
+      "name": "UĞUR YORGANCI",
+      "classroom": "9 - C",
+      "phone": "905514865944",
+      "parentName": "DERYA",
+      "parentPhone": "905447162228",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "454",
+      "name": "YİĞİT TUĞRA ÇAKMAK",
+      "classroom": "9 - C",
+      "phone": "905379486952",
+      "parentName": "ENDER",
+      "parentPhone": "905456856952",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "455",
+      "name": "ASLI NUR UÇAR",
+      "classroom": "9 - C",
+      "phone": "905075387530",
+      "parentName": "ADİL",
+      "parentPhone": "905438733295",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "458",
+      "name": "SONGÜL BEREN ÇAKIR",
+      "classroom": "9 - C",
+      "phone": "905449139452",
+      "parentName": "NURGÜL",
+      "parentPhone": "905382467141",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "459",
+      "name": "MUSTAFA EMİR PEHLEVAN",
+      "classroom": "9 - C",
+      "phone": "905421232061",
+      "parentName": "MERVE",
+      "parentPhone": "905443033461",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "460",
+      "name": "ZEYNEP RÜYA ÇONGARA",
+      "classroom": "9 - C",
+      "phone": "905410428411",
+      "parentName": "YASEMİN",
+      "parentPhone": "905412551211",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "461",
+      "name": "MEHLİKA ÇITAK",
+      "classroom": "9 - C",
+      "phone": "905425039062",
+      "parentName": "RAHİME",
+      "parentPhone": "905464005169",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "466",
+      "name": "ENSAR BAHRİ ÇELİK",
+      "classroom": "9 - C",
+      "phone": "905051801752",
+      "parentName": "EMRAH",
+      "parentPhone": "905357862608",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "471",
+      "name": "KERİM ENGİNYURT",
+      "classroom": "9 - C",
+      "phone": "",
+      "parentName": "YEŞİM",
+      "parentPhone": "905306077702",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "472",
+      "name": "AYLİN YANCİ",
+      "classroom": "9 - C",
+      "phone": "905412101739",
+      "parentName": "HUSEYİN",
+      "parentPhone": "905325506631",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "474",
+      "name": "CEMRE ÇELİK",
+      "classroom": "9 - C",
+      "phone": "905413299079",
+      "parentName": "ARSLAN",
+      "parentPhone": "905365119489",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "477",
+      "name": "AYŞE AYDIN",
+      "classroom": "9 - C",
+      "phone": "905358858438",
+      "parentName": "SEVİM",
+      "parentPhone": "905358771533",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "478",
+      "name": "DURU ELİF AKÇİÇEK",
+      "classroom": "9 - C",
+      "phone": "905434866001",
+      "parentName": "SERAY",
+      "parentPhone": "905057829813",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "482",
+      "name": "ERDEM AYDOĞAN",
+      "classroom": "9 - C",
+      "phone": "905411685254",
+      "parentName": "MUZAFFER",
+      "parentPhone": "905309251730",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "483",
+      "name": "ULAŞ KARAGÖZ",
+      "classroom": "9 - C",
+      "phone": "905461576162",
+      "parentName": "HAVVA",
+      "parentPhone": "905454846566",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "484",
+      "name": "MUSTAFA KAAN AYDIN",
+      "classroom": "9 - C",
+      "phone": "905523557752",
+      "parentName": "PINAR",
+      "parentPhone": "905383388899",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "488",
+      "name": "KAAN AKSOY",
+      "classroom": "9 - C",
+      "phone": "905351097052",
+      "parentName": "EZGİ",
+      "parentPhone": "905526515200",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "490",
+      "name": "MEDİNE NAZ MEDİNE NAZ AVCI",
+      "classroom": "9 - C",
+      "phone": "905386178206",
+      "parentName": "NERMİN",
+      "parentPhone": "905452555129",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "492",
+      "name": "ELA NUR GÖL",
+      "classroom": "9 - C",
+      "phone": "905387011342",
+      "parentName": "MUSA",
+      "parentPhone": "905367011102",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "499",
+      "name": "BERRA BOLAT",
+      "classroom": "9 - C",
+      "phone": "905457726364",
+      "parentName": "NAHİDE",
+      "parentPhone": "905448622818",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "501",
+      "name": "MERVE AKTAĞ",
+      "classroom": "9 - C",
+      "phone": "905457102833",
+      "parentName": "AYDIN",
+      "parentPhone": "905358470295",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "504",
+      "name": "YAMEN HAJMUSTAFA",
+      "classroom": "9 - C",
+      "phone": "905360664941",
+      "parentName": "VALİD",
+      "parentPhone": "905347855103",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "505",
+      "name": "KAAN BAŞ",
+      "classroom": "9 - C",
+      "phone": "905010812860",
+      "parentName": "ALİ",
+      "parentPhone": "905551759622",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "506",
+      "name": "ÇINAR YILDIRIM",
+      "classroom": "9 - C",
+      "phone": "905407164197",
+      "parentName": "GÜLSÜM",
+      "parentPhone": "905417164197",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "522",
+      "name": "ZEYNEP ŞAHİN",
+      "classroom": "9 - C",
+      "phone": "905372445426",
+      "parentName": "FATMA",
+      "parentPhone": "905057325372",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "667",
+      "name": "FEYZA CÜM",
+      "classroom": "9 - C",
+      "phone": "905461192901",
+      "parentName": "AYHAN",
+      "parentPhone": "905358226483",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "677",
+      "name": "FEYZA CÜM",
+      "classroom": "9 - C",
+      "phone": "905461192901",
+      "parentName": "AYŞEGÜL",
+      "parentPhone": "905461192901",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "187",
+      "name": "BERRA KORKMAZ",
+      "classroom": "9 - D",
+      "phone": "905385414242",
+      "parentName": "ŞULE",
+      "parentPhone": "905345189860",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "229",
+      "name": "MUHAMMED KÖYCÜ",
+      "classroom": "9 - D",
+      "phone": "905316004596",
+      "parentName": "YASEMİN",
+      "parentPhone": "905534982802",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "261",
+      "name": "GÜRKAN AYHAN",
+      "classroom": "9 - D",
+      "phone": "905524614336",
+      "parentName": "SERKAN",
+      "parentPhone": "905052614336",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "509",
+      "name": "GÖKTUĞ GENÇ",
+      "classroom": "9 - D",
+      "phone": "905333991152",
+      "parentName": "TUĞBA",
+      "parentPhone": "905372728727",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "512",
+      "name": "YİĞİT EGE SAYILGAN",
+      "classroom": "9 - D",
+      "phone": "905309767728",
+      "parentName": "BURCU",
+      "parentPhone": "905366396629",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "515",
+      "name": "SEMİH İMAMOĞLU",
+      "classroom": "9 - D",
+      "phone": "905326161552",
+      "parentName": "TÜLİN",
+      "parentPhone": "905339670660",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "516",
+      "name": "DENİZ YALÇIN",
+      "classroom": "9 - D",
+      "phone": "905516834100",
+      "parentName": "BAHADIR",
+      "parentPhone": "905054505638",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "517",
+      "name": "MERYEM İKRA AVCI",
+      "classroom": "9 - D",
+      "phone": "905307851237",
+      "parentName": "AYDIN",
+      "parentPhone": "905056693490",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "518",
+      "name": "MEHMET AKDENİZ",
+      "classroom": "9 - D",
+      "phone": "905373497942",
+      "parentName": "ÇİLER",
+      "parentPhone": "905303220152",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "520",
+      "name": "ELİF NİSA GÖZEBE",
+      "classroom": "9 - D",
+      "phone": "905452733516",
+      "parentName": "BİLAL",
+      "parentPhone": "905306927684",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "521",
+      "name": "PIRIL ELA ÇIRA",
+      "classroom": "9 - D",
+      "phone": "905394140452",
+      "parentName": "FİDAN",
+      "parentPhone": "905394456991",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "523",
+      "name": "ZEKİ KAYRA KARADAĞ",
+      "classroom": "9 - D",
+      "phone": "905402075010",
+      "parentName": "EMRE",
+      "parentPhone": "905302075010",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "526",
+      "name": "NİL YANKI MIZRAK",
+      "classroom": "9 - D",
+      "phone": "905522852011",
+      "parentName": "CEYDA",
+      "parentPhone": "905405520823",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "528",
+      "name": "ŞEYMA KORKMAZ",
+      "classroom": "9 - D",
+      "phone": "",
+      "parentName": "İLKNUR",
+      "parentPhone": "905523149184",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "535",
+      "name": "EBRAR DEMİREL",
+      "classroom": "9 - D",
+      "phone": "905518762222",
+      "parentName": "DENİZ",
+      "parentPhone": "905435232252",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "536",
+      "name": "BERRA HIZIR",
+      "classroom": "9 - D",
+      "phone": "905516833960",
+      "parentName": "SERTAÇ",
+      "parentPhone": "905071742684",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "537",
+      "name": "YİĞİT EFE PELİT",
+      "classroom": "9 - D",
+      "phone": "905425665364",
+      "parentName": "KÜRŞAT",
+      "parentPhone": "905355665364",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "538",
+      "name": "AMİNE ZEHRA GÜRSOY",
+      "classroom": "9 - D",
+      "phone": "",
+      "parentName": "NEBİ",
+      "parentPhone": "905073635277",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "540",
+      "name": "KEREM DÖNER",
+      "classroom": "9 - D",
+      "phone": "905336049053",
+      "parentName": "MUTLU",
+      "parentPhone": "905380844222",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "542",
+      "name": "İREMSU ALBAYRAK",
+      "classroom": "9 - D",
+      "phone": "905415100252",
+      "parentName": "BİRGÜL",
+      "parentPhone": "905362721648",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "544",
+      "name": "AZRA AÇAN",
+      "classroom": "9 - D",
+      "phone": "905332518138",
+      "parentName": "RABİA",
+      "parentPhone": "905442831749",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "546",
+      "name": "MELİHANUR DEMİR",
+      "classroom": "9 - D",
+      "phone": "905014711152",
+      "parentName": "MEHMET",
+      "parentPhone": "905317796279",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "547",
+      "name": "SERRA SU TURHAN",
+      "classroom": "9 - D",
+      "phone": "905317968825",
+      "parentName": "DİLEK",
+      "parentPhone": "905325095336",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "548",
+      "name": "MERT BİLGİÇ",
+      "classroom": "9 - D",
+      "phone": "905354755313",
+      "parentName": "FARUK",
+      "parentPhone": "905056775313",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "549",
+      "name": "EMİR BUĞRA SET",
+      "classroom": "9 - D",
+      "phone": "905518504602",
+      "parentName": "ADİLE",
+      "parentPhone": "905056538674",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "550",
+      "name": "NEHİR ERDOĞDU",
+      "classroom": "9 - D",
+      "phone": "905377070511",
+      "parentName": "BAHAR",
+      "parentPhone": "905053759311",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "555",
+      "name": "ZEHRA BEREN UÇAR",
+      "classroom": "9 - D",
+      "phone": "905523100505",
+      "parentName": "KORAY",
+      "parentPhone": "905327607561",
+      "dob": "2011-06-27",
+      "pob": "Of",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "556",
+      "name": "MUHAMMET EREN ARSLAN",
+      "classroom": "9 - D",
+      "phone": "905015712010",
+      "parentName": "EMİNE",
+      "parentPhone": "905055600787",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "557",
+      "name": "KERİM BERKE GEZER",
+      "classroom": "9 - D",
+      "phone": "905540281152",
+      "parentName": "YEŞİM",
+      "parentPhone": "905053589157",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "562",
+      "name": "SELAHATTİN KUZEY KIRBAŞ",
+      "classroom": "9 - D",
+      "phone": "905518227181",
+      "parentName": "FADİME",
+      "parentPhone": "905455465638",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "565",
+      "name": "EMİR SAYGIN",
+      "classroom": "9 - D",
+      "phone": "905076112011",
+      "parentName": "ZEHRA",
+      "parentPhone": "905428087465",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "567",
+      "name": "TAHA TUĞRA AKBULUT",
+      "classroom": "9 - D",
+      "phone": "905058311205",
+      "parentName": "NİLÜFER",
+      "parentPhone": "905376864243",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "569",
+      "name": "FİLİZ KIRKAYA",
+      "classroom": "9 - D",
+      "phone": "905520846114",
+      "parentName": "ŞEYMA",
+      "parentPhone": "905057956233",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "595",
+      "name": "AHMET ESAT ARAOL",
+      "classroom": "9 - D",
+      "phone": "905452775200",
+      "parentName": "KENAN",
+      "parentPhone": "905058337562",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "418",
+      "name": "GÖKTUĞ AKÇA",
+      "classroom": "9 - E",
+      "phone": "905527840611",
+      "parentName": "ZEHRA",
+      "parentPhone": "905076973724",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "420",
+      "name": "YENER ÖZYURT",
+      "classroom": "9 - E",
+      "phone": "905510803196",
+      "parentName": "ABDURRAHMAN",
+      "parentPhone": "905412256569",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "539",
+      "name": "MEHMET EZER",
+      "classroom": "9 - E",
+      "phone": "905336275245",
+      "parentName": "HİLAL",
+      "parentPhone": "905444803864",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "572",
+      "name": "SALİHA NUR SATAN",
+      "classroom": "9 - E",
+      "phone": "905417607561",
+      "parentName": "SAADET",
+      "parentPhone": "905458751002",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "577",
+      "name": "SELİN TURAN",
+      "classroom": "9 - E",
+      "phone": "905306152452",
+      "parentName": "NAZAN",
+      "parentPhone": "905056336850",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "584",
+      "name": "MERT KİRİŞ",
+      "classroom": "9 - E",
+      "phone": "905461834475",
+      "parentName": "FİLİZ",
+      "parentPhone": "905417632916",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "588",
+      "name": "EFE TİKENCE",
+      "classroom": "9 - E",
+      "phone": "905419186481",
+      "parentName": "TUNCAY",
+      "parentPhone": "905394186475",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "589",
+      "name": "ZEYNEP BAŞÇINAR",
+      "classroom": "9 - E",
+      "phone": "905380451352",
+      "parentName": "LEYLA",
+      "parentPhone": "905352710973",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "593",
+      "name": "ELİF SERRA İNAN",
+      "classroom": "9 - E",
+      "phone": "905526771923",
+      "parentName": "VOLKAN",
+      "parentPhone": "905536215423",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "594",
+      "name": "UMUT MERT",
+      "classroom": "9 - E",
+      "phone": "905425042041",
+      "parentName": "ÖZGE",
+      "parentPhone": "905331942587",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "596",
+      "name": "ŞİNASİ MİRAÇ KUTLUTAŞ",
+      "classroom": "9 - E",
+      "phone": "905467315152",
+      "parentName": "MELİKE",
+      "parentPhone": "905423837962",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "600",
+      "name": "YASİN DURMAZ",
+      "classroom": "9 - E",
+      "phone": "905343603850",
+      "parentName": "ŞENOL",
+      "parentPhone": "905372483581",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "612",
+      "name": "ARDA BERATCAN ERDEMİR",
+      "classroom": "9 - E",
+      "phone": "905523528752",
+      "parentName": "NERGİZ",
+      "parentPhone": "905428153026",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "613",
+      "name": "YAĞIZ CELAL GENÇ",
+      "classroom": "9 - E",
+      "phone": "905441096052",
+      "parentName": "SERKAN",
+      "parentPhone": "905457740052",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "614",
+      "name": "METİN ŞEKER",
+      "classroom": "9 - E",
+      "phone": "905050775181",
+      "parentName": "NİHAL",
+      "parentPhone": "905379201716",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "617",
+      "name": "MERİÇ EGE GÜNAYDIN",
+      "classroom": "9 - E",
+      "phone": "905412115877",
+      "parentName": "DUYGU",
+      "parentPhone": "905445751964",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "640",
+      "name": "ZİŞAN KIZILKAYA",
+      "classroom": "9 - E",
+      "phone": "905510899999",
+      "parentName": "EMRİYE",
+      "parentPhone": "905542460421",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "641",
+      "name": "HÜSEYİN UMUT US",
+      "classroom": "9 - E",
+      "phone": "905457955261",
+      "parentName": "OSMAN SELİM",
+      "parentPhone": "905396932803",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "645",
+      "name": "NAZLI ÖZTÜRK",
+      "classroom": "9 - E",
+      "phone": "905415507217",
+      "parentName": "SEVCAN",
+      "parentPhone": "905452418836",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "657",
+      "name": "DURU NEVA ÇAKIR",
+      "classroom": "9 - E",
+      "phone": "905335007057",
+      "parentName": "ÖZGE",
+      "parentPhone": "905060311773",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "658",
+      "name": "BEYZA DURANOĞLU",
+      "classroom": "9 - E",
+      "phone": "905056985234",
+      "parentName": "KADİR",
+      "parentPhone": "905392035332",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "660",
+      "name": "UMUT CANYURT",
+      "classroom": "9 - E",
+      "phone": "905055435332",
+      "parentName": "BURÇİN",
+      "parentPhone": "905448405332",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "670",
+      "name": "YUSUF KEREM AKKAYA",
+      "classroom": "9 - E",
+      "phone": "905528375299",
+      "parentName": "SEVEN",
+      "parentPhone": "905383299378",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "673",
+      "name": "KAĞAN GÖKHAN ARSLANTÜRK",
+      "classroom": "9 - E",
+      "phone": "905516480277",
+      "parentName": "ŞENNUR",
+      "parentPhone": "905412614867",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "675",
+      "name": "İLKİM EVA KIRKAYA",
+      "classroom": "9 - E",
+      "phone": "905550530452",
+      "parentName": "FATİH",
+      "parentPhone": "905434522034",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "2",
+      "name": "AYŞE NAZ AYDIN AYDIN",
+      "classroom": "10 - A",
+      "phone": "905414830453",
+      "parentName": "HATİCE",
+      "parentPhone": "905415455652",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "4",
+      "name": "SEFA KOÇ",
+      "classroom": "10 - A",
+      "phone": "905340215261",
+      "parentName": "ŞABAN",
+      "parentPhone": "905365520845",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "6",
+      "name": "ŞEVVAL AHSEN DAŞ",
+      "classroom": "10 - A",
+      "phone": "905427961019",
+      "parentName": "KARDELEN",
+      "parentPhone": "905462698157",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "15",
+      "name": "AYDİL KURT",
+      "classroom": "10 - A",
+      "phone": "905464031262",
+      "parentName": "DİLEK",
+      "parentPhone": "905442090444",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "18",
+      "name": "YUNUS EMRE KABADAŞ",
+      "classroom": "10 - A",
+      "phone": "905304343104",
+      "parentName": "NURAY",
+      "parentPhone": "905419035558",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "20",
+      "name": "METEHAN ÇELENK",
+      "classroom": "10 - A",
+      "phone": "905339608856",
+      "parentName": "AYŞEGÜL",
+      "parentPhone": "905321382268",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "21",
+      "name": "YİĞİT CAN KIVRAK",
+      "classroom": "10 - A",
+      "phone": "905305887552",
+      "parentName": "SAVAŞ",
+      "parentPhone": "905323822079",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "24",
+      "name": "HARUN EFE GÖÇ",
+      "classroom": "10 - A",
+      "phone": "905459792051",
+      "parentName": "BERRİN",
+      "parentPhone": "905075804739",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "25",
+      "name": "HALİL AKIN AKBAŞ",
+      "classroom": "10 - A",
+      "phone": "905349218905",
+      "parentName": "FATMA",
+      "parentPhone": "905354787912",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "28",
+      "name": "ALYA ALPER",
+      "classroom": "10 - A",
+      "phone": "905540205288",
+      "parentName": "GÜNNUR",
+      "parentPhone": "905055498044",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "37",
+      "name": "AHMET KEREM ÇAKMAK",
+      "classroom": "10 - A",
+      "phone": "905442915552",
+      "parentName": "CANAN",
+      "parentPhone": "905442445255",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "38",
+      "name": "MUSTAFA GÜNEŞ",
+      "classroom": "10 - A",
+      "phone": "905423465224",
+      "parentName": "YILMAZ",
+      "parentPhone": "905053461686",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "40",
+      "name": "BARLAS SERTKAYA",
+      "classroom": "10 - A",
+      "phone": "905526409351",
+      "parentName": "GÜLDEN",
+      "parentPhone": "905318357552",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "44",
+      "name": "DANYAL DENIZ BILGI",
+      "classroom": "10 - A",
+      "phone": "905304475210",
+      "parentName": "MELISA",
+      "parentPhone": "905305530210",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "45",
+      "name": "NİSA ODABAŞ",
+      "classroom": "10 - A",
+      "phone": "905526610107",
+      "parentName": "ENGİN",
+      "parentPhone": "905448153073",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "47",
+      "name": "EFE ÇAVUŞ",
+      "classroom": "10 - A",
+      "phone": "905348729447",
+      "parentName": "SERAP",
+      "parentPhone": "905314599420",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "49",
+      "name": "MEHMET ARDA TOPKARA",
+      "classroom": "10 - A",
+      "phone": "905309589952",
+      "parentName": "SİBEL",
+      "parentPhone": "905348282618",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "50",
+      "name": "SAMET CAN ARSLAN",
+      "classroom": "10 - A",
+      "phone": "905344517468",
+      "parentName": "NURCAN",
+      "parentPhone": "905394158784",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "54",
+      "name": "KERİM İNCE",
+      "classroom": "10 - A",
+      "phone": "905519911955",
+      "parentName": "GÜL",
+      "parentPhone": "905078952923",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.991Z"
+    },
+    {
+      "id": "55",
+      "name": "ZÜMRA ÇAKMAK",
+      "classroom": "10 - A",
+      "phone": "905054981552",
+      "parentName": "DEMET",
+      "parentPhone": "905313499487",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "64",
+      "name": "SILANUR HABİL",
+      "classroom": "10 - A",
+      "phone": "905347382452",
+      "parentName": "NECLA",
+      "parentPhone": "905071033692",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "73",
+      "name": "ÖMER BARUTÇU",
+      "classroom": "10 - A",
+      "phone": "905359381861",
+      "parentName": "GüNDÜZ",
+      "parentPhone": "905057711866",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "79",
+      "name": "ÖZÜMNAZ YİĞİT",
+      "classroom": "10 - A",
+      "phone": "905343685504",
+      "parentName": "MERYEM",
+      "parentPhone": "905394125491",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "86",
+      "name": "MERT YAĞIZ YİĞİT",
+      "classroom": "10 - A",
+      "phone": "905364758351",
+      "parentName": "ELİF",
+      "parentPhone": "905385499480",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "1072",
+      "name": "İCLAL USTA",
+      "classroom": "10 - A",
+      "phone": "905526409077",
+      "parentName": "MUKADDES",
+      "parentPhone": "905379557852",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "1093",
+      "name": "İZEL MİNEL ŞEN",
+      "classroom": "10 - A",
+      "phone": "905412184885",
+      "parentName": "AYŞE",
+      "parentPhone": "905324051267",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "1105",
+      "name": "SENA BAYKAL",
+      "classroom": "10 - A",
+      "phone": "905305211052",
+      "parentName": "HALE",
+      "parentPhone": "905362047752",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "69",
+      "name": "NİSA GÜLSÜM AKDEMİR",
+      "classroom": "10 - B",
+      "phone": "905372482674",
+      "parentName": "MUHAMMED",
+      "parentPhone": "905462953433",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "87",
+      "name": "DURU SAHRA KAYA",
+      "classroom": "10 - B",
+      "phone": "905340327270",
+      "parentName": "DERYA",
+      "parentPhone": "905436073844",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "90",
+      "name": "YUSUF MERT YÜCEL",
+      "classroom": "10 - B",
+      "phone": "905551561352",
+      "parentName": "OKAN",
+      "parentPhone": "905462823372",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "91",
+      "name": "DENİZ TATLICAN",
+      "classroom": "10 - B",
+      "phone": "905013436112",
+      "parentName": "ARZU",
+      "parentPhone": "905367736525",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "93",
+      "name": "YUSUF MERT CANDAN",
+      "classroom": "10 - B",
+      "phone": "905051361052",
+      "parentName": "SAYNUR",
+      "parentPhone": "905052291752",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "95",
+      "name": "UTKU ŞANLI",
+      "classroom": "10 - B",
+      "phone": "905303485991",
+      "parentName": "UFUK",
+      "parentPhone": "905374561152",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "98",
+      "name": "LALE ÇAKAR",
+      "classroom": "10 - B",
+      "phone": "905427612878",
+      "parentName": "SEHER",
+      "parentPhone": "905427828336",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "103",
+      "name": "İREM TEMİZ",
+      "classroom": "10 - B",
+      "phone": "905384474683",
+      "parentName": "MESUT",
+      "parentPhone": "905352348311",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "106",
+      "name": "YAĞMUR ALMAOĞLU",
+      "classroom": "10 - B",
+      "phone": "905511798268",
+      "parentName": "SEZAİ",
+      "parentPhone": "905462388090",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "108",
+      "name": "KAMİL TAHA AYDIN",
+      "classroom": "10 - B",
+      "phone": "905416958510",
+      "parentName": "NURAY",
+      "parentPhone": "905334451790",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "121",
+      "name": "YAĞIZ BİROĞLU",
+      "classroom": "10 - B",
+      "phone": "905434684997",
+      "parentName": "GÜLSEVEN",
+      "parentPhone": "905413109021",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "123",
+      "name": "ÖMER CİHAD ÇAVUŞOĞLU",
+      "classroom": "10 - B",
+      "phone": "905053672008",
+      "parentName": "HAKAN",
+      "parentPhone": "905058542998",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "125",
+      "name": "DEFNE YILMAZ",
+      "classroom": "10 - B",
+      "phone": "905362845797",
+      "parentName": "SAYNUR",
+      "parentPhone": "905454271953",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "129",
+      "name": "NEHİR ASYA YILDIZ",
+      "classroom": "10 - B",
+      "phone": "905318696052",
+      "parentName": "İDRİS ERCAN",
+      "parentPhone": "905333194261",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "130",
+      "name": "YİĞİT EFE BAŞAR",
+      "classroom": "10 - B",
+      "phone": "905522609713",
+      "parentName": "NADİRE",
+      "parentPhone": "905053839713",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "131",
+      "name": "ALPER EFE AYDIN",
+      "classroom": "10 - B",
+      "phone": "905326139177",
+      "parentName": "ÖZLEM",
+      "parentPhone": "905542113374",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "133",
+      "name": "EGE MERT TİRYAKİ",
+      "classroom": "10 - B",
+      "phone": "905511703106",
+      "parentName": "YILDIZ",
+      "parentPhone": "905387324889",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "134",
+      "name": "DİLARA HAZAR",
+      "classroom": "10 - B",
+      "phone": "905458705210",
+      "parentName": "HÜLYA",
+      "parentPhone": "905456743204",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "139",
+      "name": "EGE ÇOŞKUN",
+      "classroom": "10 - B",
+      "phone": "905352775915",
+      "parentName": "DİLEK",
+      "parentPhone": "905314276569",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "140",
+      "name": "HASAN SACİT TURAN",
+      "classroom": "10 - B",
+      "phone": "905374318152",
+      "parentName": "MENEKŞE",
+      "parentPhone": "905379274550",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "145",
+      "name": "CEYLİN TOPAL",
+      "classroom": "10 - B",
+      "phone": "905069125206",
+      "parentName": "SEDAT",
+      "parentPhone": "905012425152",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "149",
+      "name": "IRMAK NİSA ALMAZ",
+      "classroom": "10 - B",
+      "phone": "905315240423",
+      "parentName": "PINAR",
+      "parentPhone": "905054138682",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "162",
+      "name": "ALPTUĞ YAŞAR",
+      "classroom": "10 - B",
+      "phone": "905510744405",
+      "parentName": "SERPİL",
+      "parentPhone": "905372204968",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "271",
+      "name": "EYMEN AYDEMİR",
+      "classroom": "10 - B",
+      "phone": "905469389052",
+      "parentName": "SEHER",
+      "parentPhone": "905444299352",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "352",
+      "name": "SÜMEYYE SADAN",
+      "classroom": "10 - B",
+      "phone": "905557535512",
+      "parentName": "SALİH",
+      "parentPhone": "905393161153",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "354",
+      "name": "EGE ALTUN",
+      "classroom": "10 - B",
+      "phone": "905328327969",
+      "parentName": "ŞENEL",
+      "parentPhone": "905428041030",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "365",
+      "name": "YUNUS EMRE ÇELENK",
+      "classroom": "10 - B",
+      "phone": "905458488852",
+      "parentName": "MERYEM",
+      "parentPhone": "905454110001",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "1008",
+      "name": "RÜMEYSA ÖZKAN",
+      "classroom": "10 - B",
+      "phone": "",
+      "parentName": "İSMAİL",
+      "parentPhone": "905059341980",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "164",
+      "name": "DİCLENUR USTA",
+      "classroom": "10 - C",
+      "phone": "905451709125",
+      "parentName": "NESRİN",
+      "parentPhone": "905304020052",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "167",
+      "name": "RÜMEYSA KORKMAZ",
+      "classroom": "10 - C",
+      "phone": "905055031047",
+      "parentName": "BİLAL",
+      "parentPhone": "905056771047",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "168",
+      "name": "ECEM ASYA GÜRSOY",
+      "classroom": "10 - C",
+      "phone": "905412056646",
+      "parentName": "BURCU",
+      "parentPhone": "905303257667",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "171",
+      "name": "EMRE EDİZ ATEŞ",
+      "classroom": "10 - C",
+      "phone": "905360386721",
+      "parentName": "NURTEN",
+      "parentPhone": "905324030353",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "179",
+      "name": "ECRİN BEDİR",
+      "classroom": "10 - C",
+      "phone": "905412344921",
+      "parentName": "SEVAL",
+      "parentPhone": "905375807591",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "181",
+      "name": "KEREM ERDOĞAN",
+      "classroom": "10 - C",
+      "phone": "905330589918",
+      "parentName": "GÖNÜL",
+      "parentPhone": "905368572470",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "199",
+      "name": "HAMİ ARDA ERSOY",
+      "classroom": "10 - C",
+      "phone": "905449080893",
+      "parentName": "BİRGÜL",
+      "parentPhone": "905445716693",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "211",
+      "name": "NEHİR KESİM",
+      "classroom": "10 - C",
+      "phone": "905359232740",
+      "parentName": "PINAR",
+      "parentPhone": "905302272738",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "213",
+      "name": "ERDEM ÇEVİK",
+      "classroom": "10 - C",
+      "phone": "905051310261",
+      "parentName": "EMRİYE",
+      "parentPhone": "905053916978",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "225",
+      "name": "ZÜMRA PAZAR",
+      "classroom": "10 - C",
+      "phone": "905456737450",
+      "parentName": "SEMA",
+      "parentPhone": "905353455951",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "226",
+      "name": "UTKU MERT YILMAZ",
+      "classroom": "10 - C",
+      "phone": "905308330052",
+      "parentName": "FİLİZ",
+      "parentPhone": "905333767118",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "233",
+      "name": "RAMİZ BUĞRA ÇELENK",
+      "classroom": "10 - C",
+      "phone": "905314054552",
+      "parentName": "YELDA",
+      "parentPhone": "905313064131",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "238",
+      "name": "AYŞE BEGÜM ALKAN",
+      "classroom": "10 - C",
+      "phone": "905540082809",
+      "parentName": "İBRAHİM",
+      "parentPhone": "905308456728",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "239",
+      "name": "KUZEY ARAS AKDENİZ",
+      "classroom": "10 - C",
+      "phone": "905392964452",
+      "parentName": "ÇİĞDEM",
+      "parentPhone": "905557518157",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "240",
+      "name": "MUHSİN EFE KUŞ",
+      "classroom": "10 - C",
+      "phone": "905384481152",
+      "parentName": "ÖZLEM",
+      "parentPhone": "905433401152",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "242",
+      "name": "BENGÜ SU ÇANKA",
+      "classroom": "10 - C",
+      "phone": "905060491052",
+      "parentName": "CENAN",
+      "parentPhone": "905448261871",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "248",
+      "name": "KAYRA ÖZCAN",
+      "classroom": "10 - C",
+      "phone": "905337604399",
+      "parentName": "HATİCE",
+      "parentPhone": "905370204699",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "249",
+      "name": "NİSA ZEHRA GÜNGÖR",
+      "classroom": "10 - C",
+      "phone": "905527824171",
+      "parentName": "LATİFE",
+      "parentPhone": "905058765106",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "250",
+      "name": "REYHAN SAĞLAM",
+      "classroom": "10 - C",
+      "phone": "905438130319",
+      "parentName": "METİN",
+      "parentPhone": "905358130319",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "262",
+      "name": "TAHA KORKMAZ",
+      "classroom": "10 - C",
+      "phone": "905433021252",
+      "parentName": "MURAT",
+      "parentPhone": "905427886244",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "263",
+      "name": "ASYA ÜNSAL",
+      "classroom": "10 - C",
+      "phone": "905451030052",
+      "parentName": "EBRU",
+      "parentPhone": "905062889526",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "267",
+      "name": "DENİZ DALGIÇ",
+      "classroom": "10 - C",
+      "phone": "905539390789",
+      "parentName": "ERENGÜL",
+      "parentPhone": "905327013493",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "268",
+      "name": "FUNDA ÖZTÜRK",
+      "classroom": "10 - C",
+      "phone": "905302487824",
+      "parentName": "SUAT",
+      "parentPhone": "905337218214",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "1016",
+      "name": "UYGAR ASIR AVCI",
+      "classroom": "10 - C",
+      "phone": "905529402222",
+      "parentName": "DİLER",
+      "parentPhone": "905321134293",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "1053",
+      "name": "AZRA AKBULUT",
+      "classroom": "10 - C",
+      "phone": "905449650452",
+      "parentName": "MERAL",
+      "parentPhone": "905449620452",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "1081",
+      "name": "YİĞİT MUSTAFA TOSUN",
+      "classroom": "10 - C",
+      "phone": "905523075267",
+      "parentName": "NAZAN",
+      "parentPhone": "905063018278",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "26",
+      "name": "TALHA EYMEN AL",
+      "classroom": "10 - D",
+      "phone": "905433713261",
+      "parentName": "AHMET",
+      "parentPhone": "905054931070",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "253",
+      "name": "İREM CANİK",
+      "classroom": "10 - D",
+      "phone": "905528645279",
+      "parentName": "GÜLDEN",
+      "parentPhone": "905357840601",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "259",
+      "name": "ZEYNEP SENA ACISU",
+      "classroom": "10 - D",
+      "phone": "905433854088",
+      "parentName": "FATİH",
+      "parentPhone": "905053854088",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "282",
+      "name": "NEHİR CİVELEK",
+      "classroom": "10 - D",
+      "phone": "905441487392",
+      "parentName": "ENDER",
+      "parentPhone": "905378357392",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "288",
+      "name": "ECRİN KESKİN",
+      "classroom": "10 - D",
+      "phone": "905532397852",
+      "parentName": "SEDAT",
+      "parentPhone": "905056276474",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "297",
+      "name": "OZAN ÇAKMAK",
+      "classroom": "10 - D",
+      "phone": "905400260510",
+      "parentName": "EMRAH",
+      "parentPhone": "905446285252",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "301",
+      "name": "MERVE ATASEVER",
+      "classroom": "10 - D",
+      "phone": "905066400454",
+      "parentName": "GÜLAY",
+      "parentPhone": "905053660851",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "307",
+      "name": "ABDUSSAMED GÖL",
+      "classroom": "10 - D",
+      "phone": "905013610052",
+      "parentName": "GÜLSÜM",
+      "parentPhone": "905302942125",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "308",
+      "name": "ASEL KAHVECİ",
+      "classroom": "10 - D",
+      "phone": "905352882125",
+      "parentName": "SEMA",
+      "parentPhone": "905352882125",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "311",
+      "name": "MELİKE AYDIN",
+      "classroom": "10 - D",
+      "phone": "905382488752",
+      "parentName": "SEZAİ",
+      "parentPhone": "905309393419",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "313",
+      "name": "CANDAN KEVSER GÜNER",
+      "classroom": "10 - D",
+      "phone": "905417974281",
+      "parentName": "NURDAN",
+      "parentPhone": "905417764281",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "320",
+      "name": "YAĞMUR ÖNCEL",
+      "classroom": "10 - D",
+      "phone": "905419044602",
+      "parentName": "HATICE NILÜFER",
+      "parentPhone": "905055527603",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "321",
+      "name": "ÖZGÜR YEŞİLYURT",
+      "classroom": "10 - D",
+      "phone": "905342948452",
+      "parentName": "MİNE",
+      "parentPhone": "905392315685",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "325",
+      "name": "FEYZA USLU",
+      "classroom": "10 - D",
+      "phone": "905461926552",
+      "parentName": "HAMZA",
+      "parentPhone": "905308829666",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "331",
+      "name": "ASUDE ATICI",
+      "classroom": "10 - D",
+      "phone": "905308324852",
+      "parentName": "SEDAT",
+      "parentPhone": "905364590579",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "346",
+      "name": "MUHAMMED SALİH GÜLER",
+      "classroom": "10 - D",
+      "phone": "905510622022",
+      "parentName": "EMİNE",
+      "parentPhone": "905385077382",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "348",
+      "name": "BERRAK AKAGÜNDÜZ",
+      "classroom": "10 - D",
+      "phone": "905318113670",
+      "parentName": "ZEHRA",
+      "parentPhone": "905377813670",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "368",
+      "name": "ZEYNEP ODABAŞI",
+      "classroom": "10 - D",
+      "phone": "905528282758",
+      "parentName": "HAVVA",
+      "parentPhone": "905054102658",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "371",
+      "name": "MUSTAFA KUZEY TALAŞ",
+      "classroom": "10 - D",
+      "phone": "905308482933",
+      "parentName": "ELİF",
+      "parentPhone": "905056751433",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "375",
+      "name": "HAKAN DEMİRCİ",
+      "classroom": "10 - D",
+      "phone": "905316925402",
+      "parentName": "AYŞE",
+      "parentPhone": "905369294715",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "388",
+      "name": "POYRAZ UZUN",
+      "classroom": "10 - D",
+      "phone": "905551726109",
+      "parentName": "İRFAN",
+      "parentPhone": "905053555887",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "389",
+      "name": "CEREN NAZ KARAGÖL",
+      "classroom": "10 - D",
+      "phone": "905455360452",
+      "parentName": "MUSTAFA",
+      "parentPhone": "905055360101",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "390",
+      "name": "FURKAN TALHA DEMİRBAŞ",
+      "classroom": "10 - D",
+      "phone": "905327693917",
+      "parentName": "ZEYNEP",
+      "parentPhone": "905332514925",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "391",
+      "name": "ÇINAR AKPINAR",
+      "classroom": "10 - D",
+      "phone": "905464609476",
+      "parentName": "SERHAT",
+      "parentPhone": "905324924901",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "413",
+      "name": "EMRE KURT",
+      "classroom": "10 - D",
+      "phone": "905414515592",
+      "parentName": "MEHMET",
+      "parentPhone": "905414515092",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "1095",
+      "name": "ASEL BULUT",
+      "classroom": "10 - D",
+      "phone": "905538956852",
+      "parentName": "MEMNUNE",
+      "parentPhone": "905458059981",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "274",
+      "name": "MEDİNE KOÇ",
+      "classroom": "10 - E",
+      "phone": "905545056702",
+      "parentName": "ELİF",
+      "parentPhone": "905360695881",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "277",
+      "name": "MUHAMMET BERAT YANIK",
+      "classroom": "10 - E",
+      "phone": "905011216455",
+      "parentName": "HİDAYET",
+      "parentPhone": "905304122555",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "393",
+      "name": "BERRA KUŞTEPE",
+      "classroom": "10 - E",
+      "phone": "905384168640",
+      "parentName": "CENGİZ",
+      "parentPhone": "905379602054",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "395",
+      "name": "EBRAR BEKTAŞ",
+      "classroom": "10 - E",
+      "phone": "905343774502",
+      "parentName": "YELİZ",
+      "parentPhone": "905303894016",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "396",
+      "name": "EBRAR BULAT",
+      "classroom": "10 - E",
+      "phone": "905528702542",
+      "parentName": "CEVDET",
+      "parentPhone": "905443242542",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "397",
+      "name": "İREM ŞENER",
+      "classroom": "10 - E",
+      "phone": "905053450106",
+      "parentName": "FATMA",
+      "parentPhone": "905343405614",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "403",
+      "name": "ECE TAŞ",
+      "classroom": "10 - E",
+      "phone": "905335129852",
+      "parentName": "HÜLYA",
+      "parentPhone": "905370454440",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "405",
+      "name": "HAZAL CEREN DOĞRUCA",
+      "classroom": "10 - E",
+      "phone": "905355530775",
+      "parentName": "SONGÜL",
+      "parentPhone": "905349678488",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "407",
+      "name": "YÜKSEL EFE ÖZTÜRK",
+      "classroom": "10 - E",
+      "phone": "905342377652",
+      "parentName": "SİNAN",
+      "parentPhone": "905355222370",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "408",
+      "name": "EYLÜL SERİN",
+      "classroom": "10 - E",
+      "phone": "905393657747",
+      "parentName": "VESİLE",
+      "parentPhone": "905344848024",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "409",
+      "name": "ILGIN GÖKTEPE",
+      "classroom": "10 - E",
+      "phone": "905077078552",
+      "parentName": "YEŞEREN",
+      "parentPhone": "905387425201",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "411",
+      "name": "SÜMEYYE COŞKUNER",
+      "classroom": "10 - E",
+      "phone": "905528426587",
+      "parentName": "ŞADUMAN",
+      "parentPhone": "905448526588",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "412",
+      "name": "FATMA NUREFŞAN KILIÇ",
+      "classroom": "10 - E",
+      "phone": "905466239952",
+      "parentName": "ADEM",
+      "parentPhone": "905466239952",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "414",
+      "name": "ALYA SU AKSU",
+      "classroom": "10 - E",
+      "phone": "905518783691",
+      "parentName": "ZUHAL",
+      "parentPhone": "905315154891",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "417",
+      "name": "MİRAY NİSA KİLTAN",
+      "classroom": "10 - E",
+      "phone": "905524425630",
+      "parentName": "FATMA",
+      "parentPhone": "905445315628",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "426",
+      "name": "AZRA YILDIRIM",
+      "classroom": "10 - E",
+      "phone": "905465537734",
+      "parentName": "ERDİNÇ",
+      "parentPhone": "905325537734",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "427",
+      "name": "MEHMET UĞUR DERVİŞOĞLU",
+      "classroom": "10 - E",
+      "phone": "905383702064",
+      "parentName": "FATMA",
+      "parentPhone": "905386911464",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "432",
+      "name": "ÖMER BURAK KAYA",
+      "classroom": "10 - E",
+      "phone": "905526682046",
+      "parentName": "TUĞBA",
+      "parentPhone": "905053851519",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "435",
+      "name": "EFE KEŞAPLI",
+      "classroom": "10 - E",
+      "phone": "905464491706",
+      "parentName": "BİLGE",
+      "parentPhone": "905375605143",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "437",
+      "name": "BULUT EMRE ATASOY",
+      "classroom": "10 - E",
+      "phone": "905362801223",
+      "parentName": "SEZGİN",
+      "parentPhone": "905337718469",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "439",
+      "name": "YUSUF ARDA ÖZSOY",
+      "classroom": "10 - E",
+      "phone": "905491309982",
+      "parentName": "NEDİM",
+      "parentPhone": "905392289793",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "441",
+      "name": "ATİLLA ÖZCAN",
+      "classroom": "10 - E",
+      "phone": "905455433959",
+      "parentName": "HÜLYA",
+      "parentPhone": "905059108512",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "1010",
+      "name": "EMİRHAN GÜMELE",
+      "classroom": "10 - E",
+      "phone": "905444923152",
+      "parentName": "ŞAZİYE",
+      "parentPhone": "905376476638",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    },
+    {
+      "id": "1222",
+      "name": "İKRA NUR AKAR",
+      "classroom": "10 - E",
+      "phone": "905434552953",
+      "parentName": "SONGÜL",
+      "parentPhone": "905399655752",
+      "dob": "",
+      "pob": "",
+      "address": "",
+      "status": "Aktif",
+      "avatar": "",
+      "registerDate": "2026-06-20T23:06:56.992Z"
+    }
+  ],
+  "school_teachers": [
+    {
+      "id": "ÖĞR-119-6625",
+      "name": "ALPER EMRE DEMİR",
+      "branch": "İngilizce",
+      "email": "a@h.com",
+      "phone": "+905445669894",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=ALPER%20EMRE%20DEM%C4%B0R&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-583-6625",
+      "name": "ASLI DAĞDALAN",
+      "branch": "Resim",
+      "email": "k@hh",
+      "phone": "+905448740919",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=ASLI%20DA%C4%9EDALAN&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-522-6625",
+      "name": "AYŞEGÜL CEBECİ",
+      "branch": "Almanca",
+      "email": "asd@vjfgfd",
+      "phone": "+905363857722",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=AY%C5%9EEG%C3%9CL%20CEBEC%C4%B0&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-433-6625",
+      "name": "AYŞİN KARAKULLUKÇU",
+      "branch": "Resim",
+      "email": "sdas@f.com",
+      "phone": "+905536297345",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=AY%C5%9E%C4%B0N%20KARAKULLUK%C3%87U&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-870-6625",
+      "name": "BANU AYGÜN",
+      "branch": "Biyoloji",
+      "email": "banu@dshfd.com",
+      "phone": "+905053849894",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=BANU%20AYG%C3%9CN&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-512-6625",
+      "name": "BİRSEN YILMAZ",
+      "branch": "Öğretmen",
+      "email": "bi̇rsen.yilmaz@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "İzinli",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=B%C4%B0RSEN%20YILMAZ&background=6366f1&color=fff",
+      "leaveReason": "Rahatsız",
+      "leaveDates": [
+        "2026-06-27",
+        "2026-06-28"
+      ]
+    },
+    {
+      "id": "ÖĞR-128-6625",
+      "name": "BURCU ŞİMŞEK",
+      "branch": "Rehberlik",
+      "email": "burcusimsek@kdsan.com",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=BURCU%20%C5%9E%C4%B0M%C5%9EEK&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-357-6625",
+      "name": "BÜLENT BAŞ",
+      "branch": "Öğretmen",
+      "email": "bülent.baş@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=B%C3%9CLENT%20BA%C5%9E&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-397-6625",
+      "name": "ÇİĞDEM COŞGUN",
+      "branch": "Öğretmen",
+      "email": "çi̇ğdem.coşgun@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=%C3%87%C4%B0%C4%9EDEM%20CO%C5%9EGUN&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-872-6625",
+      "name": "ÇİLER TOKCAN AKDENİZ",
+      "branch": "Öğretmen",
+      "email": "çi̇ler.tokcan.akdeni̇z@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=%C3%87%C4%B0LER%20TOKCAN%20AKDEN%C4%B0Z&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-622-6625",
+      "name": "DERYA ÇALIŞKAN",
+      "branch": "Öğretmen",
+      "email": "derya.çalişkan@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=DERYA%20%C3%87ALI%C5%9EKAN&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-257-6625",
+      "name": "DUYGU ERKOÇ",
+      "branch": "Öğretmen",
+      "email": "duygu.erkoç@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=DUYGU%20ERKO%C3%87&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-182-6625",
+      "name": "ERENGÜL ERKAN DALGIÇ",
+      "branch": "Öğretmen",
+      "email": "erengül.erkan.dalgiç@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=ERENG%C3%9CL%20ERKAN%20DALGI%C3%87&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-414-6625",
+      "name": "ERHAN ÇEVİK",
+      "branch": "Öğretmen",
+      "email": "erhan.çevi̇k@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=ERHAN%20%C3%87EV%C4%B0K&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-232-6625",
+      "name": "FATİH DİKİCİ",
+      "branch": "Öğretmen",
+      "email": "fati̇h.di̇ki̇ci̇@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=FAT%C4%B0H%20D%C4%B0K%C4%B0C%C4%B0&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-906-6625",
+      "name": "FERHAT AKYOL",
+      "branch": "Öğretmen",
+      "email": "ferhat.akyol@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=FERHAT%20AKYOL&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-521-6625",
+      "name": "FİGEN AKYÜREK",
+      "branch": "Öğretmen",
+      "email": "fi̇gen.akyürek@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=F%C4%B0GEN%20AKY%C3%9CREK&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-915-6625",
+      "name": "FUNDA ŞAHİN",
+      "branch": "Öğretmen",
+      "email": "funda.şahi̇n@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "İzinli",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=FUNDA%20%C5%9EAH%C4%B0N&background=6366f1&color=fff",
+      "leaveReason": "İzinli",
+      "leaveDates": [
+        "2026-06-27",
+        "2026-06-28"
+      ]
+    },
+    {
+      "id": "ÖĞR-195-6625",
+      "name": "FUNDA ŞAHİN",
+      "branch": "Öğretmen",
+      "email": "funda.şahi̇n@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=FUNDA%20%C5%9EAH%C4%B0N&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-954-6625",
+      "name": "GÜLTEN ŞAHİN",
+      "branch": "Öğretmen",
+      "email": "gülten.şahi̇n@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=G%C3%9CLTEN%20%C5%9EAH%C4%B0N&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-898-6625",
+      "name": "HAKAN ŞİMŞİR",
+      "branch": "Öğretmen",
+      "email": "hakan.şi̇mşi̇r@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=HAKAN%20%C5%9E%C4%B0M%C5%9E%C4%B0R&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-420-6625",
+      "name": "HASAN BÖLÜK",
+      "branch": "Öğretmen",
+      "email": "hasan.bölük@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Müdür",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=HASAN%20B%C3%96L%C3%9CK&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-895-6625",
+      "name": "IŞIL ATASEVER",
+      "branch": "Öğretmen",
+      "email": "işil.atasever@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=I%C5%9EIL%20ATASEVER&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-412-6625",
+      "name": "İHSAN COŞ",
+      "branch": "Öğretmen",
+      "email": "i̇hsan.coş@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=%C4%B0HSAN%20CO%C5%9E&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-289-6625",
+      "name": "İSA YILMAZ",
+      "branch": "Öğretmen",
+      "email": "i̇sa.yilmaz@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=%C4%B0SA%20YILMAZ&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-183-6625",
+      "name": "KORAY UÇAR",
+      "branch": "Öğretmen",
+      "email": "koray.uçar@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Müdür Yardımcısı",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=KORAY%20U%C3%87AR&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-628-6625",
+      "name": "LEYLA EYÜBOĞLU",
+      "branch": "Öğretmen",
+      "email": "leyla.eyüboğlu@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=LEYLA%20EY%C3%9CBO%C4%9ELU&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-508-6625",
+      "name": "LEYLA KAPLANOĞLU",
+      "branch": "Öğretmen",
+      "email": "leyla.kaplanoğlu@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=LEYLA%20KAPLANO%C4%9ELU&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-179-6625",
+      "name": "MEHTAP ÜNER GÜNAY",
+      "branch": "Öğretmen",
+      "email": "mehtap.üner.günay@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=MEHTAP%20%C3%9CNER%20G%C3%9CNAY&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-146-6625",
+      "name": "MELEK DUMAN",
+      "branch": "Öğretmen",
+      "email": "melek.duman@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=MELEK%20DUMAN&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-804-6625",
+      "name": "MURAT GÜRSU",
+      "branch": "Öğretmen",
+      "email": "murat.gürsu@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=MURAT%20G%C3%9CRSU&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-960-6625",
+      "name": "MUSTAFA TETİK",
+      "branch": "Öğretmen",
+      "email": "mustafa.teti̇k@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=MUSTAFA%20TET%C4%B0K&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-519-6625",
+      "name": "MUZAFFER KÖKSAL",
+      "branch": "Öğretmen",
+      "email": "muzaffer.köksal@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=MUZAFFER%20K%C3%96KSAL&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-710-6625",
+      "name": "MÜNEVVER TUĞBA YEŞİLYURT",
+      "branch": "Öğretmen",
+      "email": "münevver.tuğba.yeşi̇lyurt@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=M%C3%9CNEVVER%20TU%C4%9EBA%20YE%C5%9E%C4%B0LYURT&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-403-6625",
+      "name": "OSMAN BOZ",
+      "branch": "Öğretmen",
+      "email": "osman.boz@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=OSMAN%20BOZ&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-839-6625",
+      "name": "OSMAN OSMANOĞLU",
+      "branch": "Öğretmen",
+      "email": "osman@os.com",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Müdür Yardımcısı",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=Y%C3%9CCEL%20DEM%C4%B0REL&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-503-6625",
+      "name": "ÖZCAN TÜRKMEN",
+      "branch": "Öğretmen",
+      "email": "özcan.türkmen@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=%C3%96ZCAN%20T%C3%9CRKMEN&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-319-6625",
+      "name": "ÖZLEM AKDAĞ",
+      "branch": "Öğretmen",
+      "email": "özlem.akdağ@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=%C3%96ZLEM%20AKDA%C4%9E&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-919-6625",
+      "name": "ÖZLEM ÖZATA",
+      "branch": "Öğretmen",
+      "email": "özlem.özata@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=%C3%96ZLEM%20%C3%96ZATA&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-252-6625",
+      "name": "SELMA KARAARSLAN",
+      "branch": "Rehberlik",
+      "email": "selma.karaarslan@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=SELMA%20KARAARSLAN&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-124-6625",
+      "name": "SERAP DEVECİ",
+      "branch": "Öğretmen",
+      "email": "serap.deveci̇@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=SERAP%20DEVEC%C4%B0&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-931-6625",
+      "name": "SERMİN MİDİLLİ",
+      "branch": "Öğretmen",
+      "email": "sermi̇n.mi̇di̇lli̇@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=SERM%C4%B0N%20M%C4%B0D%C4%B0LL%C4%B0&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-734-6625",
+      "name": "SEZEN YILMAZ",
+      "branch": "Öğretmen",
+      "email": "sezen.yilmaz@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=SEZEN%20YILMAZ&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-692-6625",
+      "name": "SEZGİN YATAĞAN",
+      "branch": "Öğretmen",
+      "email": "sezgi̇n.yatağan@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=SEZG%C4%B0N%20YATA%C4%9EAN&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-700-6625",
+      "name": "SONGÜL DORA",
+      "branch": "Öğretmen",
+      "email": "songül.dora@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=SONG%C3%9CL%20DORA&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-758-6625",
+      "name": "SÜLEYMAN KATIRCIOĞLU",
+      "branch": "Öğretmen",
+      "email": "süleyman.katircioğlu@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=S%C3%9CLEYMAN%20KATIRCIO%C4%9ELU&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-551-6625",
+      "name": "SÜLEYMAN YÜCE",
+      "branch": "Öğretmen",
+      "email": "süleyman.yüce@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=S%C3%9CLEYMAN%20Y%C3%9CCE&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-772-6625",
+      "name": "ŞENOL ÖZMEN",
+      "branch": "Öğretmen",
+      "email": "şenol.özmen@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=%C5%9EENOL%20%C3%96ZMEN&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-206-6625",
+      "name": "ŞEYDA AKSANCAK",
+      "branch": "Öğretmen",
+      "email": "şeyda.aksancak@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=%C5%9EEYDA%20AKSANCAK&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-328-6625",
+      "name": "TİMURHAN KOÇARSLAN",
+      "branch": "Öğretmen",
+      "email": "ti̇murhan.koçarslan@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=T%C4%B0MURHAN%20KO%C3%87ARSLAN&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-596-6625",
+      "name": "TURAN TEMEL",
+      "branch": "Öğretmen",
+      "email": "turan.temel@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=TURAN%20TEMEL&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-850-6625",
+      "name": "YADİGAR OKUYAN",
+      "branch": "Öğretmen",
+      "email": "yadi̇gar.okuyan@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=YAD%C4%B0GAR%20OKUYAN&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-486-6625",
+      "name": "YASEMİN ÇİÇEK",
+      "branch": "Öğretmen",
+      "email": "yasemi̇n.çi̇çek@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Müdür Yardımcısı",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=YASEM%C4%B0N%20%C3%87%C4%B0%C3%87EK&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-805-6625",
+      "name": "YUSUF TEPE",
+      "branch": "Öğretmen",
+      "email": "yusuf.tepe@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=YUSUF%20TEPE&background=6366f1&color=fff"
+    },
+    {
+      "id": "ÖĞR-269-6625",
+      "name": "ZÜBEYDE ÇALIŞKAN",
+      "branch": "Öğretmen",
+      "email": "zübeyde.çalişkan@okul.edu.tr",
+      "phone": "-",
+      "weeklyHours": 20,
+      "assignedClassrooms": [],
+      "status": "Aktif",
+      "adminRole": "Öğretmen",
+      "commissions": [],
+      "avatar": "https://ui-avatars.com/api/?name=Z%C3%9CBEYDE%20%C3%87ALI%C5%9EKAN&background=6366f1&color=fff"
+    }
+  ],
+  "school_classrooms": [
+    {
+      "id": "CLS-7808",
+      "name": "9 - A",
+      "level": "9. Sınıf",
+      "advisorTeacherId": "ÖĞR-319-6625",
+      "advisorTeacherName": "ÖZLEM AKDAĞ",
+      "vicePrincipal": "KORAY UÇAR",
+      "assignedCourses": [
+        {
+          "courseName": "Türk Dili ve Edebiyatı",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 5,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Tarih",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Coğrafya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Matematik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 6,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Fizik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Kimya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Biyoloji",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Beden Eğitimi ve Spor",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Sağlık Bilgisi ve Trafik Kültürü",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 1,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Adabı Muaşeret",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 1,
+          "studentIds": [],
+          "type": "elective"
+        },
+        {
+          "courseName": "Görsel Sanatlar / Müzik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "İngilizce",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 4,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Kuran- Kerim / Peygamberimizin Hayatı",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "elective"
+        },
+        {
+          "courseName": "Rehberlik ve Yönlendirme",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 1,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Sanat Eğitimi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "elective"
+        },
+        {
+          "courseName": "Seçmeli Almanca",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "elective"
+        }
+      ]
+    },
+    {
+      "id": "CLS-7190",
+      "name": "9 - B",
+      "level": "9. Sınıf",
+      "advisorTeacherId": "ÖĞR-397-6625",
+      "advisorTeacherName": "ÇİĞDEM COŞGUN",
+      "vicePrincipal": "KORAY UÇAR",
+      "assignedCourses": [
+        {
+          "courseName": "Beden Eğitimi ve Spor",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Biyoloji",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Coğrafya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Fizik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Görsel Sanatlar / Müzik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "İngilizce",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 4,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Kimya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Matematik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 6,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Rehberlik ve Yönlendirme",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 1,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Sağlık Bilgisi ve Trafik Kültürü",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 1,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Tarih",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Türk Dili ve Edebiyatı",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 5,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Adabı Muaşeret",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 1,
+          "studentIds": [],
+          "type": "elective"
+        },
+        {
+          "courseName": "Kuran- Kerim / Peygamberimizin Hayatı",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "elective"
+        },
+        {
+          "courseName": "Sanat Eğitimi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "elective"
+        },
+        {
+          "courseName": "Seçmeli Almanca",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "elective"
+        }
+      ]
+    },
+    {
+      "id": "CLS-4535",
+      "name": "9 - C",
+      "level": "9. Sınıf",
+      "advisorTeacherId": "ÖĞR-522-6625",
+      "advisorTeacherName": "AYŞEGÜL CEBECİ",
+      "vicePrincipal": "KORAY UÇAR",
+      "assignedCourses": [
+        {
+          "courseName": "Beden Eğitimi ve Spor",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Biyoloji",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Coğrafya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Fizik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Görsel Sanatlar / Müzik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "İngilizce",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 4,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Kimya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Matematik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 6,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Rehberlik ve Yönlendirme",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 1,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Sağlık Bilgisi ve Trafik Kültürü",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 1,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Tarih",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Türk Dili ve Edebiyatı",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 5,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Adabı Muaşeret",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 1,
+          "studentIds": [],
+          "type": "elective"
+        },
+        {
+          "courseName": "Kuran- Kerim / Peygamberimizin Hayatı",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "elective"
+        },
+        {
+          "courseName": "Sanat Eğitimi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "elective"
+        },
+        {
+          "courseName": "Seçmeli Almanca",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "elective"
+        }
+      ]
+    },
+    {
+      "id": "CLS-3533",
+      "name": "9 - E",
+      "level": "9. Sınıf",
+      "advisorTeacherId": "ÖĞR-954-6625",
+      "advisorTeacherName": "GÜLTEN ŞAHİN",
+      "vicePrincipal": "KORAY UÇAR",
+      "assignedCourses": [
+        {
+          "courseName": "Beden Eğitimi ve Spor",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Biyoloji",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Coğrafya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Fizik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Görsel Sanatlar / Müzik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "İngilizce",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 4,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Kimya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Matematik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 6,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Rehberlik ve Yönlendirme",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 1,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Sağlık Bilgisi ve Trafik Kültürü",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 1,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Tarih",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Türk Dili ve Edebiyatı",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 5,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Adabı Muaşeret",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 1,
+          "studentIds": [],
+          "type": "elective"
+        },
+        {
+          "courseName": "Kuran- Kerim / Peygamberimizin Hayatı",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "elective"
+        },
+        {
+          "courseName": "Sanat Eğitimi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "elective"
+        },
+        {
+          "courseName": "Seçmeli Almanca",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "elective"
+        }
+      ]
+    },
+    {
+      "id": "CLS-7356",
+      "name": "10 - A",
+      "level": "10. Sınıf",
+      "vicePrincipal": "KORAY UÇAR",
+      "assignedCourses": [
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Coğrafya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Biyoloji",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Beden Eğitimi ve Spor",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Felsefe",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Fizik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Görsel Sanatlar / Müzik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "İngilizce",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 4,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Kimya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Matematik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 6,
+          "studentIds": [],
+          "type": "compulsory"
+        }
+      ],
+      "advisorTeacherId": "ÖĞR-931-6625",
+      "advisorTeacherName": "SERMİN MİDİLLİ"
+    },
+    {
+      "id": "CLS-1542",
+      "name": "10 - B",
+      "level": "10. Sınıf",
+      "advisorTeacherId": "ÖĞR-519-6625",
+      "advisorTeacherName": "MUZAFFER KÖKSAL",
+      "vicePrincipal": "KORAY UÇAR",
+      "assignedCourses": [
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Coğrafya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Biyoloji",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Beden Eğitimi ve Spor",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Felsefe",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Fizik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Görsel Sanatlar / Müzik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "İngilizce",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 4,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Kimya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Matematik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 6,
+          "studentIds": [],
+          "type": "compulsory"
+        }
+      ]
+    },
+    {
+      "id": "CLS-7487",
+      "name": "10 - C",
+      "level": "10. Sınıf",
+      "advisorTeacherId": "ÖĞR-710-6625",
+      "advisorTeacherName": "MÜNEVVER TUĞBA YEŞİLYURT",
+      "vicePrincipal": "KORAY UÇAR",
+      "assignedCourses": [
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Coğrafya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Biyoloji",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Beden Eğitimi ve Spor",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Felsefe",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Fizik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Görsel Sanatlar / Müzik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "İngilizce",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 4,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Kimya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Matematik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 6,
+          "studentIds": [],
+          "type": "compulsory"
+        }
+      ]
+    },
+    {
+      "id": "CLS-2928",
+      "name": "10 - D",
+      "level": "10. Sınıf",
+      "advisorTeacherId": "ÖĞR-700-6625",
+      "advisorTeacherName": "SONGÜL DORA",
+      "vicePrincipal": "KORAY UÇAR",
+      "assignedCourses": [
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Coğrafya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Biyoloji",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Beden Eğitimi ve Spor",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Felsefe",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Fizik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Görsel Sanatlar / Müzik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "İngilizce",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 4,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Kimya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Matematik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 6,
+          "studentIds": [],
+          "type": "compulsory"
+        }
+      ]
+    },
+    {
+      "id": "CLS-6299",
+      "name": "10 - E",
+      "level": "10. Sınıf",
+      "advisorTeacherId": "ÖĞR-628-6625",
+      "advisorTeacherName": "LEYLA EYÜBOĞLU",
+      "vicePrincipal": "KORAY UÇAR",
+      "assignedCourses": [
+        {
+          "courseName": "Beden Eğitimi ve Spor",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Biyoloji",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Coğrafya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Felsefe",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Fizik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Görsel Sanatlar / Müzik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "İngilizce",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 4,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Kimya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Matematik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 6,
+          "studentIds": [],
+          "type": "compulsory"
+        }
+      ]
+    },
+    {
+      "id": "CLS-5557",
+      "name": "11 - A",
+      "level": "11. Sınıf",
+      "advisorTeacherId": "ÖĞR-269-6625",
+      "advisorTeacherName": "ZÜBEYDE ÇALIŞKAN",
+      "vicePrincipal": "YÜCEL DEMİREL",
+      "assignedCourses": [
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Beden Eğitimi ve Spor",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        }
+      ],
+      "groups": [
+        "SAY"
+      ]
+    },
+    {
+      "id": "CLS-2296",
+      "name": "11 - B",
+      "level": "11. Sınıf",
+      "advisorTeacherId": "ÖĞR-915-6625",
+      "advisorTeacherName": "FUNDA ŞAHİN",
+      "vicePrincipal": "YÜCEL DEMİREL",
+      "assignedCourses": [
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Beden Eğitimi ve Spor",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        }
+      ],
+      "groups": [
+        "SAY"
+      ]
+    },
+    {
+      "id": "CLS-7961",
+      "name": "11 - C",
+      "level": "11. Sınıf",
+      "advisorTeacherId": "ÖĞR-182-6625",
+      "advisorTeacherName": "ERENGÜL ERKAN DALGIÇ",
+      "vicePrincipal": "YÜCEL DEMİREL",
+      "assignedCourses": [
+        {
+          "courseName": "Beden Eğitimi ve Spor",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        }
+      ],
+      "group1Name": "Sayısal",
+      "group2Name": "Eşit Ağırlık"
+    },
+    {
+      "id": "CLS-1074",
+      "name": "11 - D",
+      "level": "11. Sınıf",
+      "advisorTeacherId": "ÖĞR-960-6625",
+      "advisorTeacherName": "MUSTAFA TETİK",
+      "vicePrincipal": "YASEMİN ÇİÇEK",
+      "assignedCourses": [
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Beden Eğitimi ve Spor",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        }
+      ],
+      "group1Name": "SAYISAL",
+      "group2Name": "EŞİT AĞIRLIK"
+    },
+    {
+      "id": "CLS-1599",
+      "name": "11 - E",
+      "level": "11. Sınıf",
+      "advisorTeacherId": "ÖĞR-804-6625",
+      "advisorTeacherName": "MURAT GÜRSU",
+      "vicePrincipal": "YÜCEL DEMİREL",
+      "assignedCourses": [
+        {
+          "courseName": "Beden Eğitimi ve Spor",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        }
+      ],
+      "group1Name": "Sayısal",
+      "group2Name": "Dil"
+    },
+    {
+      "id": "CLS-1931",
+      "name": "12 - A",
+      "level": "12. Sınıf",
+      "advisorTeacherId": "ÖĞR-870-6625",
+      "advisorTeacherName": "BANU AYGÜN",
+      "vicePrincipal": "YÜCEL DEMİREL",
+      "assignedCourses": [
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        }
+      ]
+    },
+    {
+      "id": "CLS-3871",
+      "name": "12 - B",
+      "level": "12. Sınıf",
+      "advisorTeacherId": "ÖĞR-124-6625",
+      "advisorTeacherName": "SERAP DEVECİ",
+      "vicePrincipal": "YÜCEL DEMİREL",
+      "assignedCourses": [
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        }
+      ]
+    },
+    {
+      "id": "CLS-3022",
+      "name": "12 - C",
+      "level": "12. Sınıf",
+      "advisorTeacherId": "ÖĞR-906-6625",
+      "advisorTeacherName": "FERHAT AKYOL",
+      "vicePrincipal": "YÜCEL DEMİREL",
+      "assignedCourses": [
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        }
+      ],
+      "group1Name": "Sayısal",
+      "group2Name": "Dil"
+    },
+    {
+      "id": "CLS-1300",
+      "name": "12 - D",
+      "level": "12. Sınıf",
+      "advisorTeacherId": "ÖĞR-414-6625",
+      "advisorTeacherName": "ERHAN ÇEVİK",
+      "vicePrincipal": "YÜCEL DEMİREL",
+      "assignedCourses": [
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        }
+      ],
+      "group1Name": "Eşit Ağırlık",
+      "group2Name": "Sözel"
+    },
+    {
+      "id": "CLS-7639",
+      "name": "12 - E",
+      "level": "12. Sınıf",
+      "advisorTeacherId": "ÖĞR-232-6625",
+      "advisorTeacherName": "FATİH DİKİCİ",
+      "vicePrincipal": "YÜCEL DEMİREL",
+      "assignedCourses": [
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        }
+      ]
+    },
+    {
+      "id": "CLS-5763",
+      "name": "9 - D",
+      "level": "9. Sınıf",
+      "advisorTeacherId": "ÖĞR-319-6625",
+      "advisorTeacherName": "ÖZLEM AKDAĞ",
+      "vicePrincipal": "KORAY UÇAR",
+      "assignedCourses": [
+        {
+          "courseName": "Beden Eğitimi ve Spor",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Biyoloji",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Coğrafya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Din Kültürü ve Ahlak Bilgisi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Fizik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Görsel Sanatlar / Müzik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "İngilizce",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 4,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Kimya",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Matematik",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 6,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Rehberlik ve Yönlendirme",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 1,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Sağlık Bilgisi ve Trafik Kültürü",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 1,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Tarih",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Türk Dili ve Edebiyatı",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 5,
+          "studentIds": [],
+          "type": "compulsory"
+        },
+        {
+          "courseName": "Adabı Muaşeret",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 1,
+          "studentIds": [],
+          "type": "elective"
+        },
+        {
+          "courseName": "Kuran- Kerim / Peygamberimizin Hayatı",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "elective"
+        },
+        {
+          "courseName": "Sanat Eğitimi",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "elective"
+        },
+        {
+          "courseName": "Seçmeli Almanca",
+          "teacherId": "",
+          "teacherName": "Belirtilmedi",
+          "weeklyHours": 2,
+          "studentIds": [],
+          "type": "elective"
+        }
+      ]
+    }
+  ],
+  "school_courses": [
+    {
+      "id": "CRS-1781815377241",
+      "name": "Sağlık Bilgisi ve Trafik Kültürü",
+      "code": "SADRS-9/B",
+      "classroom": "9/B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 1 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397566654-CLS-7190-1",
+      "name": "Beden Eğitimi ve Spor",
+      "code": "BED-9-B-1",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397566654-CLS-4535-2",
+      "name": "Beden Eğitimi ve Spor",
+      "code": "BED-9-C-2",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397566654-CLS-3533-3",
+      "name": "Beden Eğitimi ve Spor",
+      "code": "BED-9-E-3",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397566654-CLS-5763-4",
+      "name": "Beden Eğitimi ve Spor",
+      "code": "BED-9-D-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397585033-CLS-6299-4",
+      "name": "Beden Eğitimi ve Spor",
+      "code": "BED-10-E-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397640466-CLS-7961-2",
+      "name": "Beden Eğitimi ve Spor",
+      "code": "BED-11-C-2",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "11 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397640466-CLS-1599-4",
+      "name": "Beden Eğitimi ve Spor",
+      "code": "BED-11-E-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "11 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397665414-CLS-7190-1",
+      "name": "Biyoloji",
+      "code": "BIY-9-B-1",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397665414-CLS-4535-2",
+      "name": "Biyoloji",
+      "code": "BIY-9-C-2",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397665414-CLS-3533-3",
+      "name": "Biyoloji",
+      "code": "BIY-9-E-3",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397665414-CLS-5763-4",
+      "name": "Biyoloji",
+      "code": "BIY-9-D-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397672954-CLS-6299-4",
+      "name": "Biyoloji",
+      "code": "BIY-10-E-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397685906-CLS-6299-4",
+      "name": "Coğrafya",
+      "code": "CODRS-10-E-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397691607-CLS-7190-1",
+      "name": "Coğrafya",
+      "code": "CODRS-9-B-1",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397691607-CLS-4535-2",
+      "name": "Coğrafya",
+      "code": "CODRS-9-C-2",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397691607-CLS-3533-3",
+      "name": "Coğrafya",
+      "code": "CODRS-9-E-3",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397691607-CLS-5763-4",
+      "name": "Coğrafya",
+      "code": "CODRS-9-D-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397730751-CLS-7190-1",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-9-B-1",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397730751-CLS-4535-2",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-9-C-2",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397730751-CLS-3533-3",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-9-E-3",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397730751-CLS-5763-4",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-9-D-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397738468-CLS-6299-4",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-10-E-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397744484-CLS-7961-2",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-11-C-2",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "11 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397744484-CLS-1599-4",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-11-E-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "11 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397750532-CLS-1931-0",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-12-A-0",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "12 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397750532-CLS-3871-1",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-12-B-1",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "12 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397750532-CLS-3022-2",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-12-C-2",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "12 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397750532-CLS-1300-3",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-12-D-3",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "12 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782397750532-CLS-7639-4",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-12-E-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "12 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782397764441-10-B",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-10-B-0",
+      "classroom": "10 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782397764480-10-B",
+      "name": "Coğrafya",
+      "code": "CODRS-10-B-1",
+      "classroom": "10 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782397764818-10-B",
+      "name": "Biyoloji",
+      "code": "BIY-10-B-2",
+      "classroom": "10 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782397764805-10-B",
+      "name": "Beden Eğitimi ve Spor",
+      "code": "BED-10-B-3",
+      "classroom": "10 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782399443839-10-A",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-10-A-0",
+      "classroom": "10 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782399443294-10-A",
+      "name": "Coğrafya",
+      "code": "CODRS-10-A-1",
+      "classroom": "10 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782399444006-10-A",
+      "name": "Biyoloji",
+      "code": "BIY-10-A-2",
+      "classroom": "10 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782399444037-10-A",
+      "name": "Beden Eğitimi ve Spor",
+      "code": "BED-10-A-3",
+      "classroom": "10 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782399447023-10-C",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-10-C-0",
+      "classroom": "10 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782399447075-10-C",
+      "name": "Coğrafya",
+      "code": "CODRS-10-C-1",
+      "classroom": "10 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782399446913-10-C",
+      "name": "Biyoloji",
+      "code": "BIY-10-C-2",
+      "classroom": "10 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782399446980-10-C",
+      "name": "Beden Eğitimi ve Spor",
+      "code": "BED-10-C-3",
+      "classroom": "10 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782399451726-10-D",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-10-D-0",
+      "classroom": "10 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782399452151-10-D",
+      "name": "Coğrafya",
+      "code": "CODRS-10-D-1",
+      "classroom": "10 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782399451916-10-D",
+      "name": "Biyoloji",
+      "code": "BIY-10-D-2",
+      "classroom": "10 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782399452159-10-D",
+      "name": "Beden Eğitimi ve Spor",
+      "code": "BED-10-D-3",
+      "classroom": "10 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782399590336-11-B",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-11-B-0",
+      "classroom": "11 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782399589800-11-B",
+      "name": "Beden Eğitimi ve Spor",
+      "code": "BED-11-B-1",
+      "classroom": "11 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399847161-CLS-7190-1",
+      "name": "Fizik",
+      "code": "FIZ-9-B-1",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399847161-CLS-4535-2",
+      "name": "Fizik",
+      "code": "FIZ-9-C-2",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399847161-CLS-3533-3",
+      "name": "Fizik",
+      "code": "FIZ-9-E-3",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399847161-CLS-5763-4",
+      "name": "Fizik",
+      "code": "FIZ-9-D-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399866427-CLS-7190-1",
+      "name": "Görsel Sanatlar / Müzik",
+      "code": "GDRSR-9-B-1",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399866427-CLS-4535-2",
+      "name": "Görsel Sanatlar / Müzik",
+      "code": "GDRSR-9-C-2",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399866427-CLS-3533-3",
+      "name": "Görsel Sanatlar / Müzik",
+      "code": "GDRSR-9-E-3",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399866427-CLS-5763-4",
+      "name": "Görsel Sanatlar / Müzik",
+      "code": "GDRSR-9-D-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399899845-CLS-7190-1",
+      "name": "İngilizce",
+      "code": "DRSNG-9-B-1",
+      "weeklyHours": 4,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 4 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399899845-CLS-4535-2",
+      "name": "İngilizce",
+      "code": "DRSNG-9-C-2",
+      "weeklyHours": 4,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 4 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399899845-CLS-3533-3",
+      "name": "İngilizce",
+      "code": "DRSNG-9-E-3",
+      "weeklyHours": 4,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 4 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399899845-CLS-5763-4",
+      "name": "İngilizce",
+      "code": "DRSNG-9-D-4",
+      "weeklyHours": 4,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 4 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399917643-CLS-7190-1",
+      "name": "Kimya",
+      "code": "KIM-9-B-1",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399917643-CLS-4535-2",
+      "name": "Kimya",
+      "code": "KIM-9-C-2",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399917643-CLS-3533-3",
+      "name": "Kimya",
+      "code": "KIM-9-E-3",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399917643-CLS-5763-4",
+      "name": "Kimya",
+      "code": "KIM-9-D-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399932612-CLS-7190-1",
+      "name": "Matematik",
+      "code": "MAT-9-B-1",
+      "weeklyHours": 6,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 6 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399932612-CLS-4535-2",
+      "name": "Matematik",
+      "code": "MAT-9-C-2",
+      "weeklyHours": 6,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 6 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399932612-CLS-3533-3",
+      "name": "Matematik",
+      "code": "MAT-9-E-3",
+      "weeklyHours": 6,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 6 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399932612-CLS-5763-4",
+      "name": "Matematik",
+      "code": "MAT-9-D-4",
+      "weeklyHours": 6,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 6 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399952695-CLS-7190-1",
+      "name": "Rehberlik ve Yönlendirme",
+      "code": "REH-9-B-1",
+      "weeklyHours": 1,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 1 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399952695-CLS-4535-2",
+      "name": "Rehberlik ve Yönlendirme",
+      "code": "REH-9-C-2",
+      "weeklyHours": 1,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 1 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399952695-CLS-3533-3",
+      "name": "Rehberlik ve Yönlendirme",
+      "code": "REH-9-E-3",
+      "weeklyHours": 1,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 1 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399952695-CLS-5763-4",
+      "name": "Rehberlik ve Yönlendirme",
+      "code": "REH-9-D-4",
+      "weeklyHours": 1,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 1 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399972003-CLS-7190-1",
+      "name": "Sağlık Bilgisi ve Trafik Kültürü",
+      "code": "SADRS-9-B-1",
+      "weeklyHours": 1,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 1 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399972003-CLS-4535-2",
+      "name": "Sağlık Bilgisi ve Trafik Kültürü",
+      "code": "SADRS-9-C-2",
+      "weeklyHours": 1,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 1 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399972003-CLS-3533-3",
+      "name": "Sağlık Bilgisi ve Trafik Kültürü",
+      "code": "SADRS-9-E-3",
+      "weeklyHours": 1,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 1 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399972003-CLS-5763-4",
+      "name": "Sağlık Bilgisi ve Trafik Kültürü",
+      "code": "SADRS-9-D-4",
+      "weeklyHours": 1,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 1 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399983882-CLS-7190-1",
+      "name": "Tarih",
+      "code": "TAR-9-B-1",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399983882-CLS-4535-2",
+      "name": "Tarih",
+      "code": "TAR-9-C-2",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399983882-CLS-3533-3",
+      "name": "Tarih",
+      "code": "TAR-9-E-3",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782399983882-CLS-5763-4",
+      "name": "Tarih",
+      "code": "TAR-9-D-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400000861-CLS-7190-1",
+      "name": "Türk Dili ve Edebiyatı",
+      "code": "TDRSR-9-B-1",
+      "weeklyHours": 5,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 5 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400000861-CLS-4535-2",
+      "name": "Türk Dili ve Edebiyatı",
+      "code": "TDRSR-9-C-2",
+      "weeklyHours": 5,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 5 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400000861-CLS-3533-3",
+      "name": "Türk Dili ve Edebiyatı",
+      "code": "TDRSR-9-E-3",
+      "weeklyHours": 5,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 5 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400000861-CLS-5763-4",
+      "name": "Türk Dili ve Edebiyatı",
+      "code": "TDRSR-9-D-4",
+      "weeklyHours": 5,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "9 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 5 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400019131-CLS-7190-1",
+      "name": "Adabı Muaşeret",
+      "code": "ADA-9-B-1",
+      "weeklyHours": 1,
+      "type": "elective",
+      "color": "bg-amber-100",
+      "classroom": "9 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 1 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400019131-CLS-4535-2",
+      "name": "Adabı Muaşeret",
+      "code": "ADA-9-C-2",
+      "weeklyHours": 1,
+      "type": "elective",
+      "color": "bg-amber-100",
+      "classroom": "9 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 1 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400019131-CLS-3533-3",
+      "name": "Adabı Muaşeret",
+      "code": "ADA-9-E-3",
+      "weeklyHours": 1,
+      "type": "elective",
+      "color": "bg-amber-100",
+      "classroom": "9 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 1 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400019131-CLS-5763-4",
+      "name": "Adabı Muaşeret",
+      "code": "ADA-9-D-4",
+      "weeklyHours": 1,
+      "type": "elective",
+      "color": "bg-amber-100",
+      "classroom": "9 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 1 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400020110-11-A",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-11-A-0",
+      "classroom": "11 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400019452-11-A",
+      "name": "Beden Eğitimi ve Spor",
+      "code": "BED-11-A-1",
+      "classroom": "11 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400101120-CLS-7190-1",
+      "name": "Kuran- Kerim / Peygamberimizin Hayatı",
+      "code": "KUR-9-B-1",
+      "weeklyHours": 2,
+      "type": "elective",
+      "color": "bg-amber-100",
+      "classroom": "9 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400101120-CLS-4535-2",
+      "name": "Kuran- Kerim / Peygamberimizin Hayatı",
+      "code": "KUR-9-C-2",
+      "weeklyHours": 2,
+      "type": "elective",
+      "color": "bg-amber-100",
+      "classroom": "9 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400101120-CLS-3533-3",
+      "name": "Kuran- Kerim / Peygamberimizin Hayatı",
+      "code": "KUR-9-E-3",
+      "weeklyHours": 2,
+      "type": "elective",
+      "color": "bg-amber-100",
+      "classroom": "9 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400101120-CLS-5763-4",
+      "name": "Kuran- Kerim / Peygamberimizin Hayatı",
+      "code": "KUR-9-D-4",
+      "weeklyHours": 2,
+      "type": "elective",
+      "color": "bg-amber-100",
+      "classroom": "9 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400115274-CLS-7190-1",
+      "name": "Sanat Eğitimi",
+      "code": "SAN-9-B-1",
+      "weeklyHours": 2,
+      "type": "elective",
+      "color": "bg-amber-100",
+      "classroom": "9 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400115274-CLS-4535-2",
+      "name": "Sanat Eğitimi",
+      "code": "SAN-9-C-2",
+      "weeklyHours": 2,
+      "type": "elective",
+      "color": "bg-amber-100",
+      "classroom": "9 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400115274-CLS-3533-3",
+      "name": "Sanat Eğitimi",
+      "code": "SAN-9-E-3",
+      "weeklyHours": 2,
+      "type": "elective",
+      "color": "bg-amber-100",
+      "classroom": "9 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400115274-CLS-5763-4",
+      "name": "Sanat Eğitimi",
+      "code": "SAN-9-D-4",
+      "weeklyHours": 2,
+      "type": "elective",
+      "color": "bg-amber-100",
+      "classroom": "9 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400134821-CLS-7190-1",
+      "name": "Seçmeli Almanca",
+      "code": "SEDRS-9-B-1",
+      "weeklyHours": 2,
+      "type": "elective",
+      "color": "bg-amber-100",
+      "classroom": "9 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400134821-CLS-4535-2",
+      "name": "Seçmeli Almanca",
+      "code": "SEDRS-9-C-2",
+      "weeklyHours": 2,
+      "type": "elective",
+      "color": "bg-amber-100",
+      "classroom": "9 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400134821-CLS-3533-3",
+      "name": "Seçmeli Almanca",
+      "code": "SEDRS-9-E-3",
+      "weeklyHours": 2,
+      "type": "elective",
+      "color": "bg-amber-100",
+      "classroom": "9 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400134821-CLS-5763-4",
+      "name": "Seçmeli Almanca",
+      "code": "SEDRS-9-D-4",
+      "weeklyHours": 2,
+      "type": "elective",
+      "color": "bg-amber-100",
+      "classroom": "9 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400135784-11-D",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-11-D-0",
+      "classroom": "11 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400135411-11-D",
+      "name": "Beden Eğitimi ve Spor",
+      "code": "BED-11-D-1",
+      "classroom": "11 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400209012-CLS-7356-0",
+      "name": "Felsefe",
+      "code": "FEL-10-A-0",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400209012-CLS-1542-1",
+      "name": "Felsefe",
+      "code": "FEL-10-B-1",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400209012-CLS-7487-2",
+      "name": "Felsefe",
+      "code": "FEL-10-C-2",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400209012-CLS-2928-3",
+      "name": "Felsefe",
+      "code": "FEL-10-D-3",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400209012-CLS-6299-4",
+      "name": "Felsefe",
+      "code": "FEL-10-E-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400249741-CLS-7356-0",
+      "name": "Fizik",
+      "code": "FIZ-10-A-0",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400249741-CLS-1542-1",
+      "name": "Fizik",
+      "code": "FIZ-10-B-1",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400249741-CLS-7487-2",
+      "name": "Fizik",
+      "code": "FIZ-10-C-2",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400249741-CLS-2928-3",
+      "name": "Fizik",
+      "code": "FIZ-10-D-3",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400249741-CLS-6299-4",
+      "name": "Fizik",
+      "code": "FIZ-10-E-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400263356-CLS-7356-0",
+      "name": "Görsel Sanatlar / Müzik",
+      "code": "GDRSR-10-A-0",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400263356-CLS-1542-1",
+      "name": "Görsel Sanatlar / Müzik",
+      "code": "GDRSR-10-B-1",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400263356-CLS-7487-2",
+      "name": "Görsel Sanatlar / Müzik",
+      "code": "GDRSR-10-C-2",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400263356-CLS-2928-3",
+      "name": "Görsel Sanatlar / Müzik",
+      "code": "GDRSR-10-D-3",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400263356-CLS-6299-4",
+      "name": "Görsel Sanatlar / Müzik",
+      "code": "GDRSR-10-E-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400291555-CLS-7356-0",
+      "name": "İngilizce",
+      "code": "DRSNG-10-A-0",
+      "weeklyHours": 4,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 4 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400291555-CLS-1542-1",
+      "name": "İngilizce",
+      "code": "DRSNG-10-B-1",
+      "weeklyHours": 4,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 4 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400291555-CLS-7487-2",
+      "name": "İngilizce",
+      "code": "DRSNG-10-C-2",
+      "weeklyHours": 4,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 4 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400291555-CLS-2928-3",
+      "name": "İngilizce",
+      "code": "DRSNG-10-D-3",
+      "weeklyHours": 4,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 4 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400291555-CLS-6299-4",
+      "name": "İngilizce",
+      "code": "DRSNG-10-E-4",
+      "weeklyHours": 4,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 4 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400307796-CLS-7356-0",
+      "name": "Kimya",
+      "code": "KIM-10-A-0",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400307796-CLS-1542-1",
+      "name": "Kimya",
+      "code": "KIM-10-B-1",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - B",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400307796-CLS-7487-2",
+      "name": "Kimya",
+      "code": "KIM-10-C-2",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - C",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400307796-CLS-2928-3",
+      "name": "Kimya",
+      "code": "KIM-10-D-3",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - D",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "course-1782400307796-CLS-6299-4",
+      "name": "Kimya",
+      "code": "KIM-10-E-4",
+      "weeklyHours": 2,
+      "type": "compulsory",
+      "color": "bg-emerald-100",
+      "classroom": "10 - E",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400307989-9-A",
+      "name": "Türk Dili ve Edebiyatı",
+      "code": "TDRSR-9-A-0",
+      "classroom": "9 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 5 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400307924-9-A",
+      "name": "Din Kültürü ve Ahlak Bilgisi",
+      "code": "DIN-9-A-1",
+      "classroom": "9 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400308027-9-A",
+      "name": "Tarih",
+      "code": "TAR-9-A-2",
+      "classroom": "9 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400308751-9-A",
+      "name": "Coğrafya",
+      "code": "CODRS-9-A-3",
+      "classroom": "9 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400308493-9-A",
+      "name": "Matematik",
+      "code": "MAT-9-A-4",
+      "classroom": "9 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 6 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400308374-9-A",
+      "name": "Fizik",
+      "code": "FIZ-9-A-5",
+      "classroom": "9 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400308742-9-A",
+      "name": "Kimya",
+      "code": "KIM-9-A-6",
+      "classroom": "9 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400308632-9-A",
+      "name": "Biyoloji",
+      "code": "BIY-9-A-7",
+      "classroom": "9 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400308087-9-A",
+      "name": "Beden Eğitimi ve Spor",
+      "code": "BED-9-A-8",
+      "classroom": "9 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400308323-9-A",
+      "name": "Sağlık Bilgisi ve Trafik Kültürü",
+      "code": "SADRS-9-A-9",
+      "classroom": "9 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 1 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400308668-9-A",
+      "name": "Adabı Muaşeret",
+      "code": "ADA-9-A-10",
+      "classroom": "9 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 1 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400308360-9-A",
+      "name": "Görsel Sanatlar / Müzik",
+      "code": "GDRSR-9-A-11",
+      "classroom": "9 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400308752-9-A",
+      "name": "İngilizce",
+      "code": "DRSNG-9-A-12",
+      "classroom": "9 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 4 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400308233-9-A",
+      "name": "Kuran- Kerim / Peygamberimizin Hayatı",
+      "code": "KUR-9-A-13",
+      "classroom": "9 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400308459-9-A",
+      "name": "Rehberlik ve Yönlendirme",
+      "code": "REH-9-A-14",
+      "classroom": "9 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 1 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400308188-9-A",
+      "name": "Sanat Eğitimi",
+      "code": "SAN-9-A-15",
+      "classroom": "9 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    },
+    {
+      "id": "CRS-1782400308511-9-A",
+      "name": "Seçmeli Almanca",
+      "code": "SEDRS-9-A-16",
+      "classroom": "9 - A",
+      "teacherId": "",
+      "teacherName": "Belirtilmedi",
+      "schedule": "Haftalık 2 Saat",
+      "studentCount": 24
+    }
+  ],
+  "custom_created_courses": [
+    {
+      "id": "cc-1782397566653",
+      "gradeLevel": "9. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Beden Eğitimi ve Spor",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7808",
+        "CLS-7190",
+        "CLS-4535",
+        "CLS-5763",
+        "CLS-3533"
+      ]
+    },
+    {
+      "id": "cc-1782397585033",
+      "gradeLevel": "10. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Beden Eğitimi ve Spor",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7356",
+        "CLS-1542",
+        "CLS-7487",
+        "CLS-2928",
+        "CLS-6299"
+      ]
+    },
+    {
+      "id": "cc-1782397640465",
+      "gradeLevel": "11. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Beden Eğitimi ve Spor",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-5557",
+        "CLS-2296",
+        "CLS-7961",
+        "CLS-1074",
+        "CLS-1599"
+      ]
+    },
+    {
+      "id": "cc-1782397665413",
+      "gradeLevel": "9. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Biyoloji",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7808",
+        "CLS-7190",
+        "CLS-4535",
+        "CLS-5763",
+        "CLS-3533"
+      ]
+    },
+    {
+      "id": "cc-1782397672953",
+      "gradeLevel": "10. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Biyoloji",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7356",
+        "CLS-1542",
+        "CLS-7487",
+        "CLS-2928",
+        "CLS-6299"
+      ]
+    },
+    {
+      "id": "cc-1782397685905",
+      "gradeLevel": "10. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Coğrafya",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7356",
+        "CLS-1542",
+        "CLS-7487",
+        "CLS-2928",
+        "CLS-6299"
+      ]
+    },
+    {
+      "id": "cc-1782397691605",
+      "gradeLevel": "9. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Coğrafya",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7808",
+        "CLS-7190",
+        "CLS-4535",
+        "CLS-5763",
+        "CLS-3533"
+      ]
+    },
+    {
+      "id": "cc-1782397730749",
+      "gradeLevel": "9. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Din Kültürü ve Ahlak Bilgisi",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7808",
+        "CLS-7190",
+        "CLS-4535",
+        "CLS-5763",
+        "CLS-3533"
+      ]
+    },
+    {
+      "id": "cc-1782397738465",
+      "gradeLevel": "10. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Din Kültürü ve Ahlak Bilgisi",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7356",
+        "CLS-1542",
+        "CLS-7487",
+        "CLS-2928",
+        "CLS-6299"
+      ]
+    },
+    {
+      "id": "cc-1782397744481",
+      "gradeLevel": "11. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Din Kültürü ve Ahlak Bilgisi",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-5557",
+        "CLS-2296",
+        "CLS-7961",
+        "CLS-1074",
+        "CLS-1599"
+      ]
+    },
+    {
+      "id": "cc-1782397750529",
+      "gradeLevel": "12. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Din Kültürü ve Ahlak Bilgisi",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-1931",
+        "CLS-3871",
+        "CLS-3022",
+        "CLS-1300",
+        "CLS-7639"
+      ]
+    },
+    {
+      "id": "cc-1782399847157",
+      "gradeLevel": "9. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Fizik",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7808",
+        "CLS-7190",
+        "CLS-4535",
+        "CLS-5763",
+        "CLS-3533"
+      ]
+    },
+    {
+      "id": "cc-1782399866424",
+      "gradeLevel": "9. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Görsel Sanatlar / Müzik",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7808",
+        "CLS-7190",
+        "CLS-4535",
+        "CLS-5763",
+        "CLS-3533"
+      ]
+    },
+    {
+      "id": "cc-1782399899842",
+      "gradeLevel": "9. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "İngilizce",
+      "weeklyHours": 4,
+      "selectedClassrooms": [
+        "CLS-7808",
+        "CLS-7190",
+        "CLS-4535",
+        "CLS-5763",
+        "CLS-3533"
+      ]
+    },
+    {
+      "id": "cc-1782399917640",
+      "gradeLevel": "9. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Kimya",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7808",
+        "CLS-7190",
+        "CLS-4535",
+        "CLS-5763",
+        "CLS-3533"
+      ]
+    },
+    {
+      "id": "cc-1782399932609",
+      "gradeLevel": "9. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Matematik",
+      "weeklyHours": 6,
+      "selectedClassrooms": [
+        "CLS-7808",
+        "CLS-7190",
+        "CLS-4535",
+        "CLS-5763",
+        "CLS-3533"
+      ]
+    },
+    {
+      "id": "cc-1782399952693",
+      "gradeLevel": "9. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Rehberlik ve Yönlendirme",
+      "weeklyHours": 1,
+      "selectedClassrooms": [
+        "CLS-7808",
+        "CLS-7190",
+        "CLS-4535",
+        "CLS-5763",
+        "CLS-3533"
+      ]
+    },
+    {
+      "id": "cc-1782399972000",
+      "gradeLevel": "9. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Sağlık Bilgisi ve Trafik Kültürü",
+      "weeklyHours": 1,
+      "selectedClassrooms": [
+        "CLS-7808",
+        "CLS-7190",
+        "CLS-4535",
+        "CLS-5763",
+        "CLS-3533"
+      ]
+    },
+    {
+      "id": "cc-1782399983878",
+      "gradeLevel": "9. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Tarih",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7808",
+        "CLS-7190",
+        "CLS-4535",
+        "CLS-5763",
+        "CLS-3533"
+      ]
+    },
+    {
+      "id": "cc-1782400000858",
+      "gradeLevel": "9. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Türk Dili ve Edebiyatı",
+      "weeklyHours": 5,
+      "selectedClassrooms": [
+        "CLS-7808",
+        "CLS-7190",
+        "CLS-4535",
+        "CLS-5763",
+        "CLS-3533"
+      ]
+    },
+    {
+      "id": "cc-1782400019129",
+      "gradeLevel": "9. Sınıf",
+      "courseType": "Seçmeli Ders",
+      "courseName": "Adabı Muaşeret",
+      "weeklyHours": 1,
+      "selectedClassrooms": [
+        "CLS-7808",
+        "CLS-7190",
+        "CLS-4535",
+        "CLS-5763",
+        "CLS-3533"
+      ]
+    },
+    {
+      "id": "cc-1782400101117",
+      "gradeLevel": "9. Sınıf",
+      "courseType": "Seçmeli Ders",
+      "courseName": "Kuran- Kerim / Peygamberimizin Hayatı",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7808",
+        "CLS-7190",
+        "CLS-4535",
+        "CLS-5763",
+        "CLS-3533"
+      ]
+    },
+    {
+      "id": "cc-1782400115270",
+      "gradeLevel": "9. Sınıf",
+      "courseType": "Seçmeli Ders",
+      "courseName": "Sanat Eğitimi",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7808",
+        "CLS-7190",
+        "CLS-4535",
+        "CLS-5763",
+        "CLS-3533"
+      ]
+    },
+    {
+      "id": "cc-1782400134818",
+      "gradeLevel": "9. Sınıf",
+      "courseType": "Seçmeli Ders",
+      "courseName": "Seçmeli Almanca",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7808",
+        "CLS-7190",
+        "CLS-4535",
+        "CLS-5763",
+        "CLS-3533"
+      ]
+    },
+    {
+      "id": "cc-1782400209006",
+      "gradeLevel": "10. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Felsefe",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7356",
+        "CLS-1542",
+        "CLS-7487",
+        "CLS-2928",
+        "CLS-6299"
+      ]
+    },
+    {
+      "id": "cc-1782400249734",
+      "gradeLevel": "10. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Fizik",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7356",
+        "CLS-1542",
+        "CLS-7487",
+        "CLS-2928",
+        "CLS-6299"
+      ]
+    },
+    {
+      "id": "cc-1782400263353",
+      "gradeLevel": "10. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Görsel Sanatlar / Müzik",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7356",
+        "CLS-1542",
+        "CLS-7487",
+        "CLS-2928",
+        "CLS-6299"
+      ]
+    },
+    {
+      "id": "cc-1782400291549",
+      "gradeLevel": "10. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "İngilizce",
+      "weeklyHours": 4,
+      "selectedClassrooms": [
+        "CLS-7356",
+        "CLS-1542",
+        "CLS-7487",
+        "CLS-2928",
+        "CLS-6299"
+      ]
+    },
+    {
+      "id": "cc-1782400307793",
+      "gradeLevel": "10. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Kimya",
+      "weeklyHours": 2,
+      "selectedClassrooms": [
+        "CLS-7356",
+        "CLS-1542",
+        "CLS-7487",
+        "CLS-2928",
+        "CLS-6299"
+      ]
+    },
+    {
+      "id": "cc-1782400323369",
+      "gradeLevel": "10. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Matematik",
+      "weeklyHours": 6,
+      "selectedClassrooms": [
+        "CLS-7356",
+        "CLS-1542",
+        "CLS-7487",
+        "CLS-2928",
+        "CLS-6299"
+      ]
+    },
+    {
+      "id": "cc-1782400338777",
+      "gradeLevel": "10. Sınıf",
+      "courseType": "Zorunlu Ders",
+      "courseName": "Rehberlik ve Yönlendirme",
+      "weeklyHours": 1,
+      "selectedClassrooms": [
+        "CLS-7356",
+        "CLS-1542",
+        "CLS-7487",
+        "CLS-2928",
+        "CLS-6299"
+      ]
+    }
+  ],
+  "school_timetable": [
+    {
+      "hour": 1,
+      "start": "08:30",
+      "end": "09:10",
+      "breakDuration": 10
+    },
+    {
+      "hour": 2,
+      "start": "09:20",
+      "end": "10:00",
+      "breakDuration": 10
+    },
+    {
+      "hour": 3,
+      "start": "10:10",
+      "end": "10:50",
+      "breakDuration": 10
+    },
+    {
+      "hour": 4,
+      "start": "11:00",
+      "end": "11:40",
+      "breakDuration": 10
+    },
+    {
+      "hour": 5,
+      "start": "11:50",
+      "end": "12:30",
+      "breakDuration": 50
+    },
+    {
+      "hour": 6,
+      "start": "13:20",
+      "end": "14:00",
+      "breakDuration": 10
+    },
+    {
+      "hour": 7,
+      "start": "14:10",
+      "end": "14:50",
+      "breakDuration": 10
+    },
+    {
+      "hour": 8,
+      "start": "15:00",
+      "end": "15:40",
+      "breakDuration": 10
+    }
+  ],
+  "school_timetable_by_day": {
+    "Pazartesi": [
+      {
+        "hour": 1,
+        "start": "08:30",
+        "end": "09:10",
+        "breakDuration": 10
+      },
+      {
+        "hour": 2,
+        "start": "09:20",
+        "end": "10:00",
+        "breakDuration": 10
+      },
+      {
+        "hour": 3,
+        "start": "10:10",
+        "end": "10:50",
+        "breakDuration": 10
+      },
+      {
+        "hour": 4,
+        "start": "11:00",
+        "end": "11:40",
+        "breakDuration": 10
+      },
+      {
+        "hour": 5,
+        "start": "11:50",
+        "end": "12:30",
+        "breakDuration": 50
+      },
+      {
+        "hour": 6,
+        "start": "13:20",
+        "end": "14:00",
+        "breakDuration": 10
+      },
+      {
+        "hour": 7,
+        "start": "14:10",
+        "end": "14:50",
+        "breakDuration": 10
+      },
+      {
+        "hour": 8,
+        "start": "15:00",
+        "end": "15:40",
+        "breakDuration": 10
+      }
+    ],
+    "Salı": [
+      {
+        "hour": 1,
+        "start": "08:30",
+        "end": "09:10",
+        "breakDuration": 10
+      },
+      {
+        "hour": 2,
+        "start": "09:20",
+        "end": "10:00",
+        "breakDuration": 10
+      },
+      {
+        "hour": 3,
+        "start": "10:10",
+        "end": "10:50",
+        "breakDuration": 10
+      },
+      {
+        "hour": 4,
+        "start": "11:00",
+        "end": "11:40",
+        "breakDuration": 10
+      },
+      {
+        "hour": 5,
+        "start": "11:50",
+        "end": "12:30",
+        "breakDuration": 50
+      },
+      {
+        "hour": 6,
+        "start": "13:20",
+        "end": "14:00",
+        "breakDuration": 10
+      },
+      {
+        "hour": 7,
+        "start": "14:10",
+        "end": "14:50",
+        "breakDuration": 10
+      },
+      {
+        "hour": 8,
+        "start": "15:00",
+        "end": "15:40",
+        "breakDuration": 10
+      }
+    ],
+    "Çarşamba": [
+      {
+        "hour": 1,
+        "start": "08:30",
+        "end": "09:10",
+        "breakDuration": 10
+      },
+      {
+        "hour": 2,
+        "start": "09:20",
+        "end": "10:00",
+        "breakDuration": 10
+      },
+      {
+        "hour": 3,
+        "start": "10:10",
+        "end": "10:50",
+        "breakDuration": 10
+      },
+      {
+        "hour": 4,
+        "start": "11:00",
+        "end": "11:40",
+        "breakDuration": 10
+      },
+      {
+        "hour": 5,
+        "start": "11:50",
+        "end": "12:30",
+        "breakDuration": 50
+      },
+      {
+        "hour": 6,
+        "start": "13:20",
+        "end": "14:00",
+        "breakDuration": 10
+      },
+      {
+        "hour": 7,
+        "start": "14:10",
+        "end": "14:50",
+        "breakDuration": 10
+      },
+      {
+        "hour": 8,
+        "start": "15:00",
+        "end": "15:40",
+        "breakDuration": 10
+      }
+    ],
+    "Perşembe": [
+      {
+        "hour": 1,
+        "start": "08:30",
+        "end": "09:10",
+        "breakDuration": 10
+      },
+      {
+        "hour": 2,
+        "start": "09:20",
+        "end": "10:00",
+        "breakDuration": 10
+      },
+      {
+        "hour": 3,
+        "start": "10:10",
+        "end": "10:50",
+        "breakDuration": 10
+      },
+      {
+        "hour": 4,
+        "start": "11:00",
+        "end": "11:40",
+        "breakDuration": 10
+      },
+      {
+        "hour": 5,
+        "start": "11:50",
+        "end": "12:30",
+        "breakDuration": 50
+      },
+      {
+        "hour": 6,
+        "start": "13:20",
+        "end": "14:00",
+        "breakDuration": 10
+      },
+      {
+        "hour": 7,
+        "start": "14:10",
+        "end": "14:50",
+        "breakDuration": 10
+      },
+      {
+        "hour": 8,
+        "start": "15:00",
+        "end": "15:40",
+        "breakDuration": 10
+      }
+    ],
+    "Cuma": [
+      {
+        "hour": 1,
+        "start": "08:30",
+        "end": "09:10",
+        "breakDuration": 10
+      },
+      {
+        "hour": 2,
+        "start": "09:20",
+        "end": "10:00",
+        "breakDuration": 10
+      },
+      {
+        "hour": 3,
+        "start": "10:10",
+        "end": "10:50",
+        "breakDuration": 10
+      },
+      {
+        "hour": 4,
+        "start": "11:00",
+        "end": "11:40",
+        "breakDuration": 10
+      },
+      {
+        "hour": 5,
+        "start": "11:50",
+        "end": "12:30",
+        "breakDuration": 50
+      },
+      {
+        "hour": 6,
+        "start": "13:20",
+        "end": "14:00",
+        "breakDuration": 10
+      },
+      {
+        "hour": 7,
+        "start": "14:10",
+        "end": "14:50",
+        "breakDuration": 10
+      },
+      {
+        "hour": 8,
+        "start": "15:00",
+        "end": "15:40",
+        "breakDuration": 10
+      }
+    ],
+    "Cumartesi": [
+      {
+        "hour": 1,
+        "start": "08:30",
+        "end": "09:10",
+        "breakDuration": 10
+      },
+      {
+        "hour": 2,
+        "start": "09:20",
+        "end": "10:00",
+        "breakDuration": 10
+      },
+      {
+        "hour": 3,
+        "start": "10:10",
+        "end": "10:50",
+        "breakDuration": 10
+      },
+      {
+        "hour": 4,
+        "start": "11:00",
+        "end": "11:40",
+        "breakDuration": 10
+      },
+      {
+        "hour": 5,
+        "start": "11:50",
+        "end": "12:30",
+        "breakDuration": 60
+      },
+      {
+        "hour": 6,
+        "start": "13:30",
+        "end": "14:10",
+        "breakDuration": 10
+      },
+      {
+        "hour": 7,
+        "start": "14:20",
+        "end": "15:00",
+        "breakDuration": 10
+      },
+      {
+        "hour": 8,
+        "start": "15:10",
+        "end": "15:50",
+        "breakDuration": 10
+      }
+    ],
+    "Pazar": [
+      {
+        "hour": 1,
+        "start": "08:30",
+        "end": "09:10",
+        "breakDuration": 10
+      },
+      {
+        "hour": 2,
+        "start": "09:20",
+        "end": "10:00",
+        "breakDuration": 10
+      },
+      {
+        "hour": 3,
+        "start": "10:10",
+        "end": "10:50",
+        "breakDuration": 10
+      },
+      {
+        "hour": 4,
+        "start": "11:00",
+        "end": "11:40",
+        "breakDuration": 10
+      },
+      {
+        "hour": 5,
+        "start": "11:50",
+        "end": "12:30",
+        "breakDuration": 60
+      },
+      {
+        "hour": 6,
+        "start": "13:30",
+        "end": "14:10",
+        "breakDuration": 10
+      },
+      {
+        "hour": 7,
+        "start": "14:20",
+        "end": "15:00",
+        "breakDuration": 10
+      },
+      {
+        "hour": 8,
+        "start": "15:10",
+        "end": "15:50",
+        "breakDuration": 10
+      }
+    ]
+  },
+  "school_info_a_profile": {
+    "instLine1": "T.C.",
+    "instLine2": "ORDU VALİLİĞİ",
+    "instLine3": "Ordu Lisesi Müdürlüğü",
+    "officialName": "Ordu Lisesi",
+    "mebCode": "753684",
+    "principalName": "Hasan BÖLÜK",
+    "phone": "+90 452 214 10 10",
+    "website": "https://ordulisesi.meb.k12.tr",
+    "activeSemester": "2025-2026",
+    "address": "Ordu, Türkiye"
+  },
+  "schoolName": "Ordu Lisesi",
+  "selected_electives_pool": {
+    "el-39_9. Sınıf": 1,
+    "el-33_9. Sınıf": 2,
+    "el-35_9. Sınıf": 2,
+    "el-45_9. Sınıf": 2,
+    "el-28_9. Sınıf": 2,
+    "custom-el-1782319664461_9. Sınıf": 2
+  },
+  "custom_electives_pool": [
+    {
+      "id": "custom-el-1782319664461",
+      "name": "KURAN-I KERIM/ PEYGAMBERIMIZIN HAYATI",
+      "category": "ÖZEL",
+      "hoursMap": {
+        "9. Sınıf": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "10. Sınıf": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "11. Sınıf": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "12. Sınıf": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "isCustom": true
+    }
+  ],
+  "school_timeline": [
+    {
+      "dayName": "Pazartesi",
+      "lessons": [
+        {
+          "lessonNo": 1,
+          "startTime": "08:30",
+          "endTime": "09:10"
+        },
+        {
+          "lessonNo": 2,
+          "startTime": "09:20",
+          "endTime": "10:00"
+        },
+        {
+          "lessonNo": 3,
+          "startTime": "10:10",
+          "endTime": "10:50"
+        },
+        {
+          "lessonNo": 4,
+          "startTime": "11:00",
+          "endTime": "11:40"
+        },
+        {
+          "lessonNo": 5,
+          "startTime": "11:50",
+          "endTime": "12:30"
+        },
+        {
+          "lessonNo": 6,
+          "startTime": "13:20",
+          "endTime": "14:00"
+        },
+        {
+          "lessonNo": 7,
+          "startTime": "14:10",
+          "endTime": "14:50"
+        },
+        {
+          "lessonNo": 8,
+          "startTime": "15:00",
+          "endTime": "15:40"
+        }
+      ]
+    },
+    {
+      "dayName": "Salı",
+      "lessons": [
+        {
+          "lessonNo": 1,
+          "startTime": "08:30",
+          "endTime": "09:10"
+        },
+        {
+          "lessonNo": 2,
+          "startTime": "09:20",
+          "endTime": "10:00"
+        },
+        {
+          "lessonNo": 3,
+          "startTime": "10:10",
+          "endTime": "10:50"
+        },
+        {
+          "lessonNo": 4,
+          "startTime": "11:00",
+          "endTime": "11:40"
+        },
+        {
+          "lessonNo": 5,
+          "startTime": "11:50",
+          "endTime": "12:30"
+        },
+        {
+          "lessonNo": 6,
+          "startTime": "13:20",
+          "endTime": "14:00"
+        },
+        {
+          "lessonNo": 7,
+          "startTime": "14:10",
+          "endTime": "14:50"
+        },
+        {
+          "lessonNo": 8,
+          "startTime": "15:00",
+          "endTime": "15:40"
+        }
+      ]
+    },
+    {
+      "dayName": "Çarşamba",
+      "lessons": [
+        {
+          "lessonNo": 1,
+          "startTime": "08:30",
+          "endTime": "09:10"
+        },
+        {
+          "lessonNo": 2,
+          "startTime": "09:20",
+          "endTime": "10:00"
+        },
+        {
+          "lessonNo": 3,
+          "startTime": "10:10",
+          "endTime": "10:50"
+        },
+        {
+          "lessonNo": 4,
+          "startTime": "11:00",
+          "endTime": "11:40"
+        },
+        {
+          "lessonNo": 5,
+          "startTime": "11:50",
+          "endTime": "12:30"
+        },
+        {
+          "lessonNo": 6,
+          "startTime": "13:20",
+          "endTime": "14:00"
+        },
+        {
+          "lessonNo": 7,
+          "startTime": "14:10",
+          "endTime": "14:50"
+        },
+        {
+          "lessonNo": 8,
+          "startTime": "15:00",
+          "endTime": "15:40"
+        }
+      ]
+    },
+    {
+      "dayName": "Perşembe",
+      "lessons": [
+        {
+          "lessonNo": 1,
+          "startTime": "08:30",
+          "endTime": "09:10"
+        },
+        {
+          "lessonNo": 2,
+          "startTime": "09:20",
+          "endTime": "10:00"
+        },
+        {
+          "lessonNo": 3,
+          "startTime": "10:10",
+          "endTime": "10:50"
+        },
+        {
+          "lessonNo": 4,
+          "startTime": "11:00",
+          "endTime": "11:40"
+        },
+        {
+          "lessonNo": 5,
+          "startTime": "11:50",
+          "endTime": "12:30"
+        },
+        {
+          "lessonNo": 6,
+          "startTime": "13:20",
+          "endTime": "14:00"
+        },
+        {
+          "lessonNo": 7,
+          "startTime": "14:10",
+          "endTime": "14:50"
+        },
+        {
+          "lessonNo": 8,
+          "startTime": "15:00",
+          "endTime": "15:40"
+        }
+      ]
+    },
+    {
+      "dayName": "Cuma",
+      "lessons": [
+        {
+          "lessonNo": 1,
+          "startTime": "08:30",
+          "endTime": "09:10"
+        },
+        {
+          "lessonNo": 2,
+          "startTime": "09:20",
+          "endTime": "10:00"
+        },
+        {
+          "lessonNo": 3,
+          "startTime": "10:10",
+          "endTime": "10:50"
+        },
+        {
+          "lessonNo": 4,
+          "startTime": "11:00",
+          "endTime": "11:40"
+        },
+        {
+          "lessonNo": 5,
+          "startTime": "11:50",
+          "endTime": "12:30"
+        },
+        {
+          "lessonNo": 6,
+          "startTime": "13:20",
+          "endTime": "14:00"
+        },
+        {
+          "lessonNo": 7,
+          "startTime": "14:10",
+          "endTime": "14:50"
+        },
+        {
+          "lessonNo": 8,
+          "startTime": "15:00",
+          "endTime": "15:40"
+        }
+      ]
+    }
+  ],
+  "school_weekly_schedule_v2": [
+    {
+      "classroomId": "CLS-3453",
+      "day": "Pazartesi",
+      "period": 1,
+      "isActive": true,
+      "courseName": "Türk Dili ve Edebiyatı",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Pazartesi",
+      "period": 2,
+      "isActive": true,
+      "courseName": "Türk Dili ve Edebiyatı",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Pazartesi",
+      "period": 3,
+      "isActive": true,
+      "courseName": "Türk Dili ve Edebiyatı",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Pazartesi",
+      "period": 4,
+      "isActive": true,
+      "courseName": "Türk Dili ve Edebiyatı",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Pazartesi",
+      "period": 5,
+      "isActive": true,
+      "courseName": "Türk Dili ve Edebiyatı",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Pazartesi",
+      "period": 6,
+      "isActive": true,
+      "courseName": "Din Kültürü ve Ahlak Bilgisi",
+      "teacherId": "ÖĞR-568"
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Pazartesi",
+      "period": 7,
+      "isActive": true,
+      "courseName": "Din Kültürü ve Ahlak Bilgisi",
+      "teacherId": "ÖĞR-568"
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Pazartesi",
+      "period": 8,
+      "isActive": true,
+      "courseName": "Tarih",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Salı",
+      "period": 1,
+      "isActive": true,
+      "courseName": "Tarih",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Salı",
+      "period": 2,
+      "isActive": true,
+      "courseName": "Coğrafya",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Salı",
+      "period": 3,
+      "isActive": true,
+      "courseName": "Coğrafya",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Salı",
+      "period": 4,
+      "isActive": true,
+      "courseName": "Matematik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Salı",
+      "period": 5,
+      "isActive": true,
+      "courseName": "Matematik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Salı",
+      "period": 6,
+      "isActive": true,
+      "courseName": "Matematik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Salı",
+      "period": 7,
+      "isActive": true,
+      "courseName": "Matematik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Salı",
+      "period": 8,
+      "isActive": true,
+      "courseName": "Matematik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Çarşamba",
+      "period": 1,
+      "isActive": true,
+      "courseName": "Matematik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Çarşamba",
+      "period": 2,
+      "isActive": true,
+      "courseName": "Fizik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Çarşamba",
+      "period": 3,
+      "isActive": true,
+      "courseName": "Fizik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Çarşamba",
+      "period": 4,
+      "isActive": true,
+      "courseName": "Kimya",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Çarşamba",
+      "period": 5,
+      "isActive": true,
+      "courseName": "Kimya",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Çarşamba",
+      "period": 6,
+      "isActive": true,
+      "courseName": "Biyoloji",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Çarşamba",
+      "period": 7,
+      "isActive": true,
+      "courseName": "Biyoloji",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Çarşamba",
+      "period": 8,
+      "isActive": true,
+      "courseName": "Birinci Yabancı Dil",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Perşembe",
+      "period": 1,
+      "isActive": true,
+      "courseName": "Birinci Yabancı Dil",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Perşembe",
+      "period": 2,
+      "isActive": true,
+      "courseName": "Birinci Yabancı Dil",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Perşembe",
+      "period": 3,
+      "isActive": true,
+      "courseName": "Birinci Yabancı Dil",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Perşembe",
+      "period": 4,
+      "isActive": true,
+      "courseName": "Beden Eğitimi ve Spor",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Perşembe",
+      "period": 5,
+      "isActive": true,
+      "courseName": "Beden Eğitimi ve Spor",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Perşembe",
+      "period": 6,
+      "isActive": true,
+      "courseName": "Görsel Sanatlar/Müzik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Perşembe",
+      "period": 7,
+      "isActive": true,
+      "courseName": "Görsel Sanatlar/Müzik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-3453",
+      "day": "Perşembe",
+      "period": 8,
+      "isActive": true,
+      "courseName": "Sağlık Bilgisi ve Trafik Kültürü",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Pazartesi",
+      "period": 1,
+      "isActive": true,
+      "courseName": "Türk Dili ve Edebiyatı",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Pazartesi",
+      "period": 2,
+      "isActive": true,
+      "courseName": "Türk Dili ve Edebiyatı",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Pazartesi",
+      "period": 3,
+      "isActive": true,
+      "courseName": "Türk Dili ve Edebiyatı",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Pazartesi",
+      "period": 4,
+      "isActive": true,
+      "courseName": "Türk Dili ve Edebiyatı",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Pazartesi",
+      "period": 5,
+      "isActive": true,
+      "courseName": "Türk Dili ve Edebiyatı",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Pazartesi",
+      "period": 6,
+      "isActive": true,
+      "courseName": "Din Kültürü ve Ahlak Bilgisi",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Pazartesi",
+      "period": 7,
+      "isActive": true,
+      "courseName": "Din Kültürü ve Ahlak Bilgisi",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Pazartesi",
+      "period": 8,
+      "isActive": true,
+      "courseName": "Tarih",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Salı",
+      "period": 1,
+      "isActive": true,
+      "courseName": "Tarih",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Salı",
+      "period": 2,
+      "isActive": true,
+      "courseName": "Coğrafya",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Salı",
+      "period": 3,
+      "isActive": true,
+      "courseName": "Coğrafya",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Salı",
+      "period": 4,
+      "isActive": true,
+      "courseName": "Matematik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Salı",
+      "period": 5,
+      "isActive": true,
+      "courseName": "Matematik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Salı",
+      "period": 6,
+      "isActive": true,
+      "courseName": "Matematik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Salı",
+      "period": 7,
+      "isActive": true,
+      "courseName": "Matematik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Salı",
+      "period": 8,
+      "isActive": true,
+      "courseName": "Matematik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Çarşamba",
+      "period": 1,
+      "isActive": true,
+      "courseName": "Matematik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Çarşamba",
+      "period": 2,
+      "isActive": true,
+      "courseName": "Fizik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Çarşamba",
+      "period": 3,
+      "isActive": true,
+      "courseName": "Fizik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Çarşamba",
+      "period": 4,
+      "isActive": true,
+      "courseName": "Kimya",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Çarşamba",
+      "period": 5,
+      "isActive": true,
+      "courseName": "Kimya",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Çarşamba",
+      "period": 6,
+      "isActive": true,
+      "courseName": "Biyoloji",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Çarşamba",
+      "period": 7,
+      "isActive": true,
+      "courseName": "Biyoloji",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Çarşamba",
+      "period": 8,
+      "isActive": true,
+      "courseName": "Birinci Yabancı Dil",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Perşembe",
+      "period": 1,
+      "isActive": true,
+      "courseName": "Birinci Yabancı Dil",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Perşembe",
+      "period": 2,
+      "isActive": true,
+      "courseName": "Birinci Yabancı Dil",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Perşembe",
+      "period": 3,
+      "isActive": true,
+      "courseName": "Birinci Yabancı Dil",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Perşembe",
+      "period": 4,
+      "isActive": true,
+      "courseName": "Beden Eğitimi ve Spor",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Perşembe",
+      "period": 5,
+      "isActive": true,
+      "courseName": "Beden Eğitimi ve Spor",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Perşembe",
+      "period": 6,
+      "isActive": true,
+      "courseName": "Görsel Sanatlar/Müzik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Perşembe",
+      "period": 7,
+      "isActive": true,
+      "courseName": "Görsel Sanatlar/Müzik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7808",
+      "day": "Perşembe",
+      "period": 8,
+      "isActive": true,
+      "courseName": "Sağlık Bilgisi ve Trafik Kültürü",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Pazartesi",
+      "period": 4,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Pazartesi",
+      "period": 1,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Pazartesi",
+      "period": 2,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Salı",
+      "period": 1,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Salı",
+      "period": 2,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Çarşamba",
+      "period": 1,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Çarşamba",
+      "period": 2,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Pazartesi",
+      "period": 3,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Salı",
+      "period": 3,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Salı",
+      "period": 4,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Çarşamba",
+      "period": 3,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Pazartesi",
+      "period": 5,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Pazartesi",
+      "period": 6,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Salı",
+      "period": 5,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Salı",
+      "period": 6,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Salı",
+      "period": 7,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Salı",
+      "period": 8,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Pazartesi",
+      "period": 7,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Pazartesi",
+      "period": 8,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Çarşamba",
+      "period": 5,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Çarşamba",
+      "period": 6,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Çarşamba",
+      "period": 7,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Çarşamba",
+      "period": 8,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Perşembe",
+      "period": 1,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Perşembe",
+      "period": 2,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Perşembe",
+      "period": 3,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Perşembe",
+      "period": 4,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Perşembe",
+      "period": 5,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Perşembe",
+      "period": 6,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Perşembe",
+      "period": 7,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Perşembe",
+      "period": 8,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Cuma",
+      "period": 1,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Cuma",
+      "period": 2,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Cuma",
+      "period": 3,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Cuma",
+      "period": 4,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Cuma",
+      "period": 5,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Cuma",
+      "period": 6,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Cuma",
+      "period": 7,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Cuma",
+      "period": 8,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Pazartesi",
+      "period": 1,
+      "isActive": true,
+      "courseName": "Türk Dili ve Edebiyatı",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Pazartesi",
+      "period": 2,
+      "isActive": true,
+      "courseName": "Felsefe",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Salı",
+      "period": 1,
+      "isActive": true,
+      "courseName": "Türk Dili ve Edebiyatı",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Salı",
+      "period": 2,
+      "isActive": true,
+      "courseName": "Türk Dili ve Edebiyatı",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Çarşamba",
+      "period": 1,
+      "isActive": true,
+      "courseName": "Türk Dili ve Edebiyatı",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Pazartesi",
+      "period": 3,
+      "isActive": true,
+      "courseName": "Felsefe",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Pazartesi",
+      "period": 4,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Salı",
+      "period": 3,
+      "isActive": true,
+      "courseName": "Birinci Yabancı Dil",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Salı",
+      "period": 4,
+      "isActive": true,
+      "courseName": "Birinci Yabancı Dil",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Salı",
+      "period": 5,
+      "isActive": true,
+      "courseName": "Din Kültürü ve Ahlak Bilgisi",
+      "teacherId": "ÖĞR-568"
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Salı",
+      "period": 6,
+      "isActive": true,
+      "courseName": "Din Kültürü ve Ahlak Bilgisi",
+      "teacherId": "ÖĞR-568"
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Pazartesi",
+      "period": 5,
+      "isActive": true,
+      "courseName": "Tarih",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Pazartesi",
+      "period": 6,
+      "isActive": true,
+      "courseName": "Tarih",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Pazartesi",
+      "period": 7,
+      "isActive": true,
+      "courseName": "Felsefe",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Pazartesi",
+      "period": 8,
+      "isActive": true,
+      "courseName": "Felsefe",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Salı",
+      "period": 7,
+      "isActive": true,
+      "courseName": "Beden Eğitimi ve Spor",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Salı",
+      "period": 8,
+      "isActive": true,
+      "courseName": "Beden Eğitimi ve Spor",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Çarşamba",
+      "period": 3,
+      "isActive": true,
+      "courseName": "Görsel Sanatlar/Müzik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-1074",
+      "day": "Çarşamba",
+      "period": 4,
+      "isActive": true,
+      "courseName": "Görsel Sanatlar/Müzik",
+      "teacherId": ""
+    },
+    {
+      "classroomId": "CLS-7356",
+      "day": "Çarşamba",
+      "period": 4,
+      "isActive": true,
+      "courseName": "",
+      "teacherId": "",
+      "isManualBlock": false
+    }
+  ],
+  "curriculum_schedule_matrix": {
+    "11-D-Pazartesi-1": {
+      "subject": "Türk Dili ve Edebiyatı",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "p8tveti"
+    },
+    "11-D-Pazartesi-2": {
+      "subject": "Türk Dili ve Edebiyatı",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "p8tveti"
+    },
+    "11-D-Salı-1": {
+      "subject": "Türk Dili ve Edebiyatı",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "bq3nhx0"
+    },
+    "11-D-Salı-2": {
+      "subject": "Türk Dili ve Edebiyatı",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "bq3nhx0"
+    },
+    "11-D-Çarşamba-1": {
+      "subject": "Türk Dili ve Edebiyatı",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "xxvrq2c"
+    },
+    "11-D-Pazartesi-3": {
+      "subject": "Din Kültürü ve Ahlak Bilgisi",
+      "teacherName": "Koray Uçar",
+      "isManual": false,
+      "blockId": "jzjnd8k"
+    },
+    "11-D-Pazartesi-4": {
+      "subject": "Din Kültürü ve Ahlak Bilgisi",
+      "teacherName": "Koray Uçar",
+      "isManual": false,
+      "blockId": "jzjnd8k"
+    },
+    "11-D-Pazartesi-5": {
+      "subject": "Tarih",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "la2q794"
+    },
+    "11-D-Pazartesi-6": {
+      "subject": "Tarih",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "la2q794"
+    },
+    "11-D-Pazartesi-7": {
+      "subject": "Felsefe",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "p2ip62s"
+    },
+    "11-D-Pazartesi-8": {
+      "subject": "Felsefe",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "p2ip62s"
+    },
+    "11-D-Salı-3": {
+      "subject": "Birinci Yabancı Dil",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "ubmxtop"
+    },
+    "11-D-Salı-4": {
+      "subject": "Birinci Yabancı Dil",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "ubmxtop"
+    },
+    "11-D-Çarşamba-2": {
+      "subject": "Birinci Yabancı Dil",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "n9h020j"
+    },
+    "11-D-Çarşamba-3": {
+      "subject": "Birinci Yabancı Dil",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "n9h020j"
+    },
+    "11-D-Salı-5": {
+      "subject": "Beden Eğitimi ve Spor",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "7o0d157"
+    },
+    "11-D-Salı-6": {
+      "subject": "Beden Eğitimi ve Spor",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "7o0d157"
+    },
+    "11-D-Salı-7": {
+      "subject": "Görsel Sanatlar/Müzik",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "z5i9ik9"
+    },
+    "11-D-Salı-8": {
+      "subject": "Görsel Sanatlar/Müzik",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "z5i9ik9"
+    },
+    "11-E-Pazartesi-1": {
+      "subject": "Türk Dili ve Edebiyatı",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "bqhu1rr"
+    },
+    "11-E-Pazartesi-2": {
+      "subject": "Türk Dili ve Edebiyatı",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "bqhu1rr"
+    },
+    "11-E-Salı-1": {
+      "subject": "Türk Dili ve Edebiyatı",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "rqtved3"
+    },
+    "11-E-Salı-2": {
+      "subject": "Türk Dili ve Edebiyatı",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "rqtved3"
+    },
+    "11-E-Çarşamba-1": {
+      "subject": "Türk Dili ve Edebiyatı",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "r9kvxws"
+    },
+    "11-E-Pazartesi-5": {
+      "subject": "Din Kültürü ve Ahlak Bilgisi",
+      "teacherName": "Koray Uçar",
+      "isManual": false,
+      "blockId": "1splvlf"
+    },
+    "11-E-Pazartesi-6": {
+      "subject": "Din Kültürü ve Ahlak Bilgisi",
+      "teacherName": "Koray Uçar",
+      "isManual": false,
+      "blockId": "1splvlf"
+    },
+    "11-E-Pazartesi-3": {
+      "subject": "Tarih",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "ejc5zza"
+    },
+    "11-E-Pazartesi-4": {
+      "subject": "Tarih",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "ejc5zza"
+    },
+    "11-E-Pazartesi-7": {
+      "subject": "Felsefe",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "wirg73k"
+    },
+    "11-E-Pazartesi-8": {
+      "subject": "Felsefe",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "wirg73k"
+    },
+    "11-E-Salı-3": {
+      "subject": "Birinci Yabancı Dil",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "rw2xedi"
+    },
+    "11-E-Salı-4": {
+      "subject": "Birinci Yabancı Dil",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "rw2xedi"
+    },
+    "11-E-Çarşamba-2": {
+      "subject": "Birinci Yabancı Dil",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "46n0qou"
+    },
+    "11-E-Çarşamba-3": {
+      "subject": "Birinci Yabancı Dil",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "46n0qou"
+    },
+    "11-E-Salı-5": {
+      "subject": "Beden Eğitimi ve Spor",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "7x7g9p7"
+    },
+    "11-E-Salı-6": {
+      "subject": "Beden Eğitimi ve Spor",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "7x7g9p7"
+    },
+    "11-E-Salı-7": {
+      "subject": "Görsel Sanatlar/Müzik",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "bv4kzii"
+    },
+    "11-E-Salı-8": {
+      "subject": "Görsel Sanatlar/Müzik",
+      "teacherName": "",
+      "isManual": false,
+      "blockId": "bv4kzii"
+    }
+  },
+  "curriculum_passive_cells": {
+    "9-A-Pazartesi-4": false,
+    "9-A-Pazartesi-1": false,
+    "9-A-Pazartesi-2": false,
+    "9-A-Pazartesi-6": false,
+    "9-A-Pazartesi-7": false,
+    "9-A-Pazartesi-8": false,
+    "9-A-Çarşamba-3": false,
+    "9-A-Perşembe-4": false,
+    "9-A-Çarşamba-1": false
+  },
+  "teacher_passive_slots_v2": [],
+  "curriculum_teacher_off_days": {
+    "Koray Uçar": []
+  },
+  "curriculum_avoid_gaps": true,
+  "curriculum_prioritize_blocks": true,
+  "curriculum_max_hours_per_day": 8,
+  "curriculum_selected_engine_algo": "balanced"
+} as const;
+
+export default backupSeed;

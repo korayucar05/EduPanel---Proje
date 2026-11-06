@@ -1,0 +1,1 @@
+var e=`/assets/mobile-role-1-sj7KbmHG.jpg`,t=`/assets/mobile-role-2-D3A7xqpq.jpg`;export{e as n,t};

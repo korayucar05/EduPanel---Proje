@@ -1,0 +1,68 @@
+:root{
+  --hasat-ink:#10283f;
+  --hasat-navy:#082f58;
+  --hasat-emerald:#13a66d;
+  --hasat-gold:#d7a62f;
+  --hasat-page:#f3f7f5;
+  --hasat-card:#ffffff;
+  --hasat-line:#dbe5e1;
+  --hasat-muted:#64748b;
+  --hasat-radius-card:24px;
+  --hasat-shadow-card:0 12px 38px rgba(15,42,72,.07);
+  --hasat-shadow-elevated:0 22px 60px rgba(8,47,88,.14);
+  --hasat-ease:cubic-bezier(.22,1,.36,1);
+}
+
+.hasat-page{
+  background:
+    radial-gradient(circle at top right,rgba(19,166,109,.12),transparent 28%),
+    radial-gradient(circle at 10% 18%,rgba(215,166,47,.10),transparent 24%),
+    linear-gradient(180deg,#f4faf7 0%,#f4f7fb 48%,#eef3f5 100%);
+  color:var(--hasat-ink);
+}
+
+.hasat-enter{
+  animation:hasat-enter .42s var(--hasat-ease) both;
+}
+
+.hasat-pressable{
+  transition:
+    transform .18s var(--hasat-ease),
+    box-shadow .18s var(--hasat-ease),
+    border-color .18s var(--hasat-ease);
+}
+
+.hasat-pressable:hover{
+  transform:translateY(-1px);
+}
+
+.hasat-pressable:active{
+  transform:scale(.985);
+}
+
+.hasat-safe-bottom{
+  padding-bottom:max(12px,env(safe-area-inset-bottom));
+}
+
+@keyframes hasat-enter{
+  from{opacity:0;transform:translateY(10px) scale(.992)}
+  to{opacity:1;transform:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .hasat-enter{animation:none}
+  .hasat-pressable{transition:none}
+}
+
+/* e-Nstitü v1 RC: klavye erişimi ve görünür odak standardı */
+:where(button,a,input,select,textarea):focus-visible{
+  outline:3px solid rgba(19,166,109,.38);
+  outline-offset:2px;
+}
+
+@media (prefers-reduced-motion:reduce){
+  .animate-pulse,.animate-spin,.animate-bounce,.animate-ping{
+    animation:none!important;
+  }
+  html{scroll-behavior:auto!important}
+}

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b4ea2" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="e-Nstitü" />
+    <link rel="manifest" href="/enstitu.webmanifest?v=32" />
+    <link rel="apple-touch-icon" href="/enstitu-pwa-icon-v2-192.png?v=32" />
+    <link rel="icon" type="image/png" href="/enstitu-pwa-icon-v2.png?v=32" />
+    <title>e-Nstitü</title>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="e-Nstitü" />
+    <meta property="og:description" content="Ordu Lisesi eğitim yönetim sistemi" />
+    <script>
+      try {
+        if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
+          document.documentElement.classList.add('enstitu-native-startup');
+        }
+      } catch (_) {}
+    </script>
+    <style>
+      html, body, #root { min-height: 100%; }
+      body { margin: 0; background: #ffffff; }
+      html.enstitu-native-startup,
+      html.enstitu-native-startup body,
+      html.enstitu-native-startup #root { background: #0b4ea2; }
+    </style>
+    <script type="module" crossorigin src="/assets/index-E8sZGMUk.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

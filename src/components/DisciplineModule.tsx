@@ -1,0 +1,2778 @@
+import React, { useState, useEffect, lazy, Suspense } from "react";
+import { auditLog } from "../core/audit";
+// HtmlPdfAdapter PDF indirme aninda lazy-load edilir.
+import { Search, Heart, MessageSquare, Trash2, AlertTriangle, CheckCircle2, X, Check, FileText, Printer, Plus, Calendar, UserPlus, Users, Save, Archive } from "lucide-react";
+import type { BehaviorRecord } from "./behavior/behaviorTypes";
+import { safeStorage } from "./behavior/behaviorStorage";
+import { ActionPermissionNotice } from "./common";
+import { welfareService } from "../modules/welfare";
+
+import { sqliteStorage } from "../core/state/SyncStateStore";
+import { printHtmlSafely } from './discipline/pdfPrintCompat';
+import { DisciplineArchivePanel } from './discipline/DisciplineArchivePanel';
+const DisciplineDecisionModal = lazy(() => import("./discipline/DisciplineDecisionModal").then(m => ({ default: m.DisciplineDecisionModal })));
+const DisciplineCallModal = lazy(() => import("./discipline/DisciplineCallModal").then(m => ({ default: m.DisciplineCallModal })));
+const DisciplineStatementModals = lazy(() => import("./discipline/DisciplineStatementModals").then(m => ({ default: m.DisciplineStatementModals })));
+import { DisciplineProcessSteps } from './discipline/DisciplineProcessSteps';
+const DisciplineIncidentReportModal = lazy(() => import("./discipline/DisciplineIncidentReportModal").then(m => ({ default: m.DisciplineIncidentReportModal })));
+const DisciplinePreviewModals = lazy(() => import("./discipline/DisciplinePreviewModals").then(m => ({ default: m.DisciplinePreviewModals })));
+import { DisciplineMainPanels } from './discipline/DisciplineMainPanels';
+import { createDisciplineDocumentTools } from './discipline/disciplineDocumentTools';
+
+interface DisciplineModuleProps {
+  initialTab?: string;
+  classrooms?: any[];
+  teachers?: any[];
+  students?: any[];
+  enforceStudentScope?: boolean;
+  scopeReason?: string;
+  canManageDiscipline?: boolean;
+  onOpenBehaviorTab?: (filter: "All" | "Olumlu") => void;
+}
+
+export default function DisciplineModule({
+  initialTab = "Uyarı Bildirimi",
+  classrooms = [],
+  teachers = [],
+  students = [],
+  enforceStudentScope = false,
+  scopeReason,
+  canManageDiscipline = true,
+  onOpenBehaviorTab,
+}: DisciplineModuleProps) {
+  const [activeTab, setActiveTab] = useState(initialTab);
+  const normalizeBehaviorRecord = (
+    value: unknown,
+    fallback?: BehaviorRecord | null,
+  ): BehaviorRecord => ({
+    ...(fallback || {}),
+    ...(
+      value && typeof value === "object"
+        ? value as Record<string, unknown>
+        : {}
+    ),
+  }) as BehaviorRecord;
+
+  const scopeRecordList = (items: BehaviorRecord[]) => {
+    if (!enforceStudentScope) return items;
+    const ids = new Set(students.map((student: any) => String(student?.id ?? "").trim()).filter(Boolean));
+    const names = new Set(students.map((student: any) => String(student?.fullName ?? student?.name ?? "").trim().toLocaleLowerCase("tr-TR")).filter(Boolean));
+    const classes = new Set(students.map((student: any) => String(student?.classroom ?? student?.className ?? "").trim().toLocaleLowerCase("tr-TR")).filter(Boolean));
+    return items.filter((record: any) => {
+      const recordStudents = Array.isArray(record?.studentsList) && record.studentsList.length
+        ? record.studentsList
+        : [{ id: record?.studentId, name: record?.studentName, classroom: record?.studentClassroom }];
+      return recordStudents.some((student: any) =>
+        ids.has(String(student?.id ?? "").trim()) ||
+        names.has(String(student?.name ?? "").trim().toLocaleLowerCase("tr-TR")) ||
+        classes.has(String(student?.classroom ?? "").trim().toLocaleLowerCase("tr-TR"))
+      );
+    });
+  };
+
+  const [warnings, setWarnings] = useState<BehaviorRecord[]>([]);
+  const [boardRecords, setBoardRecords] = useState<BehaviorRecord[]>([]);
+  const [archiveRecords, setArchiveRecords] = useState<BehaviorRecord[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [recordToRevert, setRecordToRevert] = useState<BehaviorRecord | null>(null);
+  const [revertType, setRevertType] = useState<"warnings" | "board" | "disiplin-sureci" | null>(null);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isSevkConfirmModalOpen, setIsSevkConfirmModalOpen] = useState(false);
+  const [recordToSevk, setRecordToSevk] = useState<BehaviorRecord | null>(null);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [selectedWarningForLetter, setSelectedWarningForLetter] = useState<BehaviorRecord | null>(null);
+  const [warningLetterPrintPreviewContent, setWarningLetterPrintPreviewContent] = useState<string | null>(null);
+  const [customBehaviors, setCustomBehaviors] = useState<any[]>([]);
+  const [selectedRecordIdsForTutanak, setSelectedRecordIdsForTutanak] = useState<string[]>([]);
+
+   // Manual student inputs
+   const [isManualStudent, setIsManualStudent] = useState(false);
+   const [manualStudentName, setManualStudentName] = useState("");
+   const [manualStudentClassroom, setManualStudentClassroom] = useState("");
+   const [manualStudentNumber, setManualStudentNumber] = useState("");
+ 
+   // Rehberlik form states
+   const [isRehberlikModalOpen, setIsRehberlikModalOpen] = useState(false);
+   const [selectedRecordForRehberlik, setSelectedRecordForRehberlik] = useState<BehaviorRecord | null>(null);
+   const [rehberlikSevkTarihi, setRehberlikSevkTarihi] = useState("");
+   const [rehberlikDilekceKonu, setRehberlikDilekceKonu] = useState("");
+   const [rehberlikGorusulenKisiler, setRehberlikGorusulenKisiler] = useState("");
+   const [rehberlikGorusmeOzeti, setRehberlikGorusmeOzeti] = useState("");
+   const [rehberlikPsikososyal, setRehberlikPsikososyal] = useState("");
+   const [rehberlikOneriler, setRehberlikOneriler] = useState("");
+   const [rehberlikOlayTarihi, setRehberlikOlayTarihi] = useState("");
+   const [isRehberlikPrintPreviewOpen, setIsRehberlikPrintPreviewOpen] = useState(false);
+   
+   // Öğrenci İfade Formu states
+   const [isIfadeModalOpen, setIsIfadeModalOpen] = useState(false);
+   const [selectedRecordForIfade, setSelectedRecordForIfade] = useState<BehaviorRecord | null>(null);
+   const [ifadeOlayTarihi, setIfadeOlayTarihi] = useState("");
+   const [ifadeTarihi, setIfadeTarihi] = useState("");
+   const [ifadeKonusu, setIfadeKonusu] = useState("");
+   const [ifadeMetni, setIfadeMetni] = useState("");
+   const [ifadeKurulBaskani, setIfadeKurulBaskani] = useState("");
+   const [ifadeSelectedStudent, setIfadeSelectedStudent] = useState("");
+
+   // Yazılı İfadeler Formu states
+   const [isYaziliIfadeModalOpen, setIsYaziliIfadeModalOpen] = useState(false);
+   const [yaziliIfadePrintPreviewContent, setYaziliIfadePrintPreviewContent] = useState<string | null>(null);
+   const [selectedRecordForYaziliIfade, setSelectedRecordForYaziliIfade] = useState<BehaviorRecord | null>(null);
+  const [yaziliIfadeTuru, setYaziliIfadeTuru] = useState("Öğrenci İfadesi"); // "Öğrenci İfadesi", "Şikayetçi (Mağdur) Öğrenci İfadesi", "Tanık İfadesi"
+   const [yaziliIfadeTarih, setYaziliIfadeTarih] = useState("");
+   const [yaziliIfadeTarihi, setYaziliIfadeTarihi] = useState("");
+   const [yaziliIfadeSaati, setYaziliIfadeSaati] = useState("");
+   const [yaziliIfadeYeri, setYaziliIfadeYeri] = useState("Disiplin Kurulu Odası");
+   const [yaziliIfadeSelectedStudent, setYaziliIfadeSelectedStudent] = useState("");
+   const [yaziliIfadeKonusu, setYaziliIfadeKonusu] = useState("");
+   const [yaziliIfadeMetni, setYaziliIfadeMetni] = useState("");
+   const [yaziliIfadeOlayTarihi, setYaziliIfadeOlayTarihi] = useState("");
+   const [yaziliIfadeDilekceTarihi, setYaziliIfadeDilekceTarihi] = useState("");
+
+   // Çağrı Pusulası states
+   const [isCagriPusulasiModalOpen, setIsCagriPusulasiModalOpen] = useState(false);
+   const [selectedRecordForCagri, setSelectedRecordForCagri] = useState<BehaviorRecord | null>(null);
+   const [cagriDate, setCagriDate] = useState("");
+   const [cagriMeetingDate, setCagriMeetingDate] = useState("");
+   const [cagriMeetingTime, setCagriMeetingTime] = useState("");
+   const [cagriMeetingPlace, setCagriMeetingPlace] = useState("Okul Müdürlüğü");
+   const [cagriPrintPreviewContent, setCagriPrintPreviewContent] = useState<string | null>(null);
+   const [cagriType, setCagriType] = useState("Öğrenci Çağrı Yazısı");
+   const [cagriSelectedStudent, setCagriSelectedStudent] = useState("");
+   
+   const [cagriWitnesses, setCagriWitnesses] = useState<Array<{ id: string; name: string; classroom: string; number: string; }>>([]);
+   const [cagriWitnessSearchMode, setCagriWitnessSearchMode] = useState<"search" | "manual">("search");
+   const [cagriWitnessSearchTerm, setCagriWitnessSearchTerm] = useState("");
+   const [cagriShowWitnessSuggestions, setCagriShowWitnessSuggestions] = useState(false);
+   const [cagriSelectedWitnessForAdd, setCagriSelectedWitnessForAdd] = useState<any>(null);
+   const [cagriManualWitnessName, setCagriManualWitnessName] = useState("");
+   const [cagriManualWitnessClass, setCagriManualWitnessClass] = useState("");
+   const [cagriManualWitnessNumber, setCagriManualWitnessNumber] = useState("");
+   const [isWhatsAppPreviewOpen, setIsWhatsAppPreviewOpen] = useState(false);
+   const [whatsAppMessageText, setWhatsAppMessageText] = useState("");
+   const [isToplantiBilgileriModalOpen, setIsToplantiBilgileriModalOpen] = useState(false);
+   const [toplantiBilgileriStudent, setToplantiBilgileriStudent] = useState("");
+   const [toplantiBilgileriMeetingWith, setToplantiBilgileriMeetingWith] = useState("");
+   const [toplantiBilgileriDate, setToplantiBilgileriDate] = useState("");
+   const [toplantiBilgileriTime, setToplantiBilgileriTime] = useState("");
+   
+   // Karar states
+   const [isKararModalOpen, setIsKararModalOpen] = useState(false);
+   const [selectedRecordForKarar, setSelectedRecordForKarar] = useState<BehaviorRecord | null>(null);
+   const [kararSelectedStudent, setKararSelectedStudent] = useState("");
+   const [kararDataState, setKararDataState] = useState<any>({});
+
+  // Tebliğler states
+  const [isTebligModalOpen, setIsTebligModalOpen] = useState(false);
+  const [selectedRecordForTeblig, setSelectedRecordForTeblig] = useState<BehaviorRecord | null>(null);
+  const [tebligSelectedStudent, setTebligSelectedStudent] = useState("");
+  const [tebligType, setTebligType] = useState("Öğrenci Tebliğ Belgesi");
+  const [tebligDate, setTebligDate] = useState("");
+  const [tebligSubject, setTebligSubject] = useState("");
+  const [tebligText, setTebligText] = useState("");
+  const [tebligSender, setTebligSender] = useState("");
+  const [tebligSenderTitle, setTebligSenderTitle] = useState("");
+  const [tebligReceiver, setTebligReceiver] = useState("");
+   
+   // Tutanak states
+   const [isTutanakModalOpen, setIsTutanakModalOpen] = useState(false);
+   const [tutanakDate, setTutanakDate] = useState(() => {
+     const today = new Date();
+     const yyyy = today.getFullYear();
+     const mm = String(today.getMonth() + 1).padStart(2, '0');
+     const dd = String(today.getDate()).padStart(2, '0');
+     return `${yyyy}-${mm}-${dd}`;
+   });
+   const [tutanakTeachers, setTutanakTeachers] = useState<string[]>([]);
+   const [newTeacherInput, setNewTeacherInput] = useState("");
+   const [tutanakStudents, setTutanakStudents] = useState<Array<{
+     id: string;
+     name: string;
+     classroom: string;
+     number: string;
+   }>>([]);
+   const [studentSearchTerm, setStudentSearchTerm] = useState("");
+   const [selectedStudentForTutanak, setSelectedStudentForTutanak] = useState<any | null>(null);
+   const [showTeacherSuggestions, setShowTeacherSuggestions] = useState(false);
+   const [showStudentSuggestions, setShowStudentSuggestions] = useState(false);
+ 
+   const [allStudentsList, setAllStudentsList] = useState<any[]>([]);
+   const [allTeachersList, setAllTeachersList] = useState<any[]>([]);
+ 
+   useEffect(() => {
+     try {
+       const savedStudents = sqliteStorage.getItem("school_students");
+       if (savedStudents) {
+         setAllStudentsList(JSON.parse(savedStudents));
+       }
+       const savedTeachers = sqliteStorage.getItem("school_teachers");
+       if (savedTeachers) {
+         setAllTeachersList(JSON.parse(savedTeachers));
+       }
+     } catch (e) {
+       console.error("Error loading students/teachers for tutanak", e);
+     }
+   }, [isTutanakModalOpen]);
+
+  const getBehaviorDetails = (behaviorName: string) => {
+    const match = customBehaviors.find((b) => b.name === behaviorName);
+    const regName = match?.regulationName || "Milli Eğitim Bakanlığı Ortaöğretim Kurumları Yönetmeliği";
+    const art = match?.article || "Madde 164";
+    const sub = match?.paragraph || "1. fıkra";
+    const detail = match?.content || behaviorName;
+    return { regulationName: regName, article: art, paragraph: sub, content: detail };
+  };
+
+  const getRecordStudents = (record: BehaviorRecord) => {
+    if (record.studentsList && record.studentsList.length > 0) {
+      return record.studentsList;
+    }
+    return [{
+      id: record.studentId,
+      name: record.studentName,
+      classroom: record.studentClassroom || "",
+      number: record.studentNumber || ""
+    }];
+  };
+
+  const createStudentArchiveRecords = (
+    record: BehaviorRecord,
+    archiveSource: "Uyarı Bildirimi" | "Disiplin Süreci",
+  ): BehaviorRecord[] => {
+    const archiveGroupId = record.archiveGroupId || record.sourceRecordId || record.id;
+    return getRecordStudents(record).map((student, index) => ({
+      ...record,
+      id: `archive-${archiveGroupId}-${student.id}`,
+      sourceRecordId: record.sourceRecordId || record.id,
+      archiveGroupId,
+      archiveSource,
+      archivedAt: Date.now() + index,
+      studentId: student.id,
+      studentName: student.name,
+      studentClassroom: student.classroom || "",
+      studentNumber: student.number || "",
+      studentsList: [],
+      originalSanctionType: record.originalSanctionType || (archiveSource === "Uyarı Bildirimi" && record.sanctionType === "Uyarı" ? "Kınama" : record.sanctionType),
+      sanctionType: archiveSource === "Uyarı Bildirimi" ? "Uyarı" : record.sanctionType,
+    }));
+  };
+
+  const formatHeaderLine = (line: string): string => {
+    const trimmed = line.trim();
+    if (trimmed.toUpperCase() === "T.C." || trimmed.toUpperCase() === "T.C") return "T.C.";
+    
+    return trimmed
+      .split(" ")
+      .map(word => {
+        if (!word) return "";
+        if (word.toUpperCase() === "T.C." || word.toUpperCase() === "T.C") return "T.C.";
+        
+        const upper = word.toUpperCase();
+        const trUpper = word.toLocaleUpperCase("tr-TR");
+        
+        if (upper === "ORDU" || trUpper === "ORDU") return "ORDU";
+    if (upper === "VALİLİĞİ" || upper === "VALILIGI" || trUpper === "VALİLİĞİ") return "VALİLİĞİ";
+        
+    if (upper === "MÜDÜRLÜĞÜ" || upper === "MUDURLUGU" || trUpper === "MÜDÜRLÜĞÜ") return "Müdürlüğü";
+        if (upper === "LİSESİ" || upper === "LISESI" || trUpper === "LİSESİ") return "Lisesi";
+        if (upper === "MİLLÎ" || upper === "MILLI" || trUpper === "MİLLÎ") return "Millî";
+    if (upper === "EĞİTİM" || upper === "EGITIM" || trUpper === "EĞİTİM") return "Eğitim";
+    if (upper === "BAKANLIĞI" || upper === "BAKANLIGI" || trUpper === "BAKANLIĞI") return "Bakanlığı";
+        
+        const first = word.charAt(0).toLocaleUpperCase("tr-TR");
+        const rest = word.slice(1).toLocaleLowerCase("tr-TR");
+        return first + rest;
+      })
+      .join(" ");
+  };
+
+    const getHeaderLines = (): string[] => {
+    try {
+      const savedA = sqliteStorage.getItem("school_info_a_profile");
+      if (savedA) {
+        const parsedA = JSON.parse(savedA);
+        if (parsedA && (parsedA.instLine1 || parsedA.instLine2 || parsedA.instLine3)) {
+          const lines = [parsedA.instLine1, parsedA.instLine2, parsedA.instLine3].filter(Boolean);
+          if (lines.length > 0) return lines;
+        }
+      }
+      const saved = sqliteStorage.getItem("school_inst_lines");
+      let lines: string[] = [];
+      if (saved) {
+        lines = JSON.parse(saved);
+      }
+      if (!Array.isArray(lines) || lines.length === 0) {
+        lines = [
+          "T.C.",
+      "ORDU VALİLİĞİ",
+      "ORDU LİSESİ MÜDÜRLÜĞÜ",
+        ];
+      }
+      
+      const modifiedLines = [...lines];
+      if (modifiedLines.length > 0) {
+        const lastIdx = modifiedLines.length - 1;
+        const lastLine = modifiedLines[lastIdx].trim();
+    if (!lastLine.toUpperCase().endsWith("MÜDÜRLÜĞÜ")) {
+          const isAllUpper = lastLine === lastLine.toUpperCase();
+      const suffix = isAllUpper ? " MÜDÜRLÜĞÜ" : " Müdürlüğü";
+          modifiedLines[lastIdx] = lastLine + suffix;
+        }
+      }
+      return modifiedLines;
+    } catch (e) {
+      console.error(e);
+      return [
+        "T.C.",
+      "ORDU VALİLİĞİ",
+      "ORDU LİSESİ MÜDÜRLÜĞÜ",
+      ];
+    }
+  };
+
+    const getPrincipalName = (): string => {
+    try {
+      const savedA = sqliteStorage.getItem("school_info_a_profile");
+      if (savedA) {
+        const parsedA = JSON.parse(savedA);
+        if (parsedA && parsedA.principalName) {
+          return parsedA.principalName;
+        }
+      }
+      const saved = sqliteStorage.getItem("school_info");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.principalName) {
+          return parsed.principalName;
+        }
+      }
+    } catch (error) {
+      console.error("Error reading principalName:", error);
+    }
+    return "Koray Uçar";
+  };
+
+  const toggleLetterSent = async (warningId: string) => {
+    try {
+      const updatedWarnings = warnings.map((w) =>
+        w.id === warningId ? { ...w, letterSent: !w.letterSent } : w
+      );
+      setWarnings(updatedWarnings);
+      await safeStorage.setItem("disciplineWarnings", updatedWarnings);
+    } catch (error) {
+      console.error("Error toggling letter sent state:", error);
+    }
+  };
+
+  const toggleSelectRecordForTutanak = (recordId: string) => {
+    setSelectedRecordIdsForTutanak((prev) =>
+      prev.includes(recordId) ? prev.filter((id) => id !== recordId) : [...prev, recordId]
+    );
+  };
+
+  const handleSaveRehberlik = async () => {
+    if (!canManageDiscipline) { alert("Bu rol rehberlik kaydı oluşturamaz."); return; }
+    if (!selectedRecordForRehberlik) return;
+    
+    // Save the form data to the record
+    try {
+      const updatedBoardRecords = boardRecords.map((rec) => {
+        if (rec.id === selectedRecordForRehberlik.id) {
+          const completedSteps = rec.completedSteps ? { ...rec.completedSteps } : {};
+          completedSteps["Rehberlik Servisi Raporu"] = true; // Mark as completed
+          return { 
+            ...rec, 
+            completedSteps,
+            rehberlikData: {
+              ...rec.rehberlikData,
+              rehberlikSevkTarihi,
+              rehberlikOlayTarihi,
+              rehberlikDilekceKonu,
+              rehberlikGorusulenKisiler,
+              rehberlikGorusmeOzeti,
+              rehberlikPsikososyal,
+              rehberlikOneriler
+            }
+          };
+        }
+        return rec;
+      });
+      const guidancePayload = {
+        rehberlikSevkTarihi, rehberlikOlayTarihi, rehberlikDilekceKonu,
+        rehberlikGorusulenKisiler, rehberlikGorusmeOzeti, rehberlikPsikososyal, rehberlikOneriler,
+      };
+      const updatedGuidanceRecord = await welfareService.saveGuidance(selectedRecordForRehberlik.id, guidancePayload);
+      setBoardRecords(updatedBoardRecords);
+      void auditLog.record({ action: "update", module: "discipline", targetType: "guidanceForm", targetId: selectedRecordForRehberlik.id, summary: `${selectedRecordForRehberlik.studentName || "Öğrenci"} için rehberlik görüşme formu kaydedildi`, before: selectedRecordForRehberlik, after: updatedGuidanceRecord });
+      
+      setSuccessMessage(`${selectedRecordForRehberlik.studentName || "Öğrenci"} için Rehberlik Görüşme Formu başarıyla kaydedildi.`);
+      setIsSuccessModalOpen(true);
+      setIsRehberlikModalOpen(false);
+    } catch (error) {
+      console.error("Error saving rehberlik form:", error);
+      alert("Kaydetme sırasında bir hata oluştu.");
+    }
+  };
+
+  const handleActualPrintRehberlik = () => {
+    if (!selectedRecordForRehberlik) return;
+
+    let printSection = document.getElementById("print-section");
+    if (!printSection) {
+      printSection = document.createElement("div");
+      printSection.id = "print-section";
+      document.body.appendChild(printSection);
+    }
+
+    const studentsText = getRecordStudents(selectedRecordForRehberlik)
+      .map((s) => `${s.name} (${s.classroom} - No: ${s.number || s.id})`)
+      .join(", ");
+    
+    const headerLines = getHeaderLines();
+    const schoolName = headerLines.length > 2 ? headerLines[2] : "Okulu";
+
+    const htmlContent = `
+      <div style="font-family: 'Times New Roman', Times, serif; color: #000; padding: 20px; line-height: 1.5; font-size: 14px; max-width: 900px; margin: 0 auto;">
+        
+        <!-- Header Image & Title -->
+        <div style="text-align: center; margin-bottom: 20px; border-bottom: 3px solid #0f766e; padding-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 15px;">
+        <h2 style="font-size: 18px; font-weight: bold; margin: 0; color: #0f766e; text-transform: uppercase;">DİSİPLİN KURULU İÇİN ÖĞRENCİ GÖRÜŞME FORMU</h2>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 13px;">
+          <tbody>
+            <tr>
+              <td style="border: none; padding: 8px; width: 25%; font-weight: bold; background-color: #f1f5f9;">Okulu:</td>
+              <td style="border: none; padding: 8px; width: 75%;" colspan="3">${schoolName}</td>
+            </tr>
+            <tr>
+              <td style="border: none; padding: 8px; width: 25%; font-weight: bold; background-color: #f1f5f9;">Olay Tarihi:</td>
+              <td style="border: none; padding: 8px; width: 25%;">${rehberlikOlayTarihi.split('-').reverse().join('.')}</td>
+              <td style="border: none; padding: 8px; width: 25%; font-weight: bold; background-color: #f1f5f9;">Rehberlik Servisine<br/>Sevk Tarihi:</td>
+              <td style="border: none; padding: 8px; width: 25%;">${rehberlikSevkTarihi.split('-').reverse().join('.')}</td>
+            </tr>
+            <tr>
+              <td style="border: none; padding: 8px; font-weight: bold; background-color: #f1f5f9;">Dilekçe Konu/Sayı/No:</td>
+              <td style="border: none; padding: 8px;" colspan="3">${rehberlikDilekceKonu || ""}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Olayda Adı Geçenler -->
+        <div style="border: none; padding: 10px; margin-bottom: 10px; min-height: 80px;">
+          <div style="font-weight: bold; color: #475569; font-size: 12px; margin-bottom: 5px;">Olayda Adı Geçen Öğrenci/Öğrenciler (Ad Soyad, Sınıf, No):</div>
+          <div style="font-size: 13px;">${studentsText}</div>
+        </div>
+
+        <!-- Görüşülen Kişiler -->
+        <div style="border: none; padding: 10px; margin-bottom: 10px; min-height: 80px;">
+          <div style="font-weight: bold; color: #475569; font-size: 12px; margin-bottom: 5px;">Olayla İlgili Görüşülen Kişiler:</div>
+          <div style="font-size: 13px; white-space: pre-wrap;">${rehberlikGorusulenKisiler}</div>
+        </div>
+
+        <!-- Görüşmenin Özeti -->
+        <div style="border: none; padding: 10px; margin-bottom: 10px; min-height: 120px;">
+          <div style="font-weight: bold; color: #475569; font-size: 12px; margin-bottom: 5px;">Olayla İlgili Görüşmenin Özeti:</div>
+          <div style="font-size: 13px; text-align: justify; white-space: pre-wrap;">${rehberlikGorusmeOzeti}</div>
+        </div>
+
+        <!-- Psikososyal İnceleme -->
+         <div style="border: none; padding: 10px; margin-bottom: 10px; min-height: 120px;">
+          <div style="font-weight: bold; color: #475569; font-size: 12px; margin-bottom: 5px;">Olayla İlgili Öğrenci/Öğrencilerin Psikososyal İncelenmesi:</div>
+          <div style="font-size: 13px; text-align: justify; white-space: pre-wrap;">${rehberlikPsikososyal}</div>
+        </div>
+
+        <!-- Görüş ve Öneriler -->
+        <div style="border: none; padding: 10px; margin-bottom: 40px; min-height: 120px;">
+          <div style="font-weight: bold; color: #475569; font-size: 12px; margin-bottom: 5px;">Rehberlik Öğretmeninin Konuyla İlgili Görüş ve Önerileri:</div>
+          <div style="font-size: 13px; text-align: justify; white-space: pre-wrap;">${rehberlikOneriler}</div>
+        </div>
+
+        <!-- Imza Alanı -->
+        <div style="display: flex; justify-content: flex-end; margin-top: 50px;">
+          <div style="text-align: center; width: 250px;">
+            <div style="font-size: 13px; margin-bottom: 10px;">..../..../.......</div>
+            <div style="border-bottom: 1px dotted #000; width: 100%; height: 30px; margin-bottom: 5px;"></div>
+            <div style="font-size: 13px; font-weight: bold;">Okul Rehberlik Öğretmeni</div>
+          </div>
+        </div>
+
+      </div>
+    `;
+
+    printHtmlSafely(htmlContent, "@page { size: A4 portrait; margin: 10mm; }");
+  };
+
+  const handleDownloadPdfRehberlik = async () => {
+    const element = document.getElementById('rehberlik-print-section');
+    if (element) {
+      const { exportHtmlPdf } = await import('../pdf/adapters/HtmlPdfAdapter');
+    await exportHtmlPdf(element, {
+        filename: 'Rehberlik_Gorusme_Formu.pdf',
+        title: 'Rehberlik Görüşme Formu',
+        pageSize: 'A4',
+        orientation: 'portrait',
+        margins: [28, 28, 28, 28],
+      });
+    }
+  };
+
+  const handleWhatsAppPreview = () => {
+    if (!selectedRecordForCagri) return;
+
+    let stdName = "";
+    if (selectedRecordForCagri.studentsList) {
+      const std = selectedRecordForCagri.studentsList.find(s => s.id === cagriSelectedStudent);
+      if (std) {
+        stdName = std.name;
+      }
+    } else {
+      stdName = selectedRecordForCagri.studentName;
+    }
+
+    if (cagriType === "Tanık Çağrı Yazısı") {
+      if (cagriWitnesses.length > 0) {
+        stdName = cagriWitnesses.map(w => w.name).join(", ");
+      }
+    } else if (cagriType === "Şikayetçi (Mağdur) Çağrı Yazısı") {
+      const complainants = selectedRecordForCagri.complainantStudents || [];
+      if (complainants.length > 0) {
+        stdName = complainants.map(c => c.name).join(", ");
+      }
+    }
+
+    const targetName = cagriType === "Veli Çağrı Yazısı" ? `Sayın ${stdName} velisi` : `Sayın ${stdName}`;
+    const dateStr = cagriMeetingDate ? cagriMeetingDate.split('-').reverse().join('.') : "..../..../202...";
+    const timeStr = cagriMeetingTime || "....:....";
+    const placeStr = cagriMeetingPlace || "Okul Müdürlüğü";
+
+    const msg = `${targetName},\n\nOkulumuz Öğrenci Davranışlarını Değerlendirme Kurulu tarafından yürütülmekte olan bir konuyla ilgili olarak bilginize/ifadenize başvurulmak üzere aşağıda belirtilen tarih, saat ve yerde bulunmanız gerekmektedir.\n\nToplantı Tarihi: ${dateStr}\nToplantı Saati: ${timeStr}\nToplantı Yeri: ${placeStr}\n\nGereğini rica ederim.\nOkul Müdürü: ${getPrincipalName()}`;
+
+    setWhatsAppMessageText(msg);
+    setIsWhatsAppPreviewOpen(true);
+  };
+
+  const handleSaveCagriPusulasi = async () => {
+    if (!canManageDiscipline) { alert("Bu rol çağrı pusulası kaydedemez."); return; }
+    if (!selectedRecordForCagri) return;
+    
+    try {
+      let updatedRecord: any = null;
+      const updatedBoardRecords = boardRecords.map((rec) => {
+        if (rec.id === selectedRecordForCagri.id) {
+          const completedSteps = rec.completedSteps ? { ...rec.completedSteps } : {};
+          completedSteps["Çağrı Yazısı"] = true; // Mark as completed
+          const newRec = { 
+            ...rec, 
+            completedSteps,
+            cagriData: {
+              ...rec.cagriData,
+      [cagriType === "Tanık Çağrı Yazısı" ? "witnesses" : cagriType === "Şikayetçi (Mağdur) Çağrı Yazısı" ? "complainants" : cagriSelectedStudent]: {
+                cagriDate,
+                cagriMeetingDate,
+                cagriMeetingTime,
+                cagriMeetingPlace,
+                cagriType,
+                ...(cagriType === "Tanık Çağrı Yazısı" ? { witnesses: cagriWitnesses } : {})
+              }
+            }
+          };
+          updatedRecord = newRec;
+          return newRec;
+        }
+        return rec;
+      });
+      if (updatedRecord) {
+        setSelectedRecordForCagri(updatedRecord);
+      }
+      setBoardRecords(updatedBoardRecords);
+      await safeStorage.setItem("disciplineBoardRecords", updatedBoardRecords);
+    } catch (error) {
+      console.error("Error saving cagri form:", error);
+    }
+  };
+
+  const handleSaveAndPreviewCagriPusulasi = async () => {
+    if (!canManageDiscipline) { alert("Bu rol çağrı pusulası kaydedemez."); return; }
+    if (!selectedRecordForCagri) return;
+    
+    try {
+      let updatedRecord: any = null;
+      const updatedBoardRecords = boardRecords.map((rec) => {
+        if (rec.id === selectedRecordForCagri.id) {
+          const completedSteps = rec.completedSteps ? { ...rec.completedSteps } : {};
+          completedSteps["Çağrı Yazısı"] = true; // Mark as completed
+          const newRec = { 
+            ...rec, 
+            completedSteps,
+            cagriData: {
+              ...rec.cagriData,
+      [cagriType === "Tanık Çağrı Yazısı" ? "witnesses" : cagriType === "Şikayetçi (Mağdur) Çağrı Yazısı" ? "complainants" : cagriSelectedStudent]: {
+                cagriDate,
+                cagriMeetingDate,
+                cagriMeetingTime,
+                cagriMeetingPlace,
+                cagriType,
+                ...(cagriType === "Tanık Çağrı Yazısı" ? { witnesses: cagriWitnesses } : {})
+              }
+            }
+          };
+          updatedRecord = newRec;
+          return newRec;
+        }
+        return rec;
+      });
+      if (updatedRecord) {
+        setSelectedRecordForCagri(updatedRecord);
+      }
+      setBoardRecords(updatedBoardRecords);
+      await safeStorage.setItem("disciplineBoardRecords", updatedBoardRecords);
+    } catch (error) {
+      console.error("Error saving cagri form:", error);
+    }
+
+    const headerLines = getHeaderLines();
+    const formattedHeader = headerLines.map((line: string) => {
+      const formatted = line.replace(/(\r\n|\n|\r)/gm, "");
+      const isTC = formatted === "T.C.";
+      return '<h1 style="font-size: 14px; margin: 0 0 ' + (isTC ? '1px' : '4px') + ' 0; line-height: 1.1; font-weight: bold;">' + formatted + '</h1>';
+    }).join("");
+
+    let htmlContent = "";
+
+    const generatePageHTML = (addresseeName: string, isLast: boolean) => {
+      return `
+        <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 40px; color: #000; font-size: 12pt; line-height: 1.5; ${!isLast ? 'page-break-after: always;' : ''}">
+          <div style="text-align: center; margin-bottom: 30px;">
+            ${formattedHeader}
+            <h2 style="font-size: 14pt; font-weight: bold; margin: 20px 0 10px 0; text-transform: uppercase;">${cagriType.toLocaleUpperCase('tr-TR')}</h2>
+          </div>
+          
+          <div style="text-align: right; margin-bottom: 40px;">
+            Tarih: ${cagriDate ? cagriDate.split('-').reverse().join('.') : "..../..../202..."}
+          </div>
+
+          <div style="margin-bottom: 30px;">
+            Sayın: ${addresseeName}
+          </div>
+
+          <div style="text-indent: 40px; margin-bottom: 20px; text-align: justify; line-height: 1.8;">
+            Okulumuz Öğrenci Davranışlarını Değerlendirme Kurulu tarafından yürütülmekte olan bir konuyla ilgili olarak bilginize/ifadenize başvurulmak üzere aşağıda belirtilen tarih, saat ve yerde bulunmanız gerekmektedir.
+          </div>
+          
+          <div style="margin-left: 40px; margin-bottom: 30px; line-height: 1.8;">
+            <table style="border-collapse: collapse; font-size: inherit; font-family: inherit; color: inherit;">
+              <tr>
+                <td style="padding: 0 10px 0 0;"><strong>Toplantı Tarihi</strong></td>
+                <td style="padding: 0 10px 0 0;">:</td>
+                <td style="padding: 0;">${cagriMeetingDate ? cagriMeetingDate.split('-').reverse().join('.') : "..../..../202..."}</td>
+              </tr>
+              <tr>
+                <td style="padding: 0 10px 0 0;"><strong>Toplantı Saati</strong></td>
+                <td style="padding: 0 10px 0 0;">:</td>
+                <td style="padding: 0;">${cagriMeetingTime || "....:...."}</td>
+              </tr>
+              <tr>
+                <td style="padding: 0 10px 0 0;"><strong>Toplantı Yeri</strong></td>
+                <td style="padding: 0 10px 0 0;">:</td>
+                <td style="padding: 0;">${cagriMeetingPlace || "...................................."}</td>
+              </tr>
+            </table>
+          </div>
+
+          <div style="margin-bottom: 50px;">
+            Gereğini rica ederim.
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; margin-top: 50px; padding-right: 40px;">
+            <div style="text-align: center;">
+              <div style="margin-bottom: 10px; font-weight: bold;">${getPrincipalName()}</div>
+              <div>Okul Müdürü</div>
+            </div>
+          </div>
+        </div>
+      `;
+    };
+
+    if (cagriType === "Tanık Çağrı Yazısı") {
+      if (cagriWitnesses.length === 0) {
+        htmlContent = generatePageHTML("<strong>......................................................................</strong>", true);
+      } else {
+        htmlContent = cagriWitnesses.map((witness, idx) => {
+          const addresseeName = `<strong>${witness.name}</strong> (${witness.classroom} sınıfı, ${witness.number ? witness.number + ' numaralı öğrenci' : 'öğrencisi'})`;
+          return generatePageHTML(addresseeName, idx === cagriWitnesses.length - 1);
+        }).join("");
+      }
+    } else if (cagriType === "Şikayetçi (Mağdur) Çağrı Yazısı") {
+      const complainants = selectedRecordForCagri.complainantStudents || [];
+      if (complainants.length === 0) {
+        htmlContent = generatePageHTML("<strong>......................................................................</strong>", true);
+      } else {
+        htmlContent = complainants.map((comp, idx) => {
+          const addresseeName = `<strong>${comp.name}</strong> (${comp.classroom} sınıfı, ${comp.number ? comp.number + ' numaralı öğrenci' : 'öğrencisi'})`;
+          return generatePageHTML(addresseeName, idx === complainants.length - 1);
+        }).join("");
+      }
+    } else {
+      let addressee = "";
+      let stdName = "";
+      let stdClass = "";
+      let stdNumber = "";
+      if (selectedRecordForCagri.studentsList) {
+        const std = selectedRecordForCagri.studentsList.find(s => s.id === cagriSelectedStudent);
+        if (std) {
+          stdName = std.name;
+          stdClass = std.classroom;
+          stdNumber = std.number;
+        }
+      } else {
+        stdName = selectedRecordForCagri.studentName;
+        stdClass = selectedRecordForCagri.studentClassroom;
+        stdNumber = selectedRecordForCagri.studentNumber;
+      }
+
+      if (!stdName) {
+        addressee = "<strong>......................................................................</strong>";
+      } else if (cagriType === "Veli Çağrı Yazısı") {
+        addressee = `<strong>${stdName}</strong>'nın Velisi (${stdClass} sınıfı)`;
+      } else {
+        addressee = `<strong>${stdName}</strong> (${stdClass} - No: ${stdNumber || 'Belirtilmedi'})`;
+      }
+      
+      htmlContent = generatePageHTML(addressee, true);
+    }
+
+    setCagriPrintPreviewContent(htmlContent);
+    printHtmlSafely(htmlContent, "@page { size: A5 portrait; margin: 15mm; }");
+    setTimeout(() => {
+      setCagriPrintPreviewContent(null);
+    }, 1000);
+  };
+
+  const handleActualCagriPrint = () => {
+    if (!cagriPrintPreviewContent) return;
+    printHtmlSafely(cagriPrintPreviewContent, "@page { size: A5 portrait; margin: 15mm; }");
+  };
+
+  const handleSaveAndPrintKarar = async () => {
+    if (!canManageDiscipline) { alert("Bu rol disiplin kararı kaydedemez."); return; }
+    if (!selectedRecordForKarar) return;
+    
+    // Save the form data to the record
+    try {
+      const updatedRecord = await welfareService.saveDecision(
+        selectedRecordForKarar.id,
+        kararSelectedStudent,
+        { ...kararDataState },
+      );
+      setSelectedRecordForKarar(normalizeBehaviorRecord(updatedRecord, selectedRecordForKarar));
+      setBoardRecords(current => current.map(rec => rec.id === selectedRecordForKarar.id ? normalizeBehaviorRecord(updatedRecord, selectedRecordForKarar) : rec));
+      void auditLog.record({ action: "update", module: "discipline", targetType: "boardDecision", targetId: selectedRecordForKarar.id, summary: `${selectedRecordForKarar.studentName || "Öğrenci"} için disiplin kurulu kararı kaydedildi`, before: selectedRecordForKarar, after: updatedRecord });
+    } catch (error) {
+      console.error("Error saving karar form:", error);
+    }
+    
+    let stdName = "";
+    let stdClass = "";
+    let stdNumber = "";
+    if (selectedRecordForKarar.studentsList) {
+      const std = selectedRecordForKarar.studentsList.find(s => s.id === kararSelectedStudent);
+      if (std) {
+        stdName = std.name;
+        stdClass = std.classroom;
+        stdNumber = std.number;
+      }
+    } else {
+      stdName = selectedRecordForKarar.studentName;
+      stdClass = selectedRecordForKarar.studentClassroom;
+      stdNumber = selectedRecordForKarar.studentNumber;
+    }
+    
+    const k = kararDataState;
+    const dateFormatted = k.kararTarihi ? k.kararTarihi.split('-').reverse().join('.') : "";
+
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.4; color: #000; font-size: 12pt;">
+        <h2 style="text-align: center; margin-bottom: 20px; font-size: 14pt; padding-bottom: 10px;">OKUL ÖDÜL ve DİSİPLİN KURULU KARARI</h2>
+        
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+          <tr>
+            <td style="border: none; padding: 4px 8px; width: 30%;">Karar No</td>
+            <td style="border: none; padding: 4px 8px; width: 70%;">: ${k.kararNo || ""}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px;">Karar Tarihi</td>
+            <td style="border: none; padding: 4px 8px;">: ${dateFormatted}</td>
+          </tr>
+        </table>
+        
+        <div style="font-weight: bold; margin-bottom: 5px;"><u>Öğrencinin</u></div>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+          <tr>
+            <td style="border: none; padding: 4px 8px; width: 30%;">1. Adı Soyadı</td>
+            <td style="border: none; padding: 4px 8px; width: 70%;">: ${stdName}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px;">2. Doğum Tarihi</td>
+            <td style="border: none; padding: 4px 8px;">: ${k.dogumTarihi || ""}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px;">3. T.C.</td>
+            <td style="border: none; padding: 4px 8px;">: ${k.tcNo || ""}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px;">4. Sınıfı, dönemi, bölümü ve okul numarası</td>
+            <td style="border: none; padding: 4px 8px;">: ${stdClass} / No: ${stdNumber}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px;">5. Paralı/parasız yatılı veya gündüzlü olduğu</td>
+            <td style="border: none; padding: 4px 8px;">: ${k.ogrenimDurumu || ""}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px;">6. Başarı Durumu</td>
+            <td style="border: none; padding: 4px 8px;">: ${k.basariDurumu || ""}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px;">7. Sağlık Durumu</td>
+            <td style="border: none; padding: 4px 8px;">: ${k.saglikDurumu || ""}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px;">8. Ailesinin ekonomik durumu</td>
+            <td style="border: none; padding: 4px 8px;">: ${k.ekonomikDurum || ""}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px;">9. Ailesinin birlikte oturup oturmadığı</td>
+            <td style="border: none; padding: 4px 8px;">: ${k.birlikteOturma || ""}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px;">10. Anne-babasının sağ olup olmadığı</td>
+            <td style="border: none; padding: 4px 8px;">: ${k.anneBabaSag || ""}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px;">11. Anne-babasının öz olup olmadığı</td>
+            <td style="border: none; padding: 4px 8px;">: ${k.anneBabaOz || ""}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px;">12. Ailesinin yanında okuyup okumadığı</td>
+            <td style="border: none; padding: 4px 8px;">: ${k.ailesiYaninda || ""}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px;">13. Büyüyüp yetiştiği çevre</td>
+            <td style="border: none; padding: 4px 8px;">: ${k.yetistigiCevre || ""}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px;">14. Ailesinin oturduğu yer ve açık adresi</td>
+            <td style="border: none; padding: 4px 8px;">: ${k.adres || ""}</td>
+          </tr>
+          <tr>
+                  <td style="border: none; padding: 4px 8px;">15. Şimdiye kadar aldığı cezalar ve genel durumu</td>
+            <td style="border: none; padding: 4px 8px;">: ${k.oncekiCezalar || ""}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px;">16. Cezayı gerektiren davranışın yapıldığı yer ve tarih</td>
+            <td style="border: none; padding: 4px 8px;">: ${k.olayYeriTarihi || ""}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px;">17. Cezayı gerektiren davranışın çeşidi</td>
+            <td style="border: none; padding: 4px 8px;">: ${k.davranisCesidi || ""}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px;">18. Cezayı gerektiren davranışın nedeni</td>
+            <td style="border: none; padding: 4px 8px;">: ${k.davranisNedeni || ""}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px; vertical-align: top;">
+              19. Olayla ilgili olarak;<br/>
+              a) Cezalandırılan öğrencinin ifadesinin özeti<br/>
+              b) Tanıkların ifadesinin özeti<br/>
+              c) Varsa cezayı gerektiren davranışın tespitine yarayan diğer deliller
+            </td>
+            <td style="border: none; padding: 4px 8px; vertical-align: top;">
+              <b>A)</b> ${k.ifadeOzeti || ""}<br/><br/>
+              <b>B)</b> ${k.tanikOzeti || ""}<br/><br/>
+              <b>C)</b> ${k.digerDeliller || ""}
+            </td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px; vertical-align: top;">
+              20. Cezayı hafifleten veya şiddetlendiren nedenler
+            </td>
+            <td style="border: none; padding: 4px 8px; vertical-align: top;">
+              <div style="margin-bottom: 5px;">M.E.B. Ortaöğretim Kurumları Ödül ve Disiplin Yön. Madde 16 "Ceza Takdirinde Dikkat Edilecek Hususlar" incelenmiştir.</div>
+              <div style="display: flex; margin-bottom: 2px;"><div style="width: 250px;">Sınıf Arkadaşlarının Öğrenci Hakkında Kanaati</div><div>: ${k.arkadasKanaati || ""}</div></div>
+              <div style="display: flex;"><div style="width: 250px;">Sınıf Öğretmeninin ve Diğer Öğretmenlerinin Kanaati</div><div>: ${k.ogretmenKanaati || ""}</div></div>
+            </td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px; vertical-align: top;">21. Okul Öğrenci Ödül ve Disiplin Kurulunun kanaati</td>
+            <td style="border: none; padding: 4px 8px; vertical-align: top; text-align: justify;">
+              : Öğrencinin yapmış olduğu davranışın <u>M.E.B.</u> Ortaöğretim Kurumları Ödül ve Disiplin Yönetmeliğindeki karşılığı 12 / ${k.kurulKanaatiMaddeBendi || "..."} 'a göre "<b>${k.kurulKanaatiDavranis || "........................................................"}</b>" dır. Okul Ödül ve Disiplin Kurulu ceza takdirinde dikkat edilecek hususları ve rehberlik servisinin raporunu da inceleyerek öğrenciye gerekli konularda bilgilendirme de yaparak cezasının uygulanmasına-indirilmesine ve "<b>${k.kurulKanaatiCeza || "........................................................"}</b>" cezasının verilmesi kanaat getirmiştir.
+            </td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px; vertical-align: top;">22. Verilen Cezanın çeşidi ve dayandığı yönetmelik maddesi</td>
+            <td style="border: none; padding: 4px 8px; vertical-align: top;">
+              : <u>M.E.B.</u> Ortaöğretim Kurumları Ödül ve Disiplin Yön. Madde <u>12 / ${k.cezaMaddeBendi || "...."}</u> bendi <u>${k.cezaFikrasi || "......."}</u> numaralı fıkrası uygulanmıştır.
+            </td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 4px 8px; vertical-align: top;">23. Okul Öğrenci Ödül ve Disiplin Kurulunun kararı</td>
+            <td style="border: none; padding: 4px 8px; vertical-align: top;">: ${k.kurulKarari || ""}</td>
+          </tr>
+        </table>
+        
+        <table style="width: 100%; text-align: center; margin-top: 30px; margin-bottom: 30px; table-layout: fixed; font-weight: bold; font-size: 11px;">
+          <tr>
+            <td style="width: 22%; vertical-align: top;">
+              Üye<br/>
+              <span style="font-weight: normal; font-size: 10px; display: block; margin: 10px 0;">${k.uye1 || "..................................."}</span>
+              <div style="border-top: 1px dotted #000; padding-top: 4px;">
+                ${k.uye1Unvan || "Öğretmeni"}
+              </div>
+            </td>
+            <td style="width: 4%;"></td>
+            <td style="width: 22%; vertical-align: top;">
+              Üye<br/>
+              <span style="font-weight: normal; font-size: 10px; display: block; margin: 10px 0;">${k.uye2 || "..................................."}</span>
+              <div style="border-top: 1px dotted #000; padding-top: 4px;">
+                ${k.uye2Unvan || "Öğretmeni"}
+              </div>
+            </td>
+            <td style="width: 4%;"></td>
+            <td style="width: 22%; vertical-align: top;">
+              Üye<br/>
+              <span style="font-weight: normal; font-size: 10px; display: block; margin: 10px 0;">${k.uye3 || "..................................."}</span>
+              <div style="border-top: 1px dotted #000; padding-top: 4px;">
+                Okul Aile Birliği Üyesi
+              </div>
+            </td>
+            <td style="width: 4%;"></td>
+            <td style="width: 22%; vertical-align: top;">
+              Üye<br/>
+              <span style="font-weight: normal; font-size: 10px; display: block; margin: 10px 0;">${k.uye4 || "..................................."}</span>
+              <div style="border-top: 1px dotted #000; padding-top: 4px;">
+                Onur Kurulu İkinci Başkanı
+              </div>
+            </td>
+          </tr>
+        </table>
+        
+        <table style="width: 100%; text-align: center; font-weight: bold; font-size: 11px; table-layout: fixed;">
+          <tr>
+            <td style="width: 50%; vertical-align: top;">
+              Okul Disiplin Kurulu Başkanı<br/>
+              <span style="font-weight: normal; font-size: 10px; display: block; margin: 15px 0;">${k.baskan || "..................................."}</span>
+              <div style="border-top: 1px dotted #000; width: 70%; margin: 0 auto; padding-top: 4px;">
+                Müdür Başyardımcısı
+              </div>
+            </td>
+            <td style="width: 50%; vertical-align: top;">
+              <u>U Y G U N D U R</u><br/>
+              <span style="font-weight: normal; font-size: 10px; display: block; margin: 3px 0;">${dateFormatted || ".... / .... / 20...."}</span>
+              <span style="font-weight: normal; font-size: 10px; display: block; margin: 5px 0 10px 0;">${k.mudur || "..................................."}</span>
+              <div style="border-top: 1px dotted #000; width: 70%; margin: 0 auto; padding-top: 4px;">
+                Okul Müdürü
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    `;
+
+    const printStyles = `
+        #print-section table {
+          border-collapse: collapse !important;
+          border: none !important;
+          margin-bottom: 12px;
+        }
+        #print-section td {
+          border: none !important;
+          padding: 4px 8px !important;
+        }
+        #print-section * {
+          font-size: 12pt !important;
+        }
+        #print-section h2 {
+          font-size: 14pt !important;
+        }
+        @page { size: A4 portrait; margin: 10mm; }
+    `;
+
+    printHtmlSafely(htmlContent, printStyles);
+  };
+
+  const handleSaveYaziliIfadeOnly = async () => {
+    if (!canManageDiscipline) { alert("Bu rol yazılı ifade kaydedemez."); return; }
+    if (!selectedRecordForYaziliIfade) return;
+    
+    // Save the form data to the record
+    try {
+      let updatedRecord: any = null;
+      const updatedBoardRecords = boardRecords.map((rec) => {
+        if (rec.id === selectedRecordForYaziliIfade.id) {
+          const completedSteps = rec.completedSteps ? { ...rec.completedSteps } : {};
+          completedSteps["Yazılı İfadeler"] = true; // Mark as completed
+          const newRec = { 
+            ...rec, 
+            completedSteps,
+            yaziliIfadeData: {
+              ...rec.yaziliIfadeData,
+              [yaziliIfadeSelectedStudent]: {
+                yaziliIfadeTuru,
+                yaziliIfadeTarih,
+                yaziliIfadeTarihi,
+                yaziliIfadeSaati,
+                yaziliIfadeYeri,
+                yaziliIfadeSelectedStudent,
+                yaziliIfadeKonusu,
+                yaziliIfadeMetni,
+                yaziliIfadeOlayTarihi,
+                yaziliIfadeDilekceTarihi
+              }
+            }
+          };
+          updatedRecord = newRec;
+          return newRec;
+        }
+        return rec;
+      });
+      if (updatedRecord) {
+        setSelectedRecordForYaziliIfade(updatedRecord);
+      }
+      setBoardRecords(updatedBoardRecords);
+      await safeStorage.setItem("disciplineBoardRecords", updatedBoardRecords);
+    } catch (error) {
+      console.error("Error saving yazili ifade form:", error);
+    }
+  };
+
+  const handleSaveAndPreviewYaziliIfade = async () => {
+    if (!canManageDiscipline) { alert("Bu rol yazılı ifade kaydedemez."); return; }
+    if (!selectedRecordForYaziliIfade) return;
+    
+    // First save the data
+    await handleSaveYaziliIfadeOnly();
+
+    let students: any[] = [];
+    if (yaziliIfadeTuru === "Öğrenci İfadesi") {
+      students = getRecordStudents(selectedRecordForYaziliIfade);
+    } else if (yaziliIfadeTuru === "Şikayetçi (Mağdur) Öğrenci İfadesi") {
+      students = selectedRecordForYaziliIfade.complainantStudents || [];
+    } else if (yaziliIfadeTuru === "Tanık İfadesi") {
+      students = selectedRecordForYaziliIfade.cagriData?.["witnesses"]?.witnesses || [];
+    }
+
+    const selectedStudentObj = students.find(s => (s.id || s.name) === yaziliIfadeSelectedStudent) || students[0];
+    const studentName = selectedStudentObj ? selectedStudentObj.name : "";
+
+    const formattedTarihi = yaziliIfadeTarihi ? yaziliIfadeTarihi.split('-').reverse().join('.') : "..../..../20....";
+    const formattedOlayTarihi = yaziliIfadeOlayTarihi ? yaziliIfadeOlayTarihi.split('-').reverse().join('.') : "..../..../20....";
+    const formattedDilekceTarihi = yaziliIfadeDilekceTarihi ? yaziliIfadeDilekceTarihi.split('-').reverse().join('.') : "..../..../20....";
+
+    const headerLines = getHeaderLines();
+    const schoolNameLine = headerLines.find(l => l.toUpperCase().endsWith("MÜDÜRLÜĞÜ")) || "ORDU LİSESİ MÜDÜRLÜĞÜ";
+
+    const isTanik = yaziliIfadeTuru === "Tanık İfadesi";
+    let htmlContent = "";
+
+    const primaryStudents = getRecordStudents(selectedRecordForYaziliIfade);
+    const primaryStdsString = primaryStudents.map(s => {
+      const parts: string[] = [];
+      if (s.classroom) parts.push(`${s.classroom} sınıfı`);
+      if (s.number || s.id) parts.push(`${s.number || s.id} numaralı`);
+      const details = parts.length > 0 ? ` (${parts.join(", ")})` : "";
+      return `<strong>${s.name}</strong>${details}`;
+    }).join(", ");
+
+
+    let committeeMembersHTML = "";
+    let baskanName = "";
+    try {
+      const saved = sqliteStorage.getItem("school_committees");
+      if (saved) {
+        const committees = JSON.parse(saved);
+        const disciplineCommittee = committees.find((c: any) => c.name.toLowerCase().includes("davranışlarını değerlendirme") || c.name.toLowerCase().includes("disiplin"));
+        if (disciplineCommittee) {
+          baskanName = disciplineCommittee.presidentName || "";
+          
+          if (!isTanik) {
+            const activeMembers = disciplineCommittee.members.filter((m: any) => !m.role.toLowerCase().includes("yedek")).slice(0, 2);
+            
+            let signatures = activeMembers.map((m: any) => `
+              <div style="flex: 1;">
+                <div style="font-weight: normal; font-size: 12pt; display: block;">Üye</div>
+                <div style="font-weight: bold;">${m.teacherName}</div>
+                <div style="font-weight: normal; font-size: 12pt; margin-top: 30px; display: block;">İmza</div>
+              </div>
+            `);
+            
+            signatures.push(`
+              <div style="flex: 1;">
+                <div style="font-weight: normal; font-size: 12pt; display: block;">Kurul Başkanı</div>
+                <div style="font-weight: bold;">${baskanName}</div>
+                <div style="font-weight: normal; font-size: 12pt; margin-top: 30px; display: block;">İmza</div>
+              </div>
+            `);
+            
+            committeeMembersHTML = `
+              <div style="display: flex; justify-content: space-between; margin-top: 25px; margin-bottom: 25px; font-family: Arial, sans-serif; font-size: 12pt; text-align: center; page-break-inside: avoid;">
+                ${signatures.join('')}
+              </div>
+            `;
+          }
+        }
+      }
+    } catch (e) {}
+
+    if (!committeeMembersHTML && !isTanik) {
+        committeeMembersHTML = `
+        <div style="display: flex; justify-content: space-between; margin-top: 25px; margin-bottom: 25px; font-family: Arial, sans-serif; font-size: 12pt; font-weight: bold; text-align: center; page-break-inside: avoid;">
+          <div style="width: 33.33%;">
+            Üye (Öğretmen)<br>
+            <span style="font-weight: normal; font-size: 12pt; margin-top: 40px; display: block;">İmza</span>
+          </div>
+          <div style="width: 33.33%;">
+            Üye (Öğretmen)<br>
+            <span style="font-weight: normal; font-size: 12pt; margin-top: 40px; display: block;">İmza</span>
+          </div>
+          <div style="width: 33.33%;">
+            Disiplin Kurulu Başkanı<br>
+            <span style="font-weight: normal; font-size: 12pt; margin-top: 40px; display: block;">İmza</span>
+          </div>
+        </div>
+        `;
+    }
+
+    if (isTanik) {
+      htmlContent = `
+      <div class="print-container" style="font-family: Arial, Helvetica, sans-serif; color: #000; padding: 25px 30px; line-height: 1.4; font-size: 12pt; max-width: 800px; margin: 0 auto; background: #fff; box-sizing: border-box; text-align: justify;">
+        
+        <!-- School Title -->
+        <div style="text-align: center; font-weight: bold; font-size: 12pt; margin-bottom: 25px; font-family: Arial, sans-serif; line-height: 1.5;">
+          ${getHeaderLines().map(l => l.toUpperCase()).join("<br>")}
+        </div>
+
+        <!-- Document Main Title -->
+        <div style="text-align: center; margin-bottom: 5px; position: relative; height: 45px;">
+        <h2 style="font-size: 14pt; font-weight: bold; margin: 0; font-family: Arial, sans-serif; letter-spacing: 0.5px;">DİSİPLİN KURULU TANIK ÖĞRENCİ İFADE TUTANAĞI</h2>
+          
+          <!-- Date in title row (right aligned) -->
+          <div style="position: absolute; right: 5px; bottom: 0; font-size: 12pt; font-weight: bold; font-family: Arial, sans-serif;">
+            ${formattedTarihi}
+          </div>
+        </div>
+
+        <!-- Main Form Table -->
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-family: Arial, sans-serif; font-size: 12pt;">
+          <tbody>
+            <tr>
+              <td style="padding: 10px 12px; font-weight: bold; width: 18%; text-align: left; text-transform: uppercase;">ADI- SOYADI</td>
+              <td style="padding: 10px 12px; width: 32%; text-align: left; font-weight: 500;">${studentName}</td>
+              <td rowspan="3" style="padding: 10px 8px; font-weight: bold; width: 12%; text-align: center; vertical-align: middle;">Olayın<br>Özeti</td>
+              <td rowspan="3" style="padding: 10px 12px; width: 38%; text-align: left; vertical-align: top; line-height: 1.5;">${yaziliIfadeKonusu}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; font-weight: bold; text-align: left; text-transform: uppercase;">SINIFI</td>
+              <td style="padding: 10px 12px; text-align: left; font-weight: 500;">${selectedStudentObj ? (selectedStudentObj.classroom || "—") : "—"}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; font-weight: bold; text-align: left; text-transform: uppercase;">OKUL NO</td>
+              <td style="padding: 10px 12px; text-align: left; font-weight: 500;">${selectedStudentObj ? (selectedStudentObj.number || selectedStudentObj.id || "—") : "—"}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Question Content (Borders and SORULAR row removed as requested) -->
+        <div style="margin-top: 20px; text-align: justify; line-height: 1.6; font-size: 12pt; font-family: Arial, sans-serif;">
+          Okulumuz öğrencilerinden ${primaryStdsString}'in, ${formattedOlayTarihi} tarihinde gerçekleştirdiği iddia edilen <strong>${yaziliIfadeKonusu}</strong> davranışı/fiili ile ilgili olarak bildiklerinizi, gördüklerinizi ve söylemek istediklerinizi aşağıdaki bölüme yazınız.
+        </div>
+
+        <!-- Disiplin Kurulu Başkanı Signature (Borderless and "2" row removed as requested) -->
+        <div style="display: flex; justify-content: flex-end; margin-top: 25px; margin-bottom: 20px; font-family: Arial, sans-serif; font-size: 12pt; font-weight: bold; text-align: center; page-break-inside: avoid;">
+          <div style="text-align: center; min-width: 200px;">
+            <div style="font-weight: normal; font-size: 12pt; display: block;">Disiplin Kurulu Başkanı</div>
+            ${baskanName ? `<div style="font-weight: bold;">${baskanName}</div>` : ""}
+            <div style="font-weight: normal; font-size: 12pt; margin-top: 30px; display: block;">İmza</div>
+          </div>
+        </div>
+
+        <!-- Prompt Text -->
+        <div style="margin-top: 15px; margin-bottom: 10px; font-weight: bold; font-size: 12pt; font-family: Arial, sans-serif;">
+          ifadenize buradan başlayınız ve sayfanın arkasına yazmayınız.
+        </div>
+
+        <!-- Response Area Dotted Lines -->
+        <div style="margin-top: 10px; position: relative;">
+          ${yaziliIfadeMetni ? 
+            `<div style="line-height: 2.2; text-align: justify; font-size: 12pt; text-indent: 40px; padding: 10px 5px; white-space: pre-wrap; background-image: linear-gradient(to bottom, transparent 33px, rgba(0,0,0,0.1) 34px), none; background-size: 100% 34px; background-repeat: repeat-y; min-height: 340px;">${yaziliIfadeMetni}</div>` 
+            : 
+            `${Array(10).fill('<div style="border-bottom: 1px dotted #333333; margin-bottom: 28px; width: 100%; height: 1px;"></div>').join('')}`
+          }
+        </div>
+
+        <!-- Witness Name & Signature under response area -->
+        <div style="display: flex; justify-content: flex-end; margin-top: 35px; padding-right: 40px; font-family: Arial, sans-serif; page-break-inside: avoid;">
+          <div style="text-align: center; min-width: 220px;">
+            <div style="font-size: 12pt; font-weight: normal; color: #555; margin-bottom: 2px;">İfadeyi Veren Tanık</div>
+            <div style="font-weight: bold; font-size: 12pt; text-transform: uppercase;">${studentName}</div>
+            <div style="font-size: 12pt; margin-top: 45px; border-top: 1px dotted #000; padding-top: 4px; font-weight: normal;">İmza</div>
+          </div>
+        </div>
+
+      </div>
+      `;
+    } else {
+      const titleText = yaziliIfadeTuru === "Öğrenci İfadesi" 
+      ? "DİSİPLİN KURULU ÖĞRENCİ İFADE TUTANAĞI"
+      : "DİSİPLİN KURULU ŞİKAYETÇİ (MAĞDUR) ÖĞRENCİ İFADE TUTANAĞI";
+
+      htmlContent = `
+      <div class="print-container" style="font-family: Arial, Helvetica, sans-serif; color: #000; padding: 25px 30px; line-height: 1.4; font-size: 12pt; max-width: 800px; margin: 0 auto; background: #fff; box-sizing: border-box; text-align: justify;">
+        
+        <!-- School Title -->
+        <div style="text-align: center; font-weight: bold; font-size: 12pt; margin-bottom: 25px; font-family: Arial, sans-serif; line-height: 1.5;">
+          ${getHeaderLines().map(l => l.toUpperCase()).join("<br>")}
+        </div>
+
+        <!-- Document Main Title -->
+        <div style="text-align: center; margin-bottom: 5px; position: relative; height: 45px;">
+          <h2 style="font-size: 14pt; font-weight: bold; margin: 0; font-family: Arial, sans-serif;">${titleText}</h2>
+          
+          <!-- Date in title row (right aligned) -->
+          <div style="position: absolute; right: 5px; bottom: 0; font-size: 12pt; font-weight: bold; font-family: Arial, sans-serif;">
+            ${formattedTarihi}
+          </div>
+        </div>
+
+        <!-- Main Form Table -->
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-family: Arial, sans-serif; font-size: 12pt;">
+          <tbody>
+            <tr>
+              <td style="padding: 10px 12px; font-weight: bold; width: 18%; text-align: left; text-transform: uppercase;">ADI- SOYADI</td>
+              <td style="padding: 10px 12px; width: 32%; text-align: left; font-weight: 500;">${studentName}</td>
+              <td rowspan="3" style="padding: 10px 8px; font-weight: bold; width: 12%; text-align: center; vertical-align: middle;">Olayın<br>Özeti</td>
+              <td rowspan="3" style="padding: 10px 12px; width: 38%; text-align: left; vertical-align: top; line-height: 1.5;">${yaziliIfadeKonusu}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; font-weight: bold; text-align: left; text-transform: uppercase;">SINIFI</td>
+              <td style="padding: 10px 12px; text-align: left; font-weight: 500;">${selectedStudentObj ? (selectedStudentObj.classroom || "—") : "—"}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; font-weight: bold; text-align: left; text-transform: uppercase;">OKUL NO</td>
+              <td style="padding: 10px 12px; text-align: left; font-weight: 500;">${selectedStudentObj ? (selectedStudentObj.number || selectedStudentObj.id || "—") : "—"}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Question Content Row (Borders removed as requested) -->
+        <div style="margin-top: 20px; text-align: justify; line-height: 1.6; font-size: 12pt; font-family: Arial, sans-serif;">
+          ${formattedOlayTarihi} tarihinde <strong>${yaziliIfadeKonusu}</strong> fiilini işlediğiniz <strong>${formattedDilekceTarihi}</strong> tarihli disiplin dilekçesinden anlaşılmaktadır. Olayla ilgili bildiklerinizi ve söylemek istediklerinizi aşağıdaki bölüme yazınız.
+        </div>
+
+        <!-- Committee Signatures -->
+        ${committeeMembersHTML}
+
+        <!-- Response Area Dotted Lines -->
+        <div style="margin-top: 20px; position: relative;">
+          ${yaziliIfadeMetni ? 
+            `<div style="line-height: 2.2; text-align: justify; font-size: 12pt; text-indent: 40px; padding: 10px 5px; white-space: pre-wrap; background-image: linear-gradient(to bottom, transparent 33px, rgba(0,0,0,0.1) 34px), none; background-size: 100% 34px; background-repeat: repeat-y; min-height: 340px;">${yaziliIfadeMetni}</div>` 
+            : 
+            `<div style="display: flex; align-items: flex-end; margin-bottom: 20px;">
+              <div style="font-weight: bold; font-size: 12pt; margin-right: 10px; font-family: Arial, sans-serif;">İfadenizi Yazmaya Buradan Başlayınız:</div>
+              <div style="flex-grow: 1; border-bottom: 1px dotted #000; height: 20px;"></div>
+            </div>
+            ${Array(11).fill('<div style="border-bottom: 1px dotted #333333; margin-bottom: 28px; width: 100%; height: 1px;"></div>').join('')}`
+          }
+        </div>
+
+        <!-- Student Name & Signature under response area -->
+        <div style="display: flex; justify-content: flex-end; margin-top: 35px; padding-right: 40px; font-family: Arial, sans-serif; page-break-inside: avoid;">
+          <div style="text-align: center; min-width: 220px;">
+            <div style="font-size: 12pt; font-weight: normal; color: #555; margin-bottom: 2px;">İfadeyi Veren Öğrenci</div>
+            <div style="font-weight: bold; font-size: 12pt; text-transform: uppercase;">${studentName}</div>
+            <div style="font-size: 12pt; margin-top: 45px; border-top: 1px dotted #000; padding-top: 4px; font-weight: normal;">İmza</div>
+          </div>
+        </div>
+
+      </div>
+      `;
+    }
+
+    setYaziliIfadePrintPreviewContent(htmlContent);
+    printHtmlSafely(htmlContent, `
+      .print-container { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      @page { size: A4 portrait; margin: 15mm; }
+    `);
+  };
+
+  const handleActualYaziliIfadePrint = () => {
+    if (!yaziliIfadePrintPreviewContent) return;
+    printHtmlSafely(yaziliIfadePrintPreviewContent, `
+      .print-container { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      @page { size: A4 portrait; margin: 15mm; }
+    `);
+  };
+
+  const handleSaveAndPrintIfade = async () => {
+    if (!canManageDiscipline) { alert("Bu rol ifade kaydedemez."); return; }
+    if (!selectedRecordForIfade) return;
+    
+    // Save the form data to the record
+    try {
+      let updatedRecord: any = null;
+      const updatedBoardRecords = boardRecords.map((rec) => {
+        if (rec.id === selectedRecordForIfade.id) {
+          const completedSteps = rec.completedSteps ? { ...rec.completedSteps } : {};
+          completedSteps["Öğrenci İfadesi"] = true; // Mark as completed
+          const newRec = { 
+            ...rec, 
+            completedSteps,
+            ifadeData: {
+              ...rec.ifadeData,
+              [ifadeSelectedStudent]: {
+                ifadeOlayTarihi,
+                ifadeTarihi,
+                ifadeKonusu,
+                ifadeMetni,
+                ifadeKurulBaskani,
+              }
+            }
+          };
+          updatedRecord = newRec;
+          return newRec;
+        }
+        return rec;
+      });
+      if (updatedRecord) {
+        setSelectedRecordForIfade(updatedRecord);
+      }
+      setBoardRecords(updatedBoardRecords);
+      await safeStorage.setItem("disciplineBoardRecords", updatedBoardRecords);
+    } catch (error) {
+      console.error("Error saving ifade form:", error);
+    }
+
+    const students = getRecordStudents(selectedRecordForIfade);
+    const selectedStudentObj = students.find(s => s.id === ifadeSelectedStudent) || students[0];
+    const studentName = selectedStudentObj ? selectedStudentObj.name : "";
+    const studentClassAndNo = selectedStudentObj ? `${selectedStudentObj.classroom} / ${selectedStudentObj.number || selectedStudentObj.id}` : "";
+
+    const htmlContent = `
+      <div style="font-family: 'Times New Roman', Times, serif; color: #000; padding: 40px; line-height: 1.5; font-size: 15px; max-width: 900px; margin: 0 auto; text-align: justify;">
+        
+        <div style="text-align: center; margin-bottom: 40px;">
+        <h2 style="font-size: 16px; font-weight: bold; margin: 0 0 10px 0;">ÖĞRENCİ DAVRANIŞLARINI DEĞERLENDİRME KURULU</h2>
+        <h2 style="font-size: 16px; font-weight: bold; margin: 0;">ÖĞRENCİ İFADE TUTANAĞI</h2>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 20px;">
+          Sayın : <span style="font-weight: bold;">${studentName || '.................................................................................................'}</span> <span style="font-weight: normal;">(${studentClassAndNo || '............./...................'})</span>
+        </div>
+
+        <div style="text-indent: 40px; margin-bottom: 30px; line-height: 1.8;">
+          ${ifadeOlayTarihi ? ifadeOlayTarihi.split('-').reverse().join('.') : "...../...../202..."} tarihinde aşağıda belirtilen konunun gerçekleştiği iddia edilmektedir. Konuyla ilgili ifadenizi, ayrıntılı bir şekilde yazmanızı rica ederim.
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 40px;">
+          <div style="text-align: center; width: 300px;">
+            <div style="margin-bottom: 20px;">${ifadeTarihi ? ifadeTarihi.split('-').reverse().join('.') : "..../....../202..."}</div>
+            <div style="margin-bottom: 10px;">.....................................................</div>
+            <div>Öğrenci Davranışlarını Değerlendirme</div>
+            <div>Kurulu Başkanı</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+          <div style="display: flex; margin-bottom: 15px;">
+            <div style="width: 150px; font-weight: bold;">İfadenin Konusu</div>
+            <div style="flex-grow: 1;">: ${ifadeKonusu || '..........................................................................................................................................'}</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 30px; min-height: 200px;">
+          ${ifadeMetni ? 
+            `<div style="line-height: 2; text-align: justify;"><span style="font-weight: bold; margin-right: 10px;">İfadenizi Yazmaya Buradan Başlayınız:</span><span style="white-space: pre-wrap;">${ifadeMetni}</span></div>` 
+            : 
+            `<div style="display: flex; align-items: flex-end; margin-bottom: 30px;">
+              <div style="font-weight: bold; margin-right: 10px;">İfadenizi Yazmaya Buradan Başlayınız:</div>
+              <div style="flex-grow: 1; border-bottom: 1px dotted #000; height: 20px;"></div>
+            </div>
+            ${Array(11).fill('<div style="border-bottom: 1px dotted #000; margin-bottom: 30px; width: 100%; height: 1px;"></div>').join('')}`
+          }
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 40px; padding: 0 40px; page-break-inside: avoid;">
+          <div style="width: 45%;">
+            <div style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 20px;">Öğrencinin</div>
+            <div style="display: flex; margin-bottom: 15px;">
+              <div style="width: 80px; font-weight: bold;">Tarih</div>
+              <div>: ${ifadeTarihi ? ifadeTarihi.split('-').reverse().join('.') : "..../...../202...."}</div>
+            </div>
+            <div style="display: flex; margin-bottom: 15px;">
+              <div style="width: 80px; font-weight: bold;">İmzası</div>
+              <div style="flex-grow: 1;">: ........................................</div>
+            </div>
+          </div>
+          
+          <div style="width: 45%;">
+            <div style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 20px;">Rehber Öğretmenin</div>
+            <div style="display: flex; margin-bottom: 15px;">
+              <div style="width: 90px; font-weight: bold;">Adı - Soyadı</div>
+              <div style="flex-grow: 1;">: ........................................</div>
+            </div>
+            <div style="display: flex; margin-bottom: 15px;">
+              <div style="width: 90px; font-weight: bold;">İmza</div>
+              <div style="flex-grow: 1;">: ........................................</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    `;
+
+    printHtmlSafely(htmlContent, "@page { size: A4 portrait; margin: 15mm; }");
+  };
+
+  const handleToggleStep = async (recordId: string, step: string) => {
+    if (!canManageDiscipline) { alert("Bu rol disiplin adımlarını değiştiremez."); return; }
+    try {
+      const updatedBoardRecords = boardRecords.map((rec) => {
+        if (rec.id === recordId) {
+          const completedSteps = rec.completedSteps ? { ...rec.completedSteps } : {};
+          completedSteps[step] = !completedSteps[step];
+          return { ...rec, completedSteps };
+        }
+        return rec;
+      });
+      setBoardRecords(updatedBoardRecords);
+      await safeStorage.setItem("disciplineBoardRecords", updatedBoardRecords);
+    } catch (error) {
+      console.error("Error toggling step completion:", error);
+    }
+  };
+
+  const {
+    getClassroomGuidanceNames,
+    getWarningLetterHTML,
+    printLetter,
+    handlePrintSevkYazisi,
+    handlePrintTutanak,
+  } = createDisciplineDocumentTools({
+    classrooms, teachers, getHeaderLines, getRecordStudents, formatHeaderLine,
+    getPrincipalName, getBehaviorDetails, printHtmlSafely, boardRecords, selectedRecordIdsForTutanak,
+    tutanakStudents, tutanakDate, tutanakTeachers,
+  });
+
+  const handleMoveToDisciplineProcess = (record: BehaviorRecord) => {
+    if (!canManageDiscipline) { alert("Bu rol kaydı disiplin sürecine taşıyamaz."); return; }
+    setRecordToSevk(record);
+    setIsSevkConfirmModalOpen(true);
+  };
+
+  const confirmSevkAction = async () => {
+    if (!recordToSevk) return;
+    try {
+      const updated = await welfareService.moveToDisciplineProcess(recordToSevk as any);
+      setBoardRecords(current => current.map(rec => rec.id === recordToSevk.id ? normalizeBehaviorRecord(updated, recordToSevk) : rec));
+      setIsSevkConfirmModalOpen(false);
+      const studentName = recordToSevk.studentName;
+      setRecordToSevk(null);
+      setSuccessMessage(`${studentName} isimli öğrencinin davranış bilgileri başarıyla Disiplin Süreci arayüzüne aktarıldı.`);
+      setIsSuccessModalOpen(true);
+    } catch (error) {
+      console.error("Error moving record to discipline process:", error);
+      alert("Disiplin sürecine taşıma sırasında bir hata oluştu.");
+    }
+  };
+
+  const tabs = ["Uyarı Bildirimi", "Ön İnceleme", "Disiplin Süreci", "Arşiv"];
+
+  useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
+
+  const openGuidanceStep = (record: BehaviorRecord) => {
+  setSelectedRecordForRehberlik(record);
+  const rData = record.rehberlikData || {};
+  setRehberlikSevkTarihi(rData.rehberlikSevkTarihi || new Date().toISOString().split("T")[0]);
+  setRehberlikOlayTarihi(rData.rehberlikOlayTarihi || new Date(record.createdAt || Date.now()).toISOString().split("T")[0]);
+  setRehberlikDilekceKonu(rData.rehberlikDilekceKonu || (record.recordReason === "Şikayet" ? "Şikayet Dilekçesi" : "Tutanak"));
+  setRehberlikGorusulenKisiler(rData.rehberlikGorusulenKisiler || "");
+  setRehberlikGorusmeOzeti(rData.rehberlikGorusmeOzeti || "");
+  setRehberlikPsikososyal(rData.rehberlikPsikososyal || "");
+  setRehberlikOneriler(rData.rehberlikOneriler || "");
+  setIsRehberlikModalOpen(true);
+};
+
+const openCallLetterStep = (record: BehaviorRecord, disciplineCall: boolean) => {
+  setSelectedRecordForCagri(record);
+  const recordStudents = getRecordStudents(record);
+  setCagriSelectedStudent(recordStudents.length > 0 ? recordStudents[0].id : "");
+  setCagriType(disciplineCall ? "Öğrenci Çağrı Yazısı" : record.recordReason === "Şikayet" ? "Şikayetçi (Mağdur) Çağrı Yazısı" : "Öğrenci Çağrı Yazısı");
+  setIsCagriPusulasiModalOpen(true);
+};
+
+const openWrittenStatementsStep = (record: BehaviorRecord) => {
+  setSelectedRecordForYaziliIfade(record);
+  setYaziliIfadeTuru("Öğrenci İfadesi");
+  const recordStudents = getRecordStudents(record);
+  setYaziliIfadeSelectedStudent(recordStudents.length > 0 ? (recordStudents[0].id || recordStudents[0].name) : "");
+  setIsYaziliIfadeModalOpen(true);
+};
+
+const openNotificationsStep = (record: BehaviorRecord) => {
+  setSelectedRecordForTeblig(record);
+  const recordStudents = getRecordStudents(record);
+  setTebligSelectedStudent(recordStudents.length > 0 ? recordStudents[0].id : "");
+  setIsTebligModalOpen(true);
+};
+
+const openDecisionStep = (record: BehaviorRecord) => {
+  setSelectedRecordForKarar(record);
+  const recordStudents = getRecordStudents(record);
+  setKararSelectedStudent(recordStudents.length > 0 ? recordStudents[0].id : "");
+  setIsKararModalOpen(true);
+};
+
+
+const filteredWarnings = warnings.filter((warning) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      warning.studentName.toLowerCase().includes(query) ||
+      (warning.studentNumber && warning.studentNumber.includes(query)) ||
+      (warning.studentClassroom && warning.studentClassroom.toLowerCase().includes(query)) ||
+      (warning.behaviorName && warning.behaviorName.toLowerCase().includes(query))
+    );
+  });
+
+  const filteredBoardRecords = boardRecords.filter((record) => {
+    const query = searchQuery.toLowerCase();
+    
+    // Filter by tab status
+    if (activeTab === "Ön İnceleme" && record.disciplineStatus === "Disiplin Süreci") {
+      return false;
+    }
+    if (activeTab === "Disiplin Süreci" && record.disciplineStatus !== "Disiplin Süreci") {
+      return false;
+    }
+
+    return (
+      record.studentName.toLowerCase().includes(query) ||
+      (record.studentNumber && record.studentNumber.includes(query)) ||
+      (record.studentClassroom && record.studentClassroom.toLowerCase().includes(query)) ||
+      (record.behaviorName && record.behaviorName.toLowerCase().includes(query))
+    );
+  });
+
+  const archiveUniqueStudentCount = new Set(archiveRecords.map(record => record.studentId)).size;
+  const archiveSanctionStats = Object.entries(
+    archiveRecords.reduce<Record<string, number>>((counts, record) => {
+      const sanction = record.sanctionType || "Yaptırım belirtilmedi";
+      counts[sanction] = (counts[sanction] || 0) + 1;
+      return counts;
+    }, {}),
+  ).sort((a, b) => Number(b[1]) - Number(a[1]));
+
+  const filteredStudentsForSearch = studentSearchTerm.trim() === ""
+    ? []
+    : allStudentsList.filter(student => 
+        (student.name && student.name.toLocaleLowerCase("tr-TR").includes(studentSearchTerm.toLocaleLowerCase("tr-TR"))) ||
+        (student.id && student.id.toString().includes(studentSearchTerm)) ||
+        (student.number && student.number.toString().includes(studentSearchTerm)) ||
+        (student.classroom && student.classroom.toLocaleLowerCase("tr-TR").includes(studentSearchTerm.toLocaleLowerCase("tr-TR")))
+      ).slice(0, 10);
+
+  const filteredWitnessesForSearch = cagriWitnessSearchTerm.trim() === ""
+    ? []
+    : allStudentsList.filter(student => 
+        (student.name && student.name.toLocaleLowerCase("tr-TR").includes(cagriWitnessSearchTerm.toLocaleLowerCase("tr-TR"))) ||
+        (student.id && student.id.toString().includes(cagriWitnessSearchTerm)) ||
+        (student.number && student.number.toString().includes(cagriWitnessSearchTerm)) ||
+        (student.classroom && student.classroom.toLocaleLowerCase("tr-TR").includes(cagriWitnessSearchTerm.toLocaleLowerCase("tr-TR")))
+      ).slice(0, 10);
+
+  const filteredTeachersForSearch = newTeacherInput.trim() === ""
+    ? []
+    : allTeachersList.filter(teacher => 
+        (teacher.name && teacher.name.toLocaleLowerCase("tr-TR").includes(newTeacherInput.toLocaleLowerCase("tr-TR"))) &&
+        !tutanakTeachers.includes(teacher.name)
+      ).slice(0, 5);
+
+  useEffect(() => {
+    if (isKararModalOpen && selectedRecordForKarar) {
+      const data = selectedRecordForKarar.kararData?.[kararSelectedStudent] || {};
+      setKararDataState({
+        kararNo: data.kararNo || "",
+        kararTarihi: data.kararTarihi || new Date().toISOString().split("T")[0],
+        dogumTarihi: data.dogumTarihi || "",
+        tcNo: data.tcNo || "",
+        ogrenimDurumu: data.ogrenimDurumu || "",
+        basariDurumu: data.basariDurumu || "",
+        saglikDurumu: data.saglikDurumu || "",
+        ekonomikDurum: data.ekonomikDurum || "",
+        birlikteOturma: data.birlikteOturma || "",
+        anneBabaSag: data.anneBabaSag || "",
+        anneBabaOz: data.anneBabaOz || "",
+        ailesiYaninda: data.ailesiYaninda || "",
+        yetistigiCevre: data.yetistigiCevre || "",
+        adres: data.adres || "",
+        oncekiCezalar: data.oncekiCezalar || "",
+        olayYeriTarihi: data.olayYeriTarihi || "",
+        davranisCesidi: data.davranisCesidi || selectedRecordForKarar.behaviorName || "",
+        davranisNedeni: data.davranisNedeni || "",
+        ifadeOzeti: data.ifadeOzeti || "",
+        tanikOzeti: data.tanikOzeti || "",
+        digerDeliller: data.digerDeliller || "",
+        arkadasKanaati: data.arkadasKanaati || "",
+        ogretmenKanaati: data.ogretmenKanaati || "",
+        kurulKanaatiMaddeBendi: data.kurulKanaatiMaddeBendi || "",
+        kurulKanaatiDavranis: data.kurulKanaatiDavranis || "",
+        kurulKanaatiCeza: data.kurulKanaatiCeza || "",
+        cezaMaddeBendi: data.cezaMaddeBendi || "",
+        cezaFikrasi: data.cezaFikrasi || "",
+        kurulKarari: data.kurulKarari || "",
+        uye1: data.uye1 || "",
+        uye1Unvan: data.uye1Unvan || "",
+        uye2: data.uye2 || "",
+        uye2Unvan: data.uye2Unvan || "",
+        uye3: data.uye3 || "",
+        uye4: data.uye4 || "",
+        baskan: data.baskan || "",
+        mudur: data.mudur || ""
+      });
+    }
+  }, [isKararModalOpen, selectedRecordForKarar, kararSelectedStudent]);
+
+  useEffect(() => {
+    if (isIfadeModalOpen && selectedRecordForIfade) {
+      const data = selectedRecordForIfade.ifadeData?.[ifadeSelectedStudent];
+      if (data) {
+        setIfadeOlayTarihi(data.ifadeOlayTarihi || new Date(selectedRecordForIfade.createdAt || Date.now()).toISOString().split("T")[0]);
+        setIfadeTarihi(data.ifadeTarihi || new Date().toISOString().split("T")[0]);
+        setIfadeKonusu(data.ifadeKonusu || selectedRecordForIfade.behaviorName || "");
+        setIfadeMetni(data.ifadeMetni || "");
+        setIfadeKurulBaskani(data.ifadeKurulBaskani || "");
+      } else {
+        setIfadeOlayTarihi(new Date(selectedRecordForIfade.createdAt || Date.now()).toISOString().split("T")[0]);
+        setIfadeTarihi(new Date().toISOString().split("T")[0]);
+        setIfadeKonusu(selectedRecordForIfade.behaviorName || "");
+        setIfadeMetni("");
+        setIfadeKurulBaskani("");
+      }
+    }
+  }, [isIfadeModalOpen, selectedRecordForIfade, ifadeSelectedStudent]);
+
+  useEffect(() => {
+    if (selectedRecordForYaziliIfade) {
+      let students: any[] = [];
+      if (yaziliIfadeTuru === "Öğrenci İfadesi") {
+        students = getRecordStudents(selectedRecordForYaziliIfade);
+    } else if (yaziliIfadeTuru === "Şikayetçi (Mağdur) Öğrenci İfadesi") {
+        students = selectedRecordForYaziliIfade.complainantStudents || [];
+      } else if (yaziliIfadeTuru === "Tanık İfadesi") {
+        students = selectedRecordForYaziliIfade.cagriData?.["witnesses"]?.witnesses || [];
+      }
+      if (students.length > 0) {
+        const firstStudentVal = students[0].id || students[0].name;
+        setYaziliIfadeSelectedStudent((prev) => {
+          const exists = students.some(s => (s.id || s.name) === prev);
+          return exists ? prev : firstStudentVal;
+        });
+      } else {
+        setYaziliIfadeSelectedStudent("");
+      }
+    }
+  }, [yaziliIfadeTuru, selectedRecordForYaziliIfade]);
+
+  useEffect(() => {
+    if (isYaziliIfadeModalOpen && selectedRecordForYaziliIfade) {
+      const data = selectedRecordForYaziliIfade.yaziliIfadeData?.[yaziliIfadeSelectedStudent];
+      if (data) {
+        let loadedTuru = data.yaziliIfadeTuru || "Öğrenci İfadesi";
+        if (selectedRecordForYaziliIfade.recordReason !== "Şikayet" && loadedTuru === "Şikayetçi (Mağdur) Öğrenci İfadesi") {
+          loadedTuru = "Öğrenci İfadesi";
+        }
+        setYaziliIfadeTuru(loadedTuru);
+        setYaziliIfadeTarih(data.yaziliIfadeTarih || new Date().toISOString().split("T")[0]);
+        setYaziliIfadeTarihi(data.yaziliIfadeTarihi || new Date().toISOString().split("T")[0]);
+        setYaziliIfadeSaati(data.yaziliIfadeSaati || "");
+        setYaziliIfadeYeri(data.yaziliIfadeYeri || "Disiplin Kurulu Odası");
+        setYaziliIfadeKonusu(data.yaziliIfadeKonusu || selectedRecordForYaziliIfade.behaviorName || "");
+        setYaziliIfadeMetni(data.yaziliIfadeMetni || "");
+        setYaziliIfadeOlayTarihi(data.yaziliIfadeOlayTarihi || selectedRecordForYaziliIfade.date || new Date().toISOString().split("T")[0]);
+        setYaziliIfadeDilekceTarihi(data.yaziliIfadeDilekceTarihi || selectedRecordForYaziliIfade.date || new Date().toISOString().split("T")[0]);
+      } else {
+        setYaziliIfadeTarih(new Date().toISOString().split("T")[0]);
+        setYaziliIfadeTarihi(new Date().toISOString().split("T")[0]);
+        setYaziliIfadeSaati("");
+        setYaziliIfadeYeri("Disiplin Kurulu Odası");
+        setYaziliIfadeKonusu(selectedRecordForYaziliIfade.behaviorName || "");
+        setYaziliIfadeMetni("");
+        setYaziliIfadeOlayTarihi(selectedRecordForYaziliIfade.date || new Date().toISOString().split("T")[0]);
+        setYaziliIfadeDilekceTarihi(selectedRecordForYaziliIfade.date || new Date().toISOString().split("T")[0]);
+      }
+    }
+  }, [isYaziliIfadeModalOpen, selectedRecordForYaziliIfade, yaziliIfadeSelectedStudent]);
+
+  useEffect(() => {
+    if (isCagriPusulasiModalOpen && selectedRecordForCagri) {
+    const key = cagriType === "Tanık Çağrı Yazısı" ? "witnesses" : cagriType === "Şikayetçi (Mağdur) Çağrı Yazısı" ? "complainants" : cagriSelectedStudent;
+      const data = selectedRecordForCagri.cagriData?.[key];
+      if (data) {
+        setCagriDate(data.cagriDate || new Date().toISOString().split("T")[0]);
+        setCagriMeetingDate(data.cagriMeetingDate || "");
+        setCagriMeetingTime(data.cagriMeetingTime || "");
+        setCagriMeetingPlace(data.cagriMeetingPlace || "Disiplin Kurulu Odası");
+        if (cagriType === "Tanık Çağrı Yazısı") {
+          setCagriWitnesses(data.witnesses || []);
+        }
+      } else {
+        setCagriDate(new Date().toISOString().split("T")[0]);
+        setCagriMeetingDate("");
+        setCagriMeetingTime("");
+        setCagriMeetingPlace("Disiplin Kurulu Odası");
+        if (cagriType === "Tanık Çağrı Yazısı") {
+          setCagriWitnesses([]);
+        }
+      }
+    }
+  }, [isCagriPusulasiModalOpen, selectedRecordForCagri, cagriType, cagriSelectedStudent]);
+
+  useEffect(() => {
+    if (isTebligModalOpen && selectedRecordForTeblig) {
+      const student = getRecordStudents(selectedRecordForTeblig).find(s => s.id === tebligSelectedStudent) || getRecordStudents(selectedRecordForTeblig)[0];
+      const stdName = student ? student.name : selectedRecordForTeblig.studentName;
+      const stdClass = student ? student.classroom : selectedRecordForTeblig.studentClassroom;
+      const stdNumber = student ? student.number : selectedRecordForTeblig.studentNumber;
+      
+      const savedData = selectedRecordForTeblig.tebligData?.[tebligSelectedStudent] || {};
+      
+      setTebligDate(savedData.tebligDate || new Date().toISOString().split("T")[0]);
+      setTebligType(savedData.tebligType || "Öğrenci Tebliğ Belgesi");
+      setTebligSubject(savedData.tebligSubject || "Ödül ve Disiplin Kurulu Kararının Tebliği");
+      
+      const defaultText = savedData.tebligType === "Veli Tebliğ Belgesi"
+        ? `Okulumuz Ödül ve Disiplin Kurulu'nun yaptığı inceleme ve değerlendirme sonucunda, velisi bulunduğunuz ${stdClass} sınıfı ${stdNumber} numaralı ${stdName} isimli öğrenciye dair kurul kararı ve ilgili tebligat detayları bu belge ile tarafınıza tebliğ edilmiştir.`
+        : `Okulumuz Ödül ve Disiplin Kurulu'nun yaptığı inceleme ve değerlendirme sonucunda, ${stdClass} sınıfı ${stdNumber} numaralı ${stdName} olarak şahsınıza/öğrencinize dair kurul kararı ve ilgili tebligat detayları bu belge ile tarafınıza tebliğ edilmiştir.`;
+
+      setTebligText(savedData.tebligText || defaultText);
+      setTebligSender(savedData.tebligSender || getPrincipalName() || "Okul Müdürü");
+      setTebligSenderTitle(savedData.tebligSenderTitle || "Okul Müdürü");
+      setTebligReceiver(savedData.tebligReceiver || (savedData.tebligType === "Veli Tebliğ Belgesi" ? `${stdName} Velisi` : stdName));
+    }
+  }, [isTebligModalOpen, selectedRecordForTeblig, tebligSelectedStudent, tebligType]);
+
+  const handleSaveAndPrintTeblig = async () => {
+    if (!canManageDiscipline) { alert("Bu rol tebliğ kaydedemez."); return; }
+    if (!selectedRecordForTeblig) return;
+
+    try {
+      let updatedRecord: any = null;
+      const updatedBoardRecords = boardRecords.map((rec) => {
+        if (rec.id === selectedRecordForTeblig.id) {
+          const completedSteps = rec.completedSteps ? { ...rec.completedSteps } : {};
+          completedSteps["Tebliğler"] = true;
+          const newRec = { 
+            ...rec, 
+            completedSteps,
+            tebligData: {
+              ...rec.tebligData,
+              [tebligSelectedStudent]: {
+                tebligDate,
+                tebligType,
+                tebligSubject,
+                tebligText,
+                tebligSender,
+                tebligSenderTitle,
+                tebligReceiver
+              }
+            }
+          };
+          updatedRecord = newRec;
+          return newRec;
+        }
+        return rec;
+      });
+      if (updatedRecord) {
+        setSelectedRecordForTeblig(updatedRecord);
+      }
+      setBoardRecords(updatedBoardRecords);
+      await safeStorage.setItem("disciplineBoardRecords", updatedBoardRecords);
+    } catch (error) {
+      console.error("Error saving teblig form:", error);
+    }
+
+    const formattedHeader = getHeaderLines().map(line => `<div style="text-transform: uppercase; font-size: 12pt; font-weight: bold; margin-bottom: 2px;">${line}</div>`).join("");
+
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; color: #000; padding: 40px; line-height: 1.6; font-size: 12pt; max-width: 800px; margin: 0 auto; text-align: justify; background: #fff;">
+        <div style="text-align: center; margin-bottom: 30px; padding-bottom: 15px;">
+          ${formattedHeader}
+          <h2 style="font-size: 14pt; font-weight: bold; margin: 20px 0 5px 0; text-transform: uppercase;">TEBLİĞ TEBELLÜĞ BELGESİ</h2>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; margin-bottom: 30px;">
+          <div>
+            <strong>Konu:</strong> ${tebligSubject}
+          </div>
+          <div>
+            <strong>Tarih:</strong> ${tebligDate ? tebligDate.split('-').reverse().join('.') : "..../..../202..."}
+          </div>
+        </div>
+
+        <div style="margin-bottom: 40px; line-height: 1.8; text-indent: 40px;">
+          ${tebligText.replace(/\n/g, "<br/>")}
+        </div>
+
+        <table style="width: 100%; margin-top: 80px; font-size: 12pt;">
+          <tr>
+            <td style="width: 50%; text-align: center; vertical-align: top;">
+              <p style="margin-bottom: 40px;"><strong>TEBLİĞ EDEN</strong></p>
+              <p><strong>${tebligSender}</strong></p>
+              <p style="font-size: 12pt; color: #444; margin-top: 2px;">${tebligSenderTitle}</p>
+              <p style="font-size: 12pt; margin-top: 15px; border-top: 1px dashed #ccc; pt-2; display: inline-block; width: 120px;">İmza</p>
+            </td>
+            <td style="width: 50%; text-align: center; vertical-align: top;">
+              <p style="margin-bottom: 40px;"><strong>TEBELLÜĞ EDEN</strong></p>
+              <p><strong>${tebligReceiver}</strong></p>
+              <p style="font-size: 12pt; color: #444; margin-top: 2px;">Öğrenci / Veli</p>
+              <p style="font-size: 12pt; margin-top: 15px; border-top: 1px dashed #ccc; pt-2; display: inline-block; width: 120px;">İmza / Tarih</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+    `;
+
+    printHtmlSafely(htmlContent, "@page { size: A4 portrait; margin: 20mm; }");
+  };
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const storedWarnings = await safeStorage.getItem<BehaviorRecord[]>("disciplineWarnings") || [];
+        setWarnings(scopeRecordList(storedWarnings.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())));
+        
+        const storedBoardRecords = await safeStorage.getItem<BehaviorRecord[]>("disciplineBoardRecords") || [];
+        setBoardRecords(scopeRecordList(storedBoardRecords.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())));
+
+        const storedArchive = await safeStorage.getItem<BehaviorRecord[]>("disciplineArchiveRecords") || [];
+        const normalizedArchive = storedArchive.flatMap(record => {
+          const archiveSource: "Uyarı Bildirimi" | "Disiplin Süreci" = record.archiveSource || (record.disciplineStatus === "Disiplin Süreci" ? "Disiplin Süreci" : "Uyarı Bildirimi");
+          if (getRecordStudents(record).length > 1) {
+            return createStudentArchiveRecords(record, archiveSource);
+          }
+          return [{
+            ...record,
+            archiveSource,
+            originalSanctionType: record.originalSanctionType || (archiveSource === "Uyarı Bildirimi" && record.sanctionType === "Uyarı" ? "Kınama" : record.sanctionType),
+            sanctionType: archiveSource === "Uyarı Bildirimi" ? "Uyarı" : record.sanctionType,
+          }];
+        });
+        const uniqueArchive = normalizedArchive.filter(
+          (record, index, rows) => rows.findIndex(item => item.id === record.id) === index,
+        ).sort((a, b) => (b.archivedAt || new Date(b.date).getTime()) - (a.archivedAt || new Date(a.date).getTime()));
+        setArchiveRecords(scopeRecordList(uniqueArchive));
+        if (
+          uniqueArchive.length !== storedArchive.length
+          || storedArchive.some(record => getRecordStudents(record).length > 1)
+          || storedArchive.some(record => (record.archiveSource || "Uyarı Bildirimi") === "Uyarı Bildirimi" && record.sanctionType !== "Uyarı")
+        ) {
+          await safeStorage.setItem("disciplineArchiveRecords", uniqueArchive);
+        }
+
+        const storedBehaviors = await safeStorage.getItem<any[]>("customBehaviors") || [];
+        setCustomBehaviors(storedBehaviors);
+      } catch (error) {
+        console.error("Error loading discipline records:", error);
+      }
+    };
+    loadData();
+  }, [activeTab]);
+
+  const handleRevert = (record: BehaviorRecord, type: "warnings" | "board" | "disiplin-sureci") => {
+    if (!canManageDiscipline) { alert("Bu rol kayıt geri alma işlemi yapamaz."); return; }
+    setRecordToRevert(record);
+    setRevertType(type);
+    setIsConfirmModalOpen(true);
+  };
+
+  const confirmRevertAction = async () => {
+    if (!recordToRevert || !revertType) return;
+    try {
+      if (revertType === "warnings") {
+        await welfareService.revertToBehavior(recordToRevert as any, "disciplineWarnings");
+        setWarnings(current => current.filter(w => w.id !== recordToRevert.id));
+        setSuccessMessage("Öğrenci davranış bilgisi başarıyla geri alınarak davranış kayıtlarına gönderildi.");
+      } else if (revertType === "board") {
+        await welfareService.revertToBehavior(recordToRevert as any, "disciplineBoardRecords");
+        setBoardRecords(current => current.filter(b => b.id !== recordToRevert.id));
+        setSuccessMessage("Öğrenci davranış bilgisi başarıyla geri alınarak davranış kayıtlarına gönderildi.");
+      } else if (revertType === "disiplin-sureci") {
+        const restored = await welfareService.revertDisciplineProcess(recordToRevert as any);
+        setBoardRecords(current => current.map(b => b.id === recordToRevert.id ? normalizeBehaviorRecord(restored, recordToRevert) : b));
+        setSuccessMessage("Kayıt başarıyla Disiplin Sürecinden çıkarılarak Ön İnceleme aşamasına eski haliyle geri gönderildi.");
+      }
+
+      setIsConfirmModalOpen(false);
+      setRecordToRevert(null);
+      setRevertType(null);
+      setIsSuccessModalOpen(true);
+    } catch (error) {
+      console.error("Error reverting record:", error);
+      setIsConfirmModalOpen(false);
+      alert("Geri gönderme işlemi sırasında bir hata oluştu.");
+    }
+  };
+
+  const handleArchiveRecord = async (
+    record: BehaviorRecord,
+    archiveSource: "Uyarı Bildirimi" | "Disiplin Süreci",
+  ) => {
+    if (!canManageDiscipline) { alert("Bu rol kayıt arşivleyemez."); return; }
+    try {
+      const studentArchiveRecords = createStudentArchiveRecords(record, archiveSource);
+      const archived = await welfareService.archiveCase(record as any, archiveSource, studentArchiveRecords as any[]);
+      if (archiveSource === "Uyarı Bildirimi") {
+        setWarnings(current => current.filter(warning => warning.id !== record.id));
+      } else {
+        setBoardRecords(current => current.filter(boardRecord => boardRecord.id !== record.id));
+      }
+      setArchiveRecords(current => [...archived.map(item => normalizeBehaviorRecord(item)), ...current].filter(
+        (archiveRecord, index, rows) => rows.findIndex(item => item.id === archiveRecord.id) === index,
+      ));
+
+      setSuccessMessage(
+        studentArchiveRecords.length > 1
+          ? `${studentArchiveRecords.length} öğrencinin davranış ve ceza bilgileri ayrı kayıtlar halinde Arşive gönderildi.`
+          : `${studentArchiveRecords[0]?.studentName || record.studentName} isimli öğrencinin davranış ve ceza bilgileri Arşive gönderildi.`,
+      );
+      setIsSuccessModalOpen(true);
+    } catch (error) {
+      console.error("Error archiving record:", error);
+      alert("Arşive gönderme sırasında bir hata oluştu.");
+    }
+  };
+
+  const handleRestoreFromArchive = async (record: BehaviorRecord) => {
+    if (!canManageDiscipline) { alert("Bu rol arşiv kaydı geri yükleyemez."); return; }
+    try {
+      if (record.archiveSource === "Disiplin Süreci") {
+        const restoredRecord = {
+          ...record,
+          sanctionType: record.originalSanctionType || record.sanctionType,
+          disciplineStatus: "Disiplin Süreci",
+          studentsList: [],
+        };
+        const restored = await welfareService.restoreFromArchive(record as any, "disciplineBoardRecords", restoredRecord as any);
+        setArchiveRecords(current => current.filter(r => r.id !== record.id));
+        setBoardRecords(current => [normalizeBehaviorRecord(restored, recordToRevert), ...current.filter(r => r.id !== restored.id)]);
+        setSuccessMessage(`${record.studentName} isimli öğrencinin kaydı Disiplin Süreci alanına geri yüklendi.`);
+      } else {
+        const restoredRecord = {
+          ...record,
+          sanctionType: record.originalSanctionType || "Kınama",
+          disciplineStatus: undefined,
+          studentsList: [],
+        };
+        const restored = await welfareService.restoreFromArchive(record as any, "disciplineWarnings", restoredRecord as any);
+        setArchiveRecords(current => current.filter(r => r.id !== record.id));
+        setWarnings(current => [normalizeBehaviorRecord(restored, recordToRevert), ...current.filter(r => r.id !== restored.id)]);
+        setSuccessMessage(`${record.studentName} isimli öğrencinin kaydı Uyarı Bildirimi alanına geri yüklendi.`);
+      }
+      setIsSuccessModalOpen(true);
+    } catch (error) {
+      console.error("Error restoring record:", error);
+      alert("Geri yükleme sırasında bir hata oluştu.");
+    }
+  };
+
+  const handleDeleteArchiveRecord = async (recordId: string) => {
+    if (!canManageDiscipline) { alert("Bu rol arşiv kaydı silemez."); return; }
+    if (!window.confirm("Bu kaydı arşivden tamamen silmek istediğinize emin misiniz?")) return;
+    try {
+      const updatedArchive = archiveRecords.filter((r) => r.id !== recordId);
+      setArchiveRecords(updatedArchive);
+      await safeStorage.setItem("disciplineArchiveRecords", updatedArchive);
+      
+      setSuccessMessage("Kayıt arşivden tamamen silindi.");
+      setIsSuccessModalOpen(true);
+    } catch (error) {
+      console.error("Error deleting archived record:", error);
+      alert("Silme işlemi sırasında bir hata oluştu.");
+    }
+  };
+
+  return (
+    <div className="mx-auto flex h-full w-full max-w-7xl flex-col space-y-6 px-6 pb-6 pt-0 animate-fadeIn lg:px-8 lg:pb-8 lg:pt-0">
+      {!canManageDiscipline && <ActionPermissionNotice message="Disiplin kayıtlarını inceleyebilirsiniz; ancak bu rol ile kayıt oluşturma, süreç değiştirme, arşivleme veya silme işlemi yapılamaz." />}
+      <DisciplineMainPanels
+        activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs} onOpenBehaviorTab={onOpenBehaviorTab}
+        boardRecords={boardRecords} selectedRecordIdsForTutanak={selectedRecordIdsForTutanak}
+        setToplantiBilgileriStudent={setToplantiBilgileriStudent} setIsToplantiBilgileriModalOpen={setIsToplantiBilgileriModalOpen}
+        filteredWarnings={filteredWarnings} getRecordStudents={getRecordStudents}
+        setSelectedWarningForLetter={setSelectedWarningForLetter} getWarningLetterHTML={getWarningLetterHTML}
+        setWarningLetterPrintPreviewContent={setWarningLetterPrintPreviewContent} toggleLetterSent={toggleLetterSent}
+        handleRevert={handleRevert} handleArchiveRecord={handleArchiveRecord} filteredBoardRecords={filteredBoardRecords}
+        handleToggleStep={handleToggleStep} openGuidanceStep={openGuidanceStep} openCallLetterStep={openCallLetterStep}
+        openWrittenStatementsStep={openWrittenStatementsStep} handleMoveToDisciplineProcess={handleMoveToDisciplineProcess}
+        handlePrintSevkYazisi={handlePrintSevkYazisi} openNotificationsStep={openNotificationsStep} openDecisionStep={openDecisionStep}
+        archiveRecords={archiveRecords} archiveUniqueStudentCount={archiveUniqueStudentCount} archiveSanctionStats={archiveSanctionStats}
+        handleRestoreFromArchive={handleRestoreFromArchive} handleDeleteArchiveRecord={handleDeleteArchiveRecord}
+      />
+
+      {/* Confirmation Modal */}
+      {isConfirmModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl border border-slate-100 flex flex-col items-center text-center gap-4 relative animate-scaleUp">
+            <button 
+              onClick={() => {
+                setIsConfirmModalOpen(false);
+                setRecordToRevert(null);
+                setRevertType(null);
+              }}
+              className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="w-14 h-14 bg-amber-50 rounded-full flex items-center justify-center text-amber-500 shrink-0 shadow-inner">
+              <AlertTriangle className="w-7 h-7" />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-lg font-bold text-slate-800">İşlemi Onaylıyor musunuz?</h3>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                {revertType === "disiplin-sureci"
+                  ? "Seçilen kaydı Disiplin Sürecinden çıkarıp Ön İnceleme aşamasına geri göndermeyi onaylıyor musunuz?"
+                  : "Öğrenci davranış bilgilerini davranış kaydı arayüzüne göndermeyi onaylıyor musunuz?"}
+              </p>
+              {recordToRevert && (
+                <div className="mt-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl text-left">
+                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Öğrenci ve Davranış</p>
+                  <p className="text-sm font-bold text-slate-700 mt-1">{recordToRevert.studentName}</p>
+                  <p className="text-xs text-slate-500 mt-0.5">{recordToRevert.behaviorName}</p>
+                </div>
+              )}
+            </div>
+            <div className="flex items-center gap-3 w-full mt-4">
+              <button
+                onClick={() => {
+                  setIsConfirmModalOpen(false);
+                  setRecordToRevert(null);
+                  setRevertType(null);
+                }}
+                className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl transition-all text-sm"
+              >
+                İptal
+              </button>
+              <button
+                onClick={confirmRevertAction}
+                className="flex-1 py-2.5 bg-amber-800 hover:bg-amber-900 text-white font-bold rounded-xl transition-all shadow-md shadow-amber-800/10 text-[16.67px]"
+              >
+                {revertType === "disiplin-sureci" ? "Evet, Geri Gönder" : "Evet, Gönder"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Success Modal */}
+      {isSuccessModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl border border-slate-100 flex flex-col items-center text-center gap-4 relative animate-scaleUp">
+            <div className="w-14 h-14 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-500 shrink-0 shadow-inner">
+              <CheckCircle2 className="w-7 h-7" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-lg font-bold text-slate-800">İşlem Başarılı</h3>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                {successMessage}
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                setIsSuccessModalOpen(false);
+                setSuccessMessage("");
+              }}
+              className="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl transition-all text-sm shadow-md mt-2"
+            >
+              Kapat
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Sevk Confirmation Modal */}
+      {isSevkConfirmModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl border border-slate-100 flex flex-col items-center text-center gap-4 relative animate-scaleUp">
+            <button 
+              onClick={() => {
+                setIsSevkConfirmModalOpen(false);
+                setRecordToSevk(null);
+              }}
+              className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center text-red-600 shrink-0 shadow-inner">
+              <AlertTriangle className="w-7 h-7" />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-lg font-bold text-slate-800">Disiplin Kuruluna Sevk Onayı</h3>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                Öğrenci Disiplin kuruluna sevk edilecektir. Onaylıyor musunuz?
+              </p>
+              {recordToSevk && (
+                <div className="mt-3 p-3 bg-rose-50/50 border border-rose-100 rounded-xl text-left">
+                  <p className="text-xs font-semibold text-rose-500 uppercase tracking-wider">Sevk Edilecek Öğrenci</p>
+                  <p className="text-sm font-bold text-slate-800 mt-1">{recordToSevk.studentName}</p>
+                  <p className="text-xs text-slate-600 mt-0.5">Sınıf/No: {recordToSevk.studentClassroom} - {recordToSevk.studentNumber}</p>
+                  <p className="text-xs text-slate-500 mt-1 italic">Davranış: {recordToSevk.behaviorName}</p>
+                </div>
+              )}
+            </div>
+            <div className="flex items-center gap-3 w-full mt-4">
+              <button
+                onClick={() => {
+                  setIsSevkConfirmModalOpen(false);
+                  setRecordToSevk(null);
+                }}
+                className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl transition-all text-sm"
+              >
+                İptal
+              </button>
+              <button
+                onClick={confirmSevkAction}
+                className="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-all shadow-md shadow-red-600/10 text-[16.67px]"
+              >
+                Evet, Onayla ve Sevk Et
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rehberlik Görüşme Formu Modali */}
+      {isRehberlikModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] shadow-2xl border border-slate-100 flex flex-col relative animate-scaleUp overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/50">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center shadow-inner">
+                  <FileText className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-slate-800 tracking-tight">Rehberlik Öğrenci Görüşme Formu</h3>
+                  <p className="text-xs text-slate-500 font-medium mt-0.5">Disiplin Kurulu İçin Form Oluştur</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsRehberlikModalOpen(false)}
+                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6 space-y-5 custom-scrollbar">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Olay Tarihi</label>
+                  <input
+                    type="date"
+                    value={rehberlikOlayTarihi}
+                    onChange={(e) => setRehberlikOlayTarihi(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Sevk Tarihi</label>
+                  <input
+                    type="date"
+                    value={rehberlikSevkTarihi}
+                    onChange={(e) => setRehberlikSevkTarihi(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Dilekçe Konu/Sayı/No</label>
+                <input
+                  type="text"
+                  value={rehberlikDilekceKonu}
+                  onChange={(e) => setRehberlikDilekceKonu(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                  placeholder="Konu/Sayı/No..."
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Olayla İlgili Görüşülen Kişiler</label>
+                <textarea
+                  value={rehberlikGorusulenKisiler}
+                  onChange={(e) => setRehberlikGorusulenKisiler(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 min-h-[80px] resize-none"
+                  placeholder="Görüşülen kişileri yazınız..."
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Olayla İlgili Görüşmenin Özeti</label>
+                <textarea
+                  value={rehberlikGorusmeOzeti}
+                  onChange={(e) => setRehberlikGorusmeOzeti(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 min-h-[100px] resize-none"
+                  placeholder="Görüşme özetini yazınız..."
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Öğrenci/Öğrencilerin Psikososyal İncelenmesi</label>
+                <textarea
+                  value={rehberlikPsikososyal}
+                  onChange={(e) => setRehberlikPsikososyal(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 min-h-[100px] resize-none"
+                  placeholder="Psikososyal incelemeyi yazınız..."
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Rehberlik Öğretmeninin Görüş ve Önerileri</label>
+                <textarea
+                  value={rehberlikOneriler}
+                  onChange={(e) => setRehberlikOneriler(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 min-h-[100px] resize-none"
+                  placeholder="Görüş ve önerileri yazınız..."
+                />
+              </div>
+            </div>
+
+            <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0">
+              <button
+                type="button"
+                onClick={handleSaveRehberlik}
+                className="px-5 py-2.5 text-white font-extrabold rounded-xl transition-all shadow-md text-[14.67px] flex items-center gap-2 cursor-pointer bg-teal-600 hover:bg-teal-700 shadow-teal-600/10 font-bold"
+              >
+                <Save className="w-4 h-4" />
+                <span>Kaydet</span>
+              </button>
+              
+              <span className="text-xs text-slate-400 italic hidden sm:inline">Boş bırakılan alanlar çıktıda el ile doldurulmak üzere boş alan olarak ayrılır.</span>
+              
+              <button
+                type="button"
+                onClick={() => {
+                  handleActualPrintRehberlik();
+                  setIsRehberlikPrintPreviewOpen(true);
+                }}
+                className="px-5 py-2.5 text-slate-700 hover:text-white bg-slate-100 hover:bg-teal-600 font-extrabold rounded-xl transition-all border border-slate-200 hover:border-teal-600 text-xs flex items-center gap-2 cursor-pointer font-bold"
+              >
+                <Printer className="w-4 h-4" />
+                <span>Formu Yazdır</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rehberlik Görüşme Formu Yazdır Önizleme Modali */}
+      {isRehberlikPrintPreviewOpen && selectedRecordForRehberlik && (
+        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center z-[60] p-4 animate-fadeIn">
+          <div className="bg-slate-800 text-white rounded-3xl w-full max-w-4xl h-[90vh] shadow-2xl border border-slate-700 flex flex-col relative animate-scaleUp overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-700 flex items-center justify-between shrink-0 bg-slate-850">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center shadow-inner">
+                  <Printer className="w-5 h-5 animate-pulse" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-slate-100 tracking-tight">Yazdır Ön İzleme</h3>
+                  <p className="text-xs text-slate-400 font-medium mt-0.5">Rehberlik Öğrenci Görüşme Formu</p>
+                </div>
+              </div>
+              <button 
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsRehberlikPrintPreviewOpen(false);
+                }}
+                className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-xl transition-colors cursor-pointer relative z-50"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-8 bg-slate-900 custom-scrollbar flex justify-center">
+              {/* Simulated A4 Page */}
+              <div id="rehberlik-print-section" className="bg-white text-black p-12 w-[210mm] min-h-[297mm] flex flex-col justify-between font-serif animate-fadeIn" style={{ fontFamily: "'Times New Roman', Times, serif", fontSize: "12pt" }}>
+                <div>
+                  {/* Title */}
+                  <div className="text-center mb-6 border-b-2 border-teal-700 pb-3">
+              <h2 className="text-lg font-bold uppercase tracking-wide text-slate-800">DİSİPLİN KURULU İÇİN ÖĞRENCİ GÖRÜŞME FORMU</h2>
+                  </div>
+
+                  {/* Info Table */}
+                  <table className="w-full border-collapse mb-4 text-[12pt] text-black">
+                    <tbody>
+                      <tr>
+                        <td className="p-2 w-1/4 font-bold bg-slate-100">Okulu:</td>
+                        <td className="p-2 w-3/4" colSpan={3}>
+                          {getHeaderLines().length > 2 ? getHeaderLines()[2] : "Okulu"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="p-2 w-1/4 font-bold bg-slate-100">Olay Tarihi:</td>
+                        <td className="p-2 w-1/4">
+                          {rehberlikOlayTarihi ? rehberlikOlayTarihi.split('-').reverse().join('.') : ""}
+                        </td>
+                        <td className="p-2 w-1/4 font-bold bg-slate-100">Rehberlik Servisine<br/>Sevk Tarihi:</td>
+                        <td className="p-2 w-1/4">
+                          {rehberlikSevkTarihi ? rehberlikSevkTarihi.split('-').reverse().join('.') : ""}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="p-2 font-bold bg-slate-100">Dilekçe Konu/Sayı/No:</td>
+                        <td className="p-2" colSpan={3}>
+                          {rehberlikDilekceKonu || ""}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  {/* Sections */}
+                  <div className="space-y-4">
+                    {/* Olayda Adı Geçenler */}
+                    <div className="p-3 min-h-[60px]">
+                      <div className="font-bold text-slate-700 text-[12pt] mb-1">Olayda Adı Geçen Öğrenci/Öğrenciler (Ad Soyad, Sınıf, No):</div>
+                      <div className="text-slate-950 text-[12pt]">
+                        {getRecordStudents(selectedRecordForRehberlik)
+                          .map((s) => `${s.name} (${s.classroom} - No: ${s.number || s.id})`)
+                          .join(", ")}
+                      </div>
+                    </div>
+
+                    {/* Görüşülen Kişiler */}
+                    <div className="p-3 min-h-[60px]">
+                      <div className="font-bold text-slate-700 text-[12pt] mb-1">Olayla İlgili Görüşülen Kişiler:</div>
+                      <div className="text-slate-950 text-[12pt] whitespace-pre-wrap">{rehberlikGorusulenKisiler || "—"}</div>
+                    </div>
+
+                    {/* Görüşmenin Özeti */}
+                    <div className="p-3 min-h-[100px]">
+                      <div className="font-bold text-slate-700 text-[12pt] mb-1">Olayla İlgili Görüşmenin Özeti:</div>
+                      <div className="text-slate-950 text-[12pt] text-justify whitespace-pre-wrap">{rehberlikGorusmeOzeti || "—"}</div>
+                    </div>
+
+                    {/* Psikososyal İnceleme */}
+                    <div className="p-3 min-h-[100px]">
+                      <div className="font-bold text-slate-700 text-[12pt] mb-1">Olayla İlgili Öğrenci/Öğrencilerin Psikososyal İncelenmesi:</div>
+                      <div className="text-slate-950 text-[12pt] text-justify whitespace-pre-wrap">{rehberlikPsikososyal || "—"}</div>
+                    </div>
+
+                    {/* Görüş ve Öneriler */}
+                    <div className="p-3 min-h-[100px]">
+                      <div className="font-bold text-slate-700 text-[12pt] mb-1">Rehberlik Öğretmeninin Konuyla İlgili Görüş ve Önerileri:</div>
+                      <div className="text-slate-950 text-[12pt] text-justify whitespace-pre-wrap">{rehberlikOneriler || "—"}</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Signature Block */}
+                <div className="flex justify-end mt-12">
+                  <div className="text-center w-[200px]">
+                    <div className="text-[12pt] mb-2">.... / .... / .......</div>
+                    <div className="border-b border-dotted border-slate-600 w-full h-[25px] mb-1"></div>
+                    <div className="text-[12pt] font-bold text-slate-800">Okul Rehberlik Öğretmeni</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Bar */}
+            <div className="px-6 py-4 bg-slate-800 border-t border-slate-700 flex items-center justify-between shrink-0">
+              <span className="text-xs text-slate-400 italic">Yazdır veya PDF indir butonuna tıklayarak çıktıyı alabilirsiniz.</span>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleDownloadPdfRehberlik}
+                  className="px-6 py-3 text-white font-extrabold rounded-xl transition-all shadow-lg text-[16.67px] flex items-center gap-2 cursor-pointer bg-blue-500 hover:bg-blue-600 shadow-blue-500/20 font-bold"
+                >
+                  <FileText className="w-5 h-5" />
+                  <span>PDF İndir</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleActualPrintRehberlik();
+                    setIsRehberlikPrintPreviewOpen(false);
+                  }}
+                  className="px-6 py-3 text-white font-extrabold rounded-xl transition-all shadow-lg text-sm flex items-center gap-2 cursor-pointer bg-teal-500 hover:bg-teal-600 shadow-teal-500/20 font-bold"
+                >
+                  <Printer className="w-5 h-5" />
+                  <span>Yazdır</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isKararModalOpen && (
+        <Suspense
+          fallback={
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/10">
+              <div className="rounded-2xl bg-white px-6 py-4 text-sm font-bold text-slate-500 shadow-xl">
+                İşlem ekranı yükleniyor...
+              </div>
+            </div>
+          }
+        >
+          <DisciplineDecisionModal
+        open={isKararModalOpen}
+        record={selectedRecordForKarar}
+        selectedStudent={kararSelectedStudent}
+        setSelectedStudent={setKararSelectedStudent}
+        data={kararDataState}
+        setData={setKararDataState}
+        onClose={() => setIsKararModalOpen(false)}
+        onSaveAndPrint={handleSaveAndPrintKarar}
+      />
+        </Suspense>
+      )}
+
+      {(isIfadeModalOpen || isYaziliIfadeModalOpen) && (
+        <Suspense
+          fallback={
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/10">
+              <div className="rounded-2xl bg-white px-6 py-4 text-sm font-bold text-slate-500 shadow-xl">
+                İşlem ekranı yükleniyor...
+              </div>
+            </div>
+          }
+        >
+          <DisciplineStatementModals
+        ctx={{
+          ifadeKonusu,
+          ifadeMetni,
+          ifadeOlayTarihi,
+          ifadeSelectedStudent,
+          ifadeTarihi,
+          isIfadeModalOpen,
+          isYaziliIfadeModalOpen,
+          selectedRecordForIfade,
+          selectedRecordForYaziliIfade,
+          students,
+          setIfadeKonusu,
+          setIfadeMetni,
+          setIfadeOlayTarihi,
+          setIfadeSelectedStudent,
+          setIfadeTarihi,
+          setIsIfadeModalOpen,
+          setIsYaziliIfadeModalOpen,
+          setYaziliIfadeDilekceTarihi,
+          setYaziliIfadeKonusu,
+          setYaziliIfadeMetni,
+          setYaziliIfadeOlayTarihi,
+          setYaziliIfadeSaati,
+          setYaziliIfadeSelectedStudent,
+          setYaziliIfadeTarih,
+          setYaziliIfadeTarihi,
+          setYaziliIfadeTuru,
+          setYaziliIfadeYeri,
+          yaziliIfadeDilekceTarihi,
+          yaziliIfadeKonusu,
+          yaziliIfadeMetni,
+          yaziliIfadeOlayTarihi,
+          yaziliIfadeSaati,
+          yaziliIfadeSelectedStudent,
+          yaziliIfadeTarih,
+          yaziliIfadeTarihi,
+          yaziliIfadeTuru,
+          yaziliIfadeYeri,
+          handleSaveAndPrintIfade,
+          handleSaveYaziliIfadeOnly,
+          handleSaveAndPreviewYaziliIfade
+        }}
+      />
+        </Suspense>
+      )}
+
+      {isCagriPusulasiModalOpen && (
+        <Suspense
+          fallback={
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/10">
+              <div className="rounded-2xl bg-white px-6 py-4 text-sm font-bold text-slate-500 shadow-xl">
+                İşlem ekranı yükleniyor...
+              </div>
+            </div>
+          }
+        >
+          <DisciplineCallModal
+        ctx={{
+          cagriDate,
+          cagriManualWitnessClass,
+          cagriManualWitnessName,
+          cagriManualWitnessNumber,
+          cagriMeetingDate,
+          cagriMeetingPlace,
+          cagriMeetingTime,
+          cagriSelectedStudent,
+          cagriSelectedWitnessForAdd,
+          cagriShowWitnessSuggestions,
+          cagriType,
+          cagriWitnessSearchMode,
+          cagriWitnessSearchTerm,
+          cagriWitnesses,
+          filteredWitnessesForSearch,
+          handleSaveAndPreviewCagriPusulasi,
+          handleSaveCagriPusulasi,
+          isCagriPusulasiModalOpen,
+          selectedRecordForCagri,
+          setCagriDate,
+          setCagriManualWitnessClass,
+          setCagriManualWitnessName,
+          setCagriManualWitnessNumber,
+          setCagriMeetingDate,
+          setCagriMeetingPlace,
+          setCagriMeetingTime,
+          setCagriSelectedStudent,
+          setCagriSelectedWitnessForAdd,
+          setCagriShowWitnessSuggestions,
+          setCagriType,
+          setCagriWitnessSearchMode,
+          setCagriWitnessSearchTerm,
+          setCagriWitnesses,
+          setIsCagriPusulasiModalOpen
+        }}
+      />
+        </Suspense>
+      )}
+
+      {/* Tebliğler Modali */}
+      {isTebligModalOpen && selectedRecordForTeblig && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] shadow-2xl border border-slate-100 flex flex-col relative animate-scaleUp overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/50">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-inner">
+                  <FileText className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-slate-800 tracking-tight">Tebliğ Tebellüğ Formu</h3>
+                  <p className="text-xs text-slate-500 font-medium mt-0.5">Tebliğ Tebellüğ Belgesi Düzenle ve Yazdır</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsTebligModalOpen(false)}
+                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6 space-y-5 custom-scrollbar">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Tebliğ Belgesi Türü</label>
+                  <select
+                    value={tebligType}
+                    onChange={(e) => setTebligType(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                  >
+                    <option value="Öğrenci Tebliğ Belgesi">Öğrenci Tebliğ Belgesi</option>
+                    <option value="Veli Tebliğ Belgesi">Veli Tebliğ Belgesi</option>
+                  </select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Tebliğ Tarihi</label>
+                  <input
+                    type="date"
+                    value={tebligDate}
+                    onChange={(e) => setTebligDate(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Tebliğ Edilecek Kişi</label>
+                <select
+                  value={tebligSelectedStudent}
+                  onChange={(e) => setTebligSelectedStudent(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                >
+                  {getRecordStudents(selectedRecordForTeblig).map((s) => (
+                    <option key={s.id} value={s.id}>{s.name} ({s.classroom} - No: {s.number})</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Tebliğ Konusu</label>
+                <input
+                  type="text"
+                  value={tebligSubject}
+                  onChange={(e) => setTebligSubject(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Tebliğ Metni</label>
+                <textarea
+                  value={tebligText}
+                  onChange={(e) => setTebligText(e.target.value)}
+                  rows={4}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 resize-y"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Tebliğ Eden (Adı Soyadı)</label>
+                  <input
+                    type="text"
+                    value={tebligSender}
+                    onChange={(e) => setTebligSender(e.target.value)}
+                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Tebliğ Eden Ünvanı</label>
+                  <input
+                    type="text"
+                    value={tebligSenderTitle}
+                    onChange={(e) => setTebligSenderTitle(e.target.value)}
+                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Tebellüğ Eden (Teslim Alan Kişi)</label>
+                <input
+                  type="text"
+                  value={tebligReceiver}
+                  onChange={(e) => setTebligReceiver(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                />
+              </div>
+            </div>
+
+            <div className="px-6 py-4 border-t border-slate-100 flex items-center justify-end bg-slate-50 shrink-0 gap-3">
+              <button
+                type="button"
+                onClick={() => setIsTebligModalOpen(false)}
+                className="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold rounded-xl transition-all text-xs cursor-pointer"
+              >
+                İptal
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveAndPrintTeblig}
+                className="px-5 py-2.5 text-white font-extrabold rounded-xl transition-all shadow-md text-[14.67px] flex items-center gap-2 cursor-pointer bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/10"
+              >
+                <Printer className="w-4 h-4" />
+                <span>Kaydet ve Yazdır</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {(
+        isWhatsAppPreviewOpen ||
+        Boolean(cagriPrintPreviewContent) ||
+        Boolean(yaziliIfadePrintPreviewContent) ||
+        isToplantiBilgileriModalOpen
+      ) && (
+        <Suspense
+          fallback={
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/10">
+              <div className="rounded-2xl bg-white px-6 py-4 text-sm font-bold text-slate-500 shadow-xl">
+                Önizleme yükleniyor...
+              </div>
+            </div>
+          }
+        >
+          <DisciplinePreviewModals
+        isWhatsAppPreviewOpen={isWhatsAppPreviewOpen}
+        setIsWhatsAppPreviewOpen={setIsWhatsAppPreviewOpen}
+        whatsAppMessageText={whatsAppMessageText}
+        setWhatsAppMessageText={setWhatsAppMessageText}
+        cagriPrintPreviewContent={cagriPrintPreviewContent}
+        setCagriPrintPreviewContent={setCagriPrintPreviewContent}
+        selectedRecordForCagri={selectedRecordForCagri}
+        cagriSelectedStudent={cagriSelectedStudent}
+        cagriType={cagriType}
+        handleActualCagriPrint={handleActualCagriPrint}
+        yaziliIfadePrintPreviewContent={yaziliIfadePrintPreviewContent}
+        setYaziliIfadePrintPreviewContent={setYaziliIfadePrintPreviewContent}
+        yaziliIfadeSelectedStudent={yaziliIfadeSelectedStudent}
+        handleActualYaziliIfadePrint={handleActualYaziliIfadePrint}
+        warningLetterPrintPreviewContent={warningLetterPrintPreviewContent}
+        setWarningLetterPrintPreviewContent={setWarningLetterPrintPreviewContent}
+        selectedWarningForLetter={selectedWarningForLetter}
+        setSelectedWarningForLetter={setSelectedWarningForLetter}
+        getRecordStudents={getRecordStudents}
+        toggleLetterSent={toggleLetterSent}
+        printLetter={printLetter}
+        isToplantiBilgileriModalOpen={isToplantiBilgileriModalOpen}
+        setIsToplantiBilgileriModalOpen={setIsToplantiBilgileriModalOpen}
+        toplantiBilgileriStudent={toplantiBilgileriStudent}
+        toplantiBilgileriMeetingWith={toplantiBilgileriMeetingWith}
+        setToplantiBilgileriMeetingWith={setToplantiBilgileriMeetingWith}
+        toplantiBilgileriDate={toplantiBilgileriDate}
+        setToplantiBilgileriDate={setToplantiBilgileriDate}
+        toplantiBilgileriTime={toplantiBilgileriTime}
+        setToplantiBilgileriTime={setToplantiBilgileriTime}
+      />
+        </Suspense>
+      )}
+
+      {isTutanakModalOpen && (
+        <Suspense
+          fallback={
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/10">
+              <div className="rounded-2xl bg-white px-6 py-4 text-sm font-bold text-slate-500 shadow-xl">
+                İşlem ekranı yükleniyor...
+              </div>
+            </div>
+          }
+        >
+          <DisciplineIncidentReportModal
+        isOpen={isTutanakModalOpen}
+        onClose={() => setIsTutanakModalOpen(false)}
+        tutanakDate={tutanakDate}
+        setTutanakDate={setTutanakDate}
+        newTeacherInput={newTeacherInput}
+        setNewTeacherInput={setNewTeacherInput}
+        showTeacherSuggestions={showTeacherSuggestions}
+        setShowTeacherSuggestions={setShowTeacherSuggestions}
+        filteredTeachersForSearch={filteredTeachersForSearch}
+        tutanakTeachers={tutanakTeachers}
+        setTutanakTeachers={setTutanakTeachers}
+        isManualStudent={isManualStudent}
+        setIsManualStudent={setIsManualStudent}
+        selectedStudentForTutanak={selectedStudentForTutanak}
+        setSelectedStudentForTutanak={setSelectedStudentForTutanak}
+        studentSearchTerm={studentSearchTerm}
+        setStudentSearchTerm={setStudentSearchTerm}
+        showStudentSuggestions={showStudentSuggestions}
+        setShowStudentSuggestions={setShowStudentSuggestions}
+        filteredStudentsForSearch={filteredStudentsForSearch}
+        tutanakStudents={tutanakStudents}
+        setTutanakStudents={setTutanakStudents}
+        manualStudentName={manualStudentName}
+        setManualStudentName={setManualStudentName}
+        manualStudentClassroom={manualStudentClassroom}
+        setManualStudentClassroom={setManualStudentClassroom}
+        manualStudentNumber={manualStudentNumber}
+        setManualStudentNumber={setManualStudentNumber}
+        onPrint={handlePrintTutanak}
+      />
+        </Suspense>
+      )}
+    </div>
+  );
+}
+

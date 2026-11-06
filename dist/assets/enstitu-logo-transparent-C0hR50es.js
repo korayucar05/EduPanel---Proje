@@ -1,0 +1,1 @@
+var e=`/assets/enstitu-logo-transparent-03_5Ok-x.png`;export{e as t};

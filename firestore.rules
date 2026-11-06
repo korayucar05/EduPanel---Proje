@@ -1,0 +1,213 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function membership() {
+      return get(/databases/$(database)/documents/schoolMembers/$(request.auth.uid)).data;
+    }
+
+    function hasMembership() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/schoolMembers/$(request.auth.uid))
+        && membership().active == true;
+    }
+
+    function activeMembership(schoolId) {
+      return hasMembership() && membership().schoolId == schoolId;
+    }
+
+    function taskMember(schoolId) {
+      return activeMembership(schoolId)
+        && membership().role in ["super_admin", "principal", "assistant_principal", "teacher", "counselor"];
+    }
+
+    function schoolManager(schoolId) {
+      return activeMembership(schoolId)
+        && membership().role in ["super_admin", "principal", "assistant_principal"];
+    }
+
+    function memberManager(schoolId) {
+      return activeMembership(schoolId)
+        && membership().role in ["super_admin", "principal"];
+    }
+
+    function sameSchoolExisting() {
+      return resource.data.schoolId is string && activeMembership(resource.data.schoolId);
+    }
+
+    function sameSchoolIncoming() {
+      return request.resource.data.schoolId is string && activeMembership(request.resource.data.schoolId);
+    }
+
+    match /schoolMembers/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || memberManager(resource.data.schoolId));
+      allow create: if signedIn() && (
+        memberManager(request.resource.data.schoolId)
+        || (
+          request.auth.uid == uid
+          && request.auth.uid == "6WxeicbulmVAFzrCWlNF8AFqoFf2"
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.schoolId == "school-main"
+          && request.resource.data.role == "principal"
+          && request.resource.data.active == true
+        )
+      );
+      allow update: if signedIn()
+        && memberManager(resource.data.schoolId)
+        && request.resource.data.schoolId == resource.data.schoolId;
+      allow delete: if signedIn() && memberManager(resource.data.schoolId);
+    }
+
+    match /hasatDecisionTasks/{taskId} {
+      allow read: if taskMember(resource.data.schoolId);
+      allow create: if taskMember(request.resource.data.schoolId)
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.updatedBy == request.auth.uid;
+      allow update: if taskMember(resource.data.schoolId)
+        && request.resource.data.schoolId == resource.data.schoolId
+        && request.resource.data.updatedBy == request.auth.uid;
+      allow delete: if schoolManager(resource.data.schoolId);
+    }
+
+    match /auditLogs/{logId} {
+      allow read: if schoolManager(resource.data.schoolId);
+      allow create: if taskMember(request.resource.data.schoolId)
+        && request.resource.data.actorId == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    // FINAL-29: Her öğrenci için kalıcı HASAT AİLE profili.
+    match /hasatStudentProfiles/{permanentCode} {
+      allow get: if true;
+      allow list: if false;
+      allow create: if signedIn()
+        && request.resource.data.ownerId == request.auth.uid
+        && isMemberOfSchool(request.resource.data.schoolId);
+      allow update: if signedIn()
+        && resource.data.ownerId == request.auth.uid
+        && request.resource.data.ownerId == resource.data.ownerId
+        && request.resource.data.schoolId == resource.data.schoolId;
+      allow delete: if signedIn() && resource.data.ownerId == request.auth.uid;
+    }
+
+    // Öğrenci kimliği → kalıcı public kod eşlemesi yalnızca yetkili okul kullanıcısına açıktır.
+    match /hasatStudentProfileIndex/{identityHash} {
+      allow get: if signedIn();
+      allow list: if false;
+      allow create: if signedIn()
+        && request.resource.data.ownerId == request.auth.uid
+        && isMemberOfSchool(request.resource.data.schoolId);
+      allow update: if signedIn()
+        && resource.data.schoolId == request.resource.data.schoolId
+        && isMemberOfSchool(resource.data.schoolId);
+      allow delete: if signedIn() && resource.data.ownerId == request.auth.uid;
+    }
+
+    // FINAL-28: kısa öğrenci rapor bağlantıları. Kod tahmin edilemez; yalnızca tek belge okunabilir.
+    match /hasatShortLinks/{shortCode} {
+      allow get: if true;
+      allow list: if false;
+      allow create: if signedIn()
+        && request.resource.data.ownerId == request.auth.uid
+        && isMemberOfSchool(request.resource.data.schoolId);
+      allow update: if false;
+      allow delete: if signedIn() && resource.data.ownerId == request.auth.uid;
+    }
+
+    // Token yalnızca tek belgeyi okumaya yarar; koleksiyon listeleme kapalıdır.
+    match /hasatLiveReports/{token} {
+      allow get: if resource.data.revoked == false
+        && resource.data.expiresAt > request.time;
+      allow list: if false;
+      allow create: if taskMember(request.resource.data.schoolId)
+        && request.resource.data.ownerId == request.auth.uid
+        && request.resource.data.revoked == false
+        && request.resource.data.expiresAt > request.time;
+      allow update: if false;
+      allow delete: if signedIn()
+        && (resource.data.ownerId == request.auth.uid || schoolManager(resource.data.schoolId));
+    }
+
+    // Öğretmene özel davranış giriş bağlantısı. Token belge kimliğidir; koleksiyon listeleme halka kapalıdır.
+    match /behaviorTeacherLinks/{token} {
+      allow get: if resource.data.active == true && resource.data.expiresAt > request.time;
+      allow list: if false;
+      allow create: if schoolManager(request.resource.data.schoolId)
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.active == true
+        && request.resource.data.expiresAt > request.time;
+      allow update, delete: if schoolManager(resource.data.schoolId);
+    }
+
+    // Öğretmen yalnızca geçerli link tokenına bağlı yeni davranış kaydı oluşturabilir.
+    match /behaviorTeacherSubmissions/{recordId} {
+      allow create: if request.resource.data.linkToken is string
+        && exists(/databases/$(database)/documents/behaviorTeacherLinks/$(request.resource.data.linkToken))
+        && get(/databases/$(database)/documents/behaviorTeacherLinks/$(request.resource.data.linkToken)).data.active == true
+        && get(/databases/$(database)/documents/behaviorTeacherLinks/$(request.resource.data.linkToken)).data.expiresAt > request.time
+        && request.resource.data.schoolId == get(/databases/$(database)/documents/behaviorTeacherLinks/$(request.resource.data.linkToken)).data.schoolId
+        && request.resource.data.teacherId == get(/databases/$(database)/documents/behaviorTeacherLinks/$(request.resource.data.linkToken)).data.teacherId
+        && request.resource.data.teacherName == get(/databases/$(database)/documents/behaviorTeacherLinks/$(request.resource.data.linkToken)).data.teacherName
+        && request.resource.data.studentId is string
+        && request.resource.data.studentId in get(/databases/$(database)/documents/behaviorTeacherLinks/$(request.resource.data.linkToken)).data.studentIds
+        && request.resource.data.behaviorType in ["Olumlu", "Olumsuz"]
+        && request.resource.data.behaviorName is string
+        && request.resource.data.behaviorName in get(/databases/$(database)/documents/behaviorTeacherLinks/$(request.resource.data.linkToken)).data.behaviorNames;
+      allow read: if schoolManager(resource.data.schoolId);
+      allow update: if false;
+      allow delete: if schoolManager(resource.data.schoolId);
+    }
+
+    // Çekirdek kurum koleksiyonları: tüm belgelerde schoolId zorunludur.
+    match /classrooms/{documentId} {
+      allow read: if sameSchoolExisting();
+      allow create: if sameSchoolIncoming();
+      allow update: if sameSchoolExisting() && request.resource.data.schoolId == resource.data.schoolId;
+      allow delete: if sameSchoolExisting();
+    }
+    match /teachers/{documentId} {
+      allow read: if sameSchoolExisting();
+      allow create: if sameSchoolIncoming();
+      allow update: if sameSchoolExisting() && request.resource.data.schoolId == resource.data.schoolId;
+      allow delete: if sameSchoolExisting();
+    }
+    match /students/{documentId} {
+      allow read: if sameSchoolExisting();
+      allow create: if sameSchoolIncoming();
+      allow update: if sameSchoolExisting() && request.resource.data.schoolId == resource.data.schoolId;
+      allow delete: if sameSchoolExisting();
+    }
+    match /courses/{documentId} {
+      allow read: if sameSchoolExisting();
+      allow create: if sameSchoolIncoming();
+      allow update: if sameSchoolExisting() && request.resource.data.schoolId == resource.data.schoolId;
+      allow delete: if sameSchoolExisting();
+    }
+    match /customCreatedCourses/{documentId} {
+      allow read: if sameSchoolExisting();
+      allow create: if sameSchoolIncoming();
+      allow update: if sameSchoolExisting() && request.resource.data.schoolId == resource.data.schoolId;
+      allow delete: if sameSchoolExisting();
+    }
+    match /kelebekSettings/{documentId} {
+      allow read: if sameSchoolExisting();
+      allow create: if sameSchoolIncoming();
+      allow update: if sameSchoolExisting() && request.resource.data.schoolId == resource.data.schoolId;
+      allow delete: if sameSchoolExisting();
+    }
+    match /itemAnalysisReviews/{documentId} {
+      allow read: if sameSchoolExisting();
+      allow create: if sameSchoolIncoming();
+      allow update: if sameSchoolExisting() && request.resource.data.schoolId == resource.data.schoolId;
+      allow delete: if sameSchoolExisting();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

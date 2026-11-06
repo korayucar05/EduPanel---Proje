@@ -1,0 +1,35 @@
+.role-splash{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;overflow:hidden;background:#071a2d;opacity:1;transition:opacity .45s ease}
+.role-splash.is-leaving{opacity:0;pointer-events:none}
+.role-splash-card{position:relative;width:min(100vw,430px);height:100vh;height:100dvh;overflow:hidden;background:#fff;box-shadow:0 28px 90px rgba(2,15,30,.35);animation:roleSplashIn .65s cubic-bezier(.2,.8,.2,1)}
+.role-splash-brand{height:21%;display:flex;align-items:center;justify-content:center;padding:18px 52px 0;background:linear-gradient(180deg,#fff 0%,#f7fbfd 100%)}
+.role-splash-enstitu{width:min(52%,205px);max-height:145px;object-fit:contain;display:block;transform:scale(.92)}
+.role-splash-photo-wrap{height:32%;position:relative;overflow:hidden;background:#eaf2f4}
+.role-splash-photo{width:100%;height:100%;display:block;object-fit:cover;object-position:center center;filter:saturate(1.08) contrast(1.03)}
+.role-splash-photo-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.02) 45%,rgba(0,0,0,.08) 100%)}
+.role-splash-panel{height:47%;padding:21px 25px 16px;color:#fff;position:relative;overflow:hidden}
+.role-splash-panel:before,.role-splash-panel:after{content:"";position:absolute;left:-8%;right:-8%;height:82px;border-radius:50% 50% 0 0/100% 100% 0 0;background:#fff;opacity:.20}
+.role-splash-panel:before{top:-38px;transform:rotate(-2deg)}
+.role-splash-panel:after{top:-18px;opacity:.11;transform:rotate(3deg)}
+.role-splash-panel.admin{background:linear-gradient(150deg,#087fc2 0%,#064f96 58%,#063d78 100%)}
+.role-splash-panel.teacher{background:linear-gradient(150deg,#08a86b 0%,#006c58 58%,#005744 100%)}
+.role-splash-panel.student{background:linear-gradient(150deg,#f7b71b 0%,#dc8a05 58%,#b96500 100%)}
+.role-splash-panel.parent{background:linear-gradient(150deg,#843be0 0%,#5a1bab 58%,#43118e 100%)}
+.role-splash-role-icon,.role-splash-role,.role-splash-divider,.role-splash-greeting,.role-splash-panel>p,.role-splash-progress,.role-splash-loading,.role-splash-school{position:relative;z-index:2}
+.role-splash-role-icon{width:62px;height:62px;margin:-8px auto 4px;border:3px solid rgba(255,255,255,.85);border-radius:50%;display:grid;place-items:center;background:rgba(8,24,45,.25);box-shadow:0 7px 22px rgba(0,0,0,.18)}
+.role-splash-role-icon svg{width:30px;height:30px;stroke-width:2.5}
+.role-splash-role{width:max-content;margin:0 auto;padding:2px 12px;font-size:12px;font-weight:950;letter-spacing:1.5px}
+.role-splash-divider{width:42px;height:3px;margin:8px auto 9px;background:#fff;border-radius:99px;opacity:.9}
+.role-splash-greeting{text-align:center;display:flex;flex-direction:column;gap:3px;font-size:19px;line-height:1.15}
+.role-splash-greeting strong{font-weight:900}.role-splash-greeting span{font-weight:750}
+.role-splash-panel>p{text-align:center;margin:8px 0 15px;font-size:12px;font-weight:650;opacity:.98}
+.role-splash-progress{height:8px;border-radius:999px;background:rgba(255,255,255,.30);overflow:hidden}
+.role-splash-progress span{display:block;width:0;height:100%;border-radius:inherit;background:#fff;animation:splashProgress 3.1s ease-out forwards}
+.role-splash-loading{text-align:center;margin-top:7px;font-size:9px;font-weight:800;letter-spacing:1.45px;opacity:.88}
+.role-splash-school{position:absolute;left:25px;right:25px;bottom:14px;display:flex;align-items:center;justify-content:center;gap:12px}
+.role-splash-school img{width:48px;height:48px;object-fit:contain;flex:0 0 48px}
+.role-splash-school div{display:flex;flex-direction:column;gap:2px}
+.role-splash-school strong{font-family:Georgia,serif;font-size:20px;line-height:1}.role-splash-school span{font-size:11px;font-weight:650;font-style:italic;opacity:.95}
+.role-splash-school:before{content:"";height:46px;width:1px;background:rgba(255,255,255,.55);order:1}.role-splash-school img{order:0}.role-splash-school div{order:2}
+@keyframes roleSplashIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}@keyframes splashProgress{from{width:0}to{width:100%}}
+@media (min-width:431px){.role-splash{padding:14px}.role-splash-card{height:min(100dvh,932px);border-radius:28px}.role-splash-brand{height:21%}}
+@media (max-height:760px){.role-splash-brand{height:19%}.role-splash-photo-wrap{height:30%}.role-splash-panel{height:51%}.role-splash-enstitu{max-height:112px}.role-splash-role-icon{width:52px;height:52px}.role-splash-role-icon svg{width:26px;height:26px}.role-splash-greeting{font-size:17px}.role-splash-school{bottom:10px}}

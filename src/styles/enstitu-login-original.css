@@ -1,0 +1,52 @@
+.enstitu-original-page,.enstitu-original-page *{box-sizing:border-box}
+.enstitu-original-page{width:100%;min-height:100vh;display:grid;place-items:center;overflow:hidden;padding:0;background:#f7f9fc;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#0f2c62}
+.enstitu-login-shell{width:100vw;height:100vh;min-height:690px;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(520px,.98fr);overflow:hidden;background:#fff}
+.enstitu-campus-side{position:relative;overflow:hidden;background:#eef5fb}
+.enstitu-campus-side img{width:100%;height:100%;display:block;object-fit:cover;object-position:center center}
+.enstitu-login-side{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:clamp(28px,4vw,72px);background:linear-gradient(145deg,#ffffff 0%,#fbfdff 58%,#f6f9ff 100%)}
+.enstitu-login-side:before{content:"";position:absolute;right:-110px;top:-135px;width:310px;height:260px;border-radius:42% 0 55% 48%;background:#113c79;transform:rotate(15deg)}
+.enstitu-login-side:after{content:"";position:absolute;right:-70px;bottom:-85px;width:235px;height:235px;border-radius:50%;border:1px solid rgba(27,111,221,.17);box-shadow:0 0 0 22px rgba(27,111,221,.035),0 0 0 48px rgba(27,111,221,.025)}
+.enstitu-deco{position:absolute;border-radius:50%;z-index:0}
+.enstitu-deco-one{width:18px;height:18px;left:8%;top:8%;background:#3989ed}
+.enstitu-deco-two{width:24px;height:24px;left:5%;bottom:12%;border:3px solid #ef4e75;background:#fff}
+.enstitu-deco-three{width:18px;height:18px;right:12%;top:31%;border:3px solid #f3a000;background:#fff}
+.enstitu-original-form{position:relative;z-index:2;width:min(100%,610px);padding:clamp(34px,4.2vw,58px);border:1px solid rgba(215,224,235,.8);border-radius:30px;background:rgba(255,255,255,.96);box-shadow:0 28px 70px rgba(40,63,96,.14)}
+.enstitu-form-title{display:flex;align-items:center;gap:22px;margin-bottom:24px}
+.enstitu-user-medallion{width:88px;height:88px;display:grid;place-items:center;flex:0 0 auto;border-radius:50%;background:#fff;box-shadow:0 8px 24px rgba(38,71,118,.14),inset 0 0 0 1px #edf1f6}
+.enstitu-user-medallion svg{width:43px;height:43px;stroke-width:1.7;color:#153d7c}
+.enstitu-form-title strong{display:block;color:#12336b;font-size:clamp(27px,2.2vw,38px);font-weight:900;letter-spacing:-.7px}
+.enstitu-form-title span{display:block;margin-top:8px;color:#1b2433;font-size:15px;font-weight:500}
+.enstitu-title-rule{height:22px;display:flex;align-items:center;justify-content:center;margin:-4px 0 18px}
+.enstitu-title-rule:before,.enstitu-title-rule:after{content:"";width:52px;height:1px;background:#d8dce7}
+.enstitu-title-rule span{width:9px;height:9px;margin:0 10px;transform:rotate(45deg);border:2px solid #8150d4;background:#ffaf13;box-shadow:0 0 0 4px #fff}
+.enstitu-fields{display:grid;gap:13px}
+.enstitu-original-field{--tone:#f59e0b;--tone-soft:#fff8e9;--tone-border:#f0ad31;min-height:94px;display:flex;align-items:stretch;overflow:hidden;border:1.5px solid var(--tone-border);border-radius:18px;background:var(--tone-soft);box-shadow:0 5px 13px rgba(31,52,78,.04);transition:.2s ease}
+.enstitu-original-field.tone-blue{--tone:#176fe5;--tone-soft:#eef6ff;--tone-border:#3183ee}
+.enstitu-original-field.tone-green{--tone:#2f9a50;--tone-soft:#f0f9ef;--tone-border:#65aa66}
+.enstitu-original-field:focus-within{transform:translateY(-1px);box-shadow:0 8px 20px color-mix(in srgb,var(--tone) 16%,transparent),0 0 0 3px color-mix(in srgb,var(--tone) 8%,transparent)}
+.enstitu-field-icon{position:relative;width:104px;display:grid;place-items:center;flex:0 0 auto;background:linear-gradient(145deg,color-mix(in srgb,var(--tone) 82%,#fff 18%),var(--tone));color:#fff}
+.enstitu-field-icon:after{content:"";position:absolute;right:-24px;top:0;width:48px;height:100%;background:inherit;clip-path:polygon(0 0,50% 0,100% 50%,50% 100%,0 100%,50% 50%)}
+.enstitu-field-icon svg{position:relative;z-index:2;width:34px;height:34px;stroke-width:1.8}
+.enstitu-field-body{min-width:0;flex:1;display:flex;flex-direction:column;justify-content:center;padding:14px 18px 12px 34px}
+.enstitu-field-title{padding-bottom:8px;border-bottom:1px solid color-mix(in srgb,var(--tone) 18%,#d8e1ec 82%);color:var(--tone);font-size:14px;font-weight:900;letter-spacing:.15px}
+.enstitu-field-control{min-height:35px;display:flex;align-items:center;padding-top:7px}
+.enstitu-field-control input{min-width:0;flex:1;width:100%;height:32px;border:0;outline:0;background:transparent;color:#1a2d46;font:650 16px inherit}
+.enstitu-field-control input::placeholder{color:#828b99;font-weight:500;opacity:.9}
+.enstitu-original-eye{width:42px;height:36px;display:grid;place-items:center;flex:0 0 auto;border:0;background:transparent;color:#44505f;cursor:pointer}
+.enstitu-original-eye svg{width:22px;height:22px}
+.enstitu-original-options{display:flex;align-items:center;justify-content:space-between;margin:20px 3px 20px;color:#1f2937;font-size:13px}
+.enstitu-original-options label{display:flex;align-items:center;gap:8px;font-weight:650;cursor:pointer}
+.enstitu-original-options input{width:18px;height:18px;accent-color:#1766d9}
+.enstitu-original-options button{border:0;background:transparent;color:#135fcb;font:750 inherit;cursor:pointer}
+.enstitu-original-error{margin:-5px 0 13px;padding:10px 12px;border:1px solid #fecdd3;border-radius:10px;background:#fff1f2;color:#be123c;font-size:12px;font-weight:700}
+.enstitu-original-login{width:100%;height:67px;display:flex;align-items:center;justify-content:center;gap:28px;border:0;border-radius:15px;background:linear-gradient(90deg,#123f83 0%,#1467d7 50%,#8c36ef 100%);color:#fff;font:900 20px inherit;letter-spacing:.2px;box-shadow:0 13px 27px rgba(59,80,197,.24);cursor:pointer;transition:.2s ease}
+.enstitu-original-login:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 16px 31px rgba(59,80,197,.29)}
+.enstitu-original-login svg{width:26px;height:26px}
+.enstitu-original-login:disabled{opacity:.65;cursor:default}
+.enstitu-secure-note{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin-top:28px;color:#687384}
+.enstitu-secure-note>span{height:1px;background:#dfe4ec}
+.enstitu-secure-note svg{width:20px;height:20px;color:#7a8696}
+.enstitu-secure-note p{grid-column:1/-1;margin:0;text-align:center;font-size:12px;font-weight:600}
+.enstitu-spin{animation:enstitu-spin .9s linear infinite}@keyframes enstitu-spin{to{transform:rotate(360deg)}}
+@media(max-width:1050px){.enstitu-login-shell{grid-template-columns:46% 54%}.enstitu-original-form{padding:34px}.enstitu-original-field{min-height:84px}.enstitu-field-icon{width:86px}}
+@media(max-width:800px){.enstitu-original-page{overflow:auto}.enstitu-login-shell{height:auto;min-height:100svh;grid-template-columns:1fr}.enstitu-campus-side{height:32svh;min-height:250px}.enstitu-campus-side img{object-position:center 39%}.enstitu-login-side{min-height:68svh;padding:24px 18px 40px}.enstitu-original-form{width:min(100%,560px);padding:26px 20px;border-radius:23px}.enstitu-form-title{gap:15px}.enstitu-user-medallion{width:66px;height:66px}.enstitu-user-medallion svg{width:32px;height:32px}.enstitu-form-title strong{font-size:26px}.enstitu-form-title span{font-size:13px}.enstitu-original-field{min-height:76px;border-radius:15px}.enstitu-field-icon{width:74px}.enstitu-field-icon svg{width:28px;height:28px}.enstitu-field-body{padding:9px 13px 8px 27px}.enstitu-field-title{font-size:12px;padding-bottom:5px}.enstitu-field-control{padding-top:4px}.enstitu-field-control input{font-size:14px}.enstitu-original-login{height:58px;font-size:17px}.enstitu-secure-note{margin-top:21px}}

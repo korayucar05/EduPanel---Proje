@@ -1,0 +1,1 @@
+var e=new Set([`A`,`B`,`C`,`D`,`E`]),t=t=>{let n=String(t||``).split(/[\\/]/).pop()?.trim()||``;if(!n)return``;let r=n.lastIndexOf(`.`),i=(r>0?n.slice(0,r):n).trim().slice(-1).toUpperCase();return e.has(i)?i:``},n=(n,r=!1)=>{let i=String(n?.correctAnswer||``).trim().toLocaleUpperCase(`tr-TR`);return e.has(i)?i:t(n?.fileName)};export{n,t};

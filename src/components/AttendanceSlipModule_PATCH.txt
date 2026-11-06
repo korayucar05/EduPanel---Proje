@@ -1,0 +1,35 @@
+
+Yapılması gereken kod değişikliği:
+
+Eski:
+<div className="absolute right-0 top-[5mm] text-[9px] font-black">
+  Sınıf: {classroom?.name || "-"}
+</div>
+
+Yeni:
+<div
+  className="
+    absolute
+    right-[12mm]
+    top-[5mm]
+    max-w-[24mm]
+    overflow-hidden
+    rounded-[1.5mm]
+    bg-black
+    px-[2mm]
+    py-[1mm]
+    text-center
+    text-[9px]
+    font-black
+    text-white
+    whitespace-nowrap
+    text-ellipsis
+  "
+>
+  Sınıf: {classroom?.name || "-"}
+</div>
+
+Bu değişiklik:
+- Sınıf bilgisinin 8. ders sütunu hizasını geçmesini engeller.
+- Siyah zemin üzerinde beyaz yazı kullanır.
+- Uzun sınıf isimlerinde taşmayı önler.

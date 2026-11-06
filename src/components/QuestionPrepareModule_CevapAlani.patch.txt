@@ -1,0 +1,15 @@
+
+// Soru Hazırla - Cevap Anahtarı Alanı entegrasyon notu
+// Bu alan mevcut QuestionPrepareModule içine eklenecek.
+
+// State:
+// const [answerKeyText,setAnswerKeyText] = useState("");
+
+// UI:
+// CEVAP ANAHTARI
+// textarea ile kullanıcı cevapları yapıştırır.
+// Örnek:
+// 1-A
+// 2-B
+// 3-C
+// 4-D

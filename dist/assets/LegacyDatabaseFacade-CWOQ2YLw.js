@@ -1,0 +1,1 @@
+import{r as e}from"./rolldown-runtime-DAXXjFlN.js";import{Et as t,Tt as n,b as r,y as i}from"./localDatabase-kFnsc-eE.js";var a=e({fetchAcademicCatalogFromLocalDatabase:()=>i,fetchCollectionFromLocalDatabase:()=>r,syncAcademicCatalogToLocalDatabase:()=>n,syncCollectionToLocalDatabase:()=>t});export{a as t};
