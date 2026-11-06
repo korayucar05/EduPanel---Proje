@@ -442,7 +442,7 @@ export default function KelebekSystemAModule({
       const examClasses = exam.classrooms || [];
       const list = students.filter(s => 
         examClasses.some((c: string) => {
-          const sClass = (s.classroom || "").replace(/[\s\-\/]/g, "").toUpperCase();
+          const sClass = physicalRoomName(s.classroom).replace(/[\s\-\/]/g, "").toUpperCase();
           const eClass = physicalRoomName(c).replace(/[\s\-\/]/g, "").toUpperCase();
           return sClass === eClass;
         })
@@ -594,7 +594,13 @@ export default function KelebekSystemAModule({
           setCrossSittingActive(!!parsed.crossSittingActive);
           setSeatingCriteria({ ...DEFAULT_SEATING_CRITERIA, ...(parsed.seatingCriteria || {}), avoidSameExamCluster: false, minSameBranchDistance: false, showSupervisorDetails: false });
           setBackupSalons([]);
-          const loadedInactiveSalons = Array.isArray(parsed.inactiveDefaultSalons) ? parsed.inactiveDefaultSalons : [];
+          const savedInactive = Array.isArray(parsed.inactiveDefaultSalons) ? parsed.inactiveDefaultSalons : [];
+          // Eski sürüm bütün salonları başlangıçta pasif kaydedebiliyordu.
+          const allPreviouslyInactive = defaultSalons.length > 0 &&
+            defaultSalons.every((room) => savedInactive.some((inactive: string) =>
+              String(inactive).replace(/[\s\-\/]/g, "").toLocaleUpperCase("tr-TR") ===
+              String(room).replace(/[\s\-\/]/g, "").toLocaleUpperCase("tr-TR")));
+          const loadedInactiveSalons = allPreviouslyInactive && !parsed.generatedSeating ? [] : savedInactive;
           setInactiveDefaultSalons(loadedInactiveSalons);
           setSavedInactiveDefaultSalons(loadedInactiveSalons);
           const loadedRoomTeacherAssignments = parsed.roomTeacherAssignments && typeof parsed.roomTeacherAssignments === 'object'
