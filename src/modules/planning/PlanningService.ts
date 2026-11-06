@@ -19,6 +19,9 @@ export const PLANNING_EVENTS = {
 } as const;
 
 export class PlanningService {
+  // Aynı dönemin sınav planını eşzamanlı kaydetmek eski ders atamalarını ezebilir.
+  private stateSaveChain: Promise<unknown> = Promise.resolve();
+
   getStateId(term: string, examNo: string) { return `planning_${key(term, examNo)}`; }
   getSeatingId(term: string, examNo: string, sessionIndex: number) { return `seating_${key(term, examNo)}_${sessionIndex}`; }
 
@@ -32,22 +35,27 @@ export class PlanningService {
     return row;
   }
 
-  async saveState(term: string, examNo: string, patch: Partial<PlanningStateRecord>): Promise<PlanningStateRecord> {
-    const previous = await this.getState(term, examNo);
-    const record: PlanningStateRecord = {
-      ...(previous || {}),
-      ...patch,
-      id: this.getStateId(term, examNo),
-      selectedTerm: term,
-      selectedExamNo: examNo,
-      updatedAt: new Date().toISOString(),
+  saveState(term: string, examNo: string, patch: Partial<PlanningStateRecord>): Promise<PlanningStateRecord> {
+    const save = async (): Promise<PlanningStateRecord> => {
+      const previous = await this.getState(term, examNo);
+      const record: PlanningStateRecord = {
+        ...(previous || {}),
+        ...patch,
+        id: this.getStateId(term, examNo),
+        selectedTerm: term,
+        selectedExamNo: examNo,
+        updatedAt: new Date().toISOString(),
+      };
+      const rows = await planningStateRepository.findAll();
+      const next = [...rows.filter(r => r.id !== record.id), record];
+      await transactionManager.run({ examPlanningStates: next });
+      cacheManager.invalidatePrefix("planning:");
+      await eventBus.emit(PLANNING_EVENTS.stateSaved, { id: record.id });
+      return record;
     };
-    const rows = await planningStateRepository.findAll();
-    const next = [...rows.filter(r => r.id !== record.id), record];
-    await transactionManager.run({ examPlanningStates: next });
-    cacheManager.invalidatePrefix("planning:");
-    await eventBus.emit(PLANNING_EVENTS.stateSaved, { id: record.id });
-    return record;
+    const pending = this.stateSaveChain.then(save, save);
+    this.stateSaveChain = pending.then(() => undefined, () => undefined);
+    return pending;
   }
 
   async savePlans(term: string, examNo: string, savedPlans: any[], currentPlan?: any | null) {

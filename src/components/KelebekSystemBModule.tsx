@@ -267,7 +267,7 @@ export default function KelebekSystemBModule({ students, courses, classrooms = [
         if (savedPlansData && Array.isArray(savedPlansData)) {
           setSavedPlans(savedPlansData);
           if (savedPlansData.length > 0) {
-            setCurrentPlan(savedPlansData[0]);
+            setCurrentPlan(planningState?.currentPlan || savedPlansData[0]);
           } else {
             setCurrentPlan(null);
           }

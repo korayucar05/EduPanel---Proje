@@ -302,8 +302,10 @@ export default function KelebekSystemAModule({
     return Math.abs(hash) % 2 === 0 ? "Kız" : "Erkek";
   };
 
+  // Grup adları fiziksel derslik adı değildir.
+  const physicalRoomName = (value: unknown) => String(value || "").replace(/\s*\([^)]*\)\s*$/, "").trim();
   const allSchoolClassrooms = useMemo(() => {
-    const unique = Array.from(new Set(students.map((s) => s.classroom).filter(Boolean)));
+    const unique = Array.from(new Set(students.map((s) => physicalRoomName(s.classroom)).filter(Boolean)));
     return unique.sort(compareClassroomNames);
   }, [students]);
 
@@ -342,7 +344,9 @@ export default function KelebekSystemAModule({
         });
       });
 
-      allSchoolClassrooms.forEach((cls) => {
+      const plannedRooms = (selectedBSlot?.exams || []).flatMap((exam: any) =>
+        (exam.classrooms || []).map((room: string) => physicalRoomName(room)));
+      Array.from(new Set([...allSchoolClassrooms, ...plannedRooms])).forEach((cls) => {
         const normalizedKey = normalizeClassroomKey(cls);
         const room = roomByName.get(normalizedKey);
         if (!room) {
@@ -355,7 +359,7 @@ export default function KelebekSystemAModule({
         const activeDeskCount = Array.isArray(room.activeDesks)
           ? room.activeDesks.filter(Boolean).length
           : Math.max(0, Math.ceil(Number(room.capacity || 0) / 2));
-        const studentCapacity = Math.max(0, Number(room.capacity || activeDeskCount * 2));
+        const studentCapacity = activeDeskCount * 2;
         deskCapacities[cls] = activeDeskCount;
         studentCapacities[cls] = studentCapacity;
         deskCapacities[normalizedKey] = activeDeskCount;
@@ -408,7 +412,7 @@ export default function KelebekSystemAModule({
     const onLayoutChanged = () => { void refreshClassroomCapacities(); };
     window.addEventListener("enstitu-school-building-layout-changed", onLayoutChanged);
     return () => window.removeEventListener("enstitu-school-building-layout-changed", onLayoutChanged);
-  }, [allSchoolClassrooms]);
+  }, [allSchoolClassrooms, selectedBSlot]);
 
   const defaultSalons = useMemo(() => {
     if (!selectedBSlot?.exams) return [];
@@ -416,7 +420,8 @@ export default function KelebekSystemAModule({
     selectedBSlot.exams.forEach((exam: any) => {
       if (exam.classrooms && Array.isArray(exam.classrooms)) {
         exam.classrooms.forEach((cls: string) => {
-          rooms.add(cls);
+          const room = physicalRoomName(cls);
+          if (room) rooms.add(room);
         });
       }
     });
@@ -439,8 +444,8 @@ export default function KelebekSystemAModule({
       const examClasses = exam.classrooms || [];
       const list = students.filter(s => 
         examClasses.some((c: string) => {
-          const sClass = (s.classroom || "").replace(/[\s\-\/]/g, "").toUpperCase();
-          const eClass = c.replace(/[\s\-\/]/g, "").toUpperCase();
+          const sClass = physicalRoomName(s.classroom).replace(/[\s\-\/]/g, "").toUpperCase();
+          const eClass = physicalRoomName(c).replace(/[\s\-\/]/g, "").toUpperCase();
           return sClass === eClass;
         })
       );
@@ -591,7 +596,13 @@ export default function KelebekSystemAModule({
           setCrossSittingActive(!!parsed.crossSittingActive);
           setSeatingCriteria({ ...DEFAULT_SEATING_CRITERIA, ...(parsed.seatingCriteria || {}), avoidSameExamCluster: false, minSameBranchDistance: false, showSupervisorDetails: false });
           setBackupSalons([]);
-          const loadedInactiveSalons = Array.isArray(parsed.inactiveDefaultSalons) ? parsed.inactiveDefaultSalons : defaultSalons;
+          const savedInactive = Array.isArray(parsed.inactiveDefaultSalons) ? parsed.inactiveDefaultSalons : [];
+          // Eski sürüm bütün salonları başlangıçta pasif kaydedebiliyordu.
+          const allPreviouslyInactive = defaultSalons.length > 0 &&
+            defaultSalons.every((room) => savedInactive.some((inactive: string) =>
+              String(inactive).replace(/[\s\-\/]/g, "").toLocaleUpperCase("tr-TR") ===
+              String(room).replace(/[\s\-\/]/g, "").toLocaleUpperCase("tr-TR")));
+          const loadedInactiveSalons = allPreviouslyInactive && !parsed.generatedSeating ? [] : savedInactive;
           setInactiveDefaultSalons(loadedInactiveSalons);
           setSavedInactiveDefaultSalons(loadedInactiveSalons);
           const loadedRoomTeacherAssignments = parsed.roomTeacherAssignments && typeof parsed.roomTeacherAssignments === 'object'
@@ -611,8 +622,8 @@ export default function KelebekSystemAModule({
           setCrossSittingActive(false);
           setSeatingCriteria({ ...DEFAULT_SEATING_CRITERIA });
           setBackupSalons([]);
-          setInactiveDefaultSalons(defaultSalons);
-          setSavedInactiveDefaultSalons(defaultSalons);
+          setInactiveDefaultSalons([]);
+          setSavedInactiveDefaultSalons([]);
           setRoomTeacherAssignments({});
           setSavedRoomTeacherAssignments({});
           setActiveExtraSalons([]);
@@ -3019,9 +3030,10 @@ export default function KelebekSystemAModule({
     const fetchBPlan = async () => {
       const suffix = "_" + selectedTerm.replace(/\s+/g, '_') + "_" + selectedExamNo.replace(/\s+/g, '_');
       try {
-        const savedPlansData = (await planningService.getState(selectedTerm, selectedExamNo))?.savedPlans;
+        const planningState = await planningService.getState(selectedTerm, selectedExamNo);
+        const savedPlansData = planningState?.savedPlans;
         if (savedPlansData && Array.isArray(savedPlansData) && savedPlansData.length > 0) {
-          const plan = savedPlansData[0];
+          const plan = planningState?.currentPlan || savedPlansData[0];
           setBPlan(plan);
           if (plan.slots && plan.slots.length > 0) {
             const requestedSlot = selectedSessionKeyValue
