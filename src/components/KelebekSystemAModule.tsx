@@ -3030,9 +3030,10 @@ export default function KelebekSystemAModule({
     const fetchBPlan = async () => {
       const suffix = "_" + selectedTerm.replace(/\s+/g, '_') + "_" + selectedExamNo.replace(/\s+/g, '_');
       try {
-        const savedPlansData = (await planningService.getState(selectedTerm, selectedExamNo))?.savedPlans;
+        const planningState = await planningService.getState(selectedTerm, selectedExamNo);
+        const savedPlansData = planningState?.savedPlans;
         if (savedPlansData && Array.isArray(savedPlansData) && savedPlansData.length > 0) {
-          const plan = savedPlansData[0];
+          const plan = planningState?.currentPlan || savedPlansData[0];
           setBPlan(plan);
           if (plan.slots && plan.slots.length > 0) {
             const requestedSlot = selectedSessionKeyValue
