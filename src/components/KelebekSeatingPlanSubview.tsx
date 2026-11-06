@@ -400,8 +400,8 @@ export default function KelebekSeatingPlanSubview({
   const roomCapacityByKey = useMemo(() => new Map(
     Object.entries(classStudentCapacities).map(([name, capacity]) => [normalizeClassroomKey(name), Number(capacity || 0)]),
   ), [classStudentCapacities]);
-  const selectedSalonCount = studentCountsByBranch.filter((item: any) => {
-    const key = normalizeClassroomKey(item.branch);
+  const selectedSalonCount = defaultSalons.filter((room) => {
+    const key = normalizeClassroomKey(room);
     const active = !inactiveDefaultSalons.some((room) => normalizeClassroomKey(room) === key);
     return active && Number(roomCapacityByKey.get(key) || 0) > 0;
   }).length;
@@ -413,15 +413,15 @@ export default function KelebekSeatingPlanSubview({
 
   const salonBranchesByGrade = useMemo(() => {
     const groups: Record<number, any[]> = { 9: [], 10: [], 11: [], 12: [] };
-    studentCountsByBranch.forEach((item: any) => {
-      const grade = getClassGrade(item?.branch);
-      if (groups[grade]) groups[grade].push(item);
+    defaultSalons.forEach((room) => {
+      const grade = getClassGrade(room);
+      if (groups[grade]) groups[grade].push({ branch: room });
     });
     Object.values(groups).forEach((items) => {
       items.sort((a: any, b: any) => String(a?.branch || '').localeCompare(String(b?.branch || ''), 'tr', { numeric: true }));
     });
     return groups;
-  }, [studentCountsByBranch]);
+  }, [defaultSalons]);
 
   return (
     <div className="space-y-6 animate-fade-in print:p-0">
@@ -489,7 +489,7 @@ export default function KelebekSeatingPlanSubview({
               ))}
             </div>
 
-            {studentCountsByBranch.length === 0 && (
+            {defaultSalons.length === 0 && (
               <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6 text-center text-xs font-bold text-slate-400">
                 Bu oturumda sınavı bulunan sınıf/şube kaydı yok.
               </div>
