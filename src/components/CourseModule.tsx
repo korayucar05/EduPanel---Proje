@@ -5149,7 +5149,7 @@ export default function CourseModule({
               }`}
             >
               <LayoutTemplate className="w-4 h-4 shrink-0" />
-              Sınıf Krokisi
+              Sınıflar
             </button>
           )}
           {(displayMode === "all" || displayMode === "courses") && (
@@ -5396,6 +5396,7 @@ export default function CourseModule({
         </div>
       ) : currentSubTab === "seating-plan" ? (
         <CourseSeatingPlanPanel
+          setClassrooms={setClassrooms}
           classError={classError}
           classForm={classForm}
           setClassForm={setClassForm}
