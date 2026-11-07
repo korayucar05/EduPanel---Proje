@@ -302,8 +302,26 @@ export default function KelebekSystemAModule({
     return Math.abs(hash) % 2 === 0 ? "Kız" : "Erkek";
   };
 
-  // Grup adları fiziksel derslik adı değildir.
+  // Grup adları fiziksel derslik adı değildir; ancak seçmeli sınavlarda
+  // öğrenci katılımını belirlemek için parantez içindeki grup korunmalıdır.
   const physicalRoomName = (value: unknown) => String(value || "").replace(/\s*\([^)]*\)\s*$/, "").trim();
+  const normalizeRoom = (value: unknown) =>
+    physicalRoomName(value).replace(/[\s\-\/]/g, "").toLocaleUpperCase("tr-TR");
+  const normalizeGroup = (value: unknown) =>
+    String(value || "").trim().toLocaleUpperCase("tr-TR").replace(/[^A-ZÇĞİÖŞÜ0-9]/g, "");
+  const matchesExamClassroom = (student: any, examClassroom: string) => {
+    if (normalizeRoom(student?.classroom) !== normalizeRoom(examClassroom)) return false;
+    const examGroupText = String(examClassroom || "").match(/\(([^)]*)\)\s*$/)?.[1]?.trim() || "";
+    if (!examGroupText) return true; // Ortak ders: şubenin tüm öğrencileri.
+    const actualGroupText = String(student?.group || student?.groupName ||
+      String(student?.classroom || "").match(/\(([^)]*)\)\s*$/)?.[1] || "").trim();
+    if (!actualGroupText) return false; // Grubu bilinmeyen öğrenci seçmeli sınava alınmaz.
+    const allowedGroups = examGroupText.split(/[,;/]+/).map(normalizeGroup).filter(Boolean);
+    const actualGroups = actualGroupText.split(/[,;/]+/).map(normalizeGroup).filter(Boolean);
+    return actualGroups.some((actual) => allowedGroups.some((allowed) =>
+      actual === allowed || (actual.length >= 4 && allowed.length >= 4 &&
+        (actual.includes(allowed) || allowed.includes(actual)))));
+  };
   const allSchoolClassrooms = useMemo(() => {
     const unique = Array.from(new Set(students.map((s) => physicalRoomName(s.classroom)).filter(Boolean)));
     return unique.sort(compareClassroomNames);
@@ -419,23 +437,34 @@ export default function KelebekSystemAModule({
     return () => window.removeEventListener("enstitu-school-building-layout-changed", onLayoutChanged);
   }, [allSchoolClassrooms, selectedBSlot]);
 
+  const plannedSalonNames = useMemo(() => {
+    const rooms = new Set<string>();
+    (selectedBSlot?.exams || []).forEach((exam: any) => {
+      (exam.classrooms || []).forEach((cls: string) => {
+        const name = physicalRoomName(cls);
+        if (name) rooms.add(normalizeRoom(name));
+      });
+    });
+    return rooms;
+  }, [selectedBSlot]);
+
   const defaultSalons = useMemo(() => {
     if (!selectedBSlot?.exams) return [];
-    const rooms = new Set<string>();
-    selectedBSlot.exams.forEach((exam: any) => {
-      if (exam.classrooms && Array.isArray(exam.classrooms)) {
-        exam.classrooms.forEach((cls: string) => {
-          const room = physicalRoomName(cls);
-          if (room) rooms.add(room);
-        });
-      }
+    // Bina Bilgileri'ndeki bütün fiziksel salonlar listelenir. Yalnızca bu
+    // oturumda sınavı olan sınıfların salonları başlangıçta işaretli olur.
+    const rooms = new Set<string>(buildingClassrooms);
+    (selectedBSlot.exams || []).forEach((exam: any) => {
+      (exam.classrooms || []).forEach((cls: string) => {
+        const name = physicalRoomName(cls);
+        if (name) rooms.add(name);
+      });
     });
-    // Sınav salonu kaynağı Bina Bilgileri'ndeki fiziksel dersliklerdir.
-    // Sınava seçilen şubeler yalnızca bu dersliklerden hangisinin
-    // varsayılan olarak işaretleneceğini belirler.
-    return (buildingClassrooms.length ? buildingClassrooms : Array.from(rooms))
-      .slice().sort(compareClassroomNames);
+    return [...rooms].sort(compareClassroomNames);
   }, [selectedBSlot, buildingClassrooms]);
+
+  const unplannedDefaultSalons = useMemo(() =>
+    defaultSalons.filter((room) => !plannedSalonNames.has(normalizeRoom(room))),
+  [defaultSalons, plannedSalonNames]);
 
   const extraSchoolClassrooms = useMemo(() => {
     const defaultsClean = new Set(defaultSalons.map(s => s.replace(/[\s\-\/]/g, "").toUpperCase()));
@@ -451,12 +480,10 @@ export default function KelebekSystemAModule({
     const matched: any[] = [];
     selectedBSlot.exams.forEach((exam: any) => {
       const examClasses = exam.classrooms || [];
-      const list = students.filter(s => 
-        examClasses.some((c: string) => {
-          const sClass = physicalRoomName(s.classroom).replace(/[\s\-\/]/g, "").toUpperCase();
-          const eClass = physicalRoomName(c).replace(/[\s\-\/]/g, "").toUpperCase();
-          return sClass === eClass;
-        })
+      // Seçmeli/grup dersi: yalnızca dersin atanmış olduğu grubun öğrencileri.
+      // Aynı şubedeki diğer grubun öğrencileri bu sınava dahil edilmez.
+      const list = students.filter(s =>
+        examClasses.some((c: string) => matchesExamClassroom(s, c))
       );
       list.forEach(s => {
         if (!matched.some(m => m.id === s.id)) {
@@ -606,12 +633,12 @@ export default function KelebekSystemAModule({
           setSeatingCriteria({ ...DEFAULT_SEATING_CRITERIA, ...(parsed.seatingCriteria || {}), avoidSameExamCluster: false, minSameBranchDistance: false, showSupervisorDetails: false });
           setBackupSalons([]);
           const savedInactive = Array.isArray(parsed.inactiveDefaultSalons) ? parsed.inactiveDefaultSalons : [];
-          // Eski sürüm bütün salonları başlangıçta pasif kaydedebiliyordu.
-          const allPreviouslyInactive = defaultSalons.length > 0 &&
-            defaultSalons.every((room) => savedInactive.some((inactive: string) =>
-              String(inactive).replace(/[\s\-\/]/g, "").toLocaleUpperCase("tr-TR") ===
-              String(room).replace(/[\s\-\/]/g, "").toLocaleUpperCase("tr-TR")));
-          const loadedInactiveSalons = allPreviouslyInactive && !parsed.generatedSeating ? [] : savedInactive;
+          // Önceden elle kaydedilmiş seçimler ve yerleştirmeler korunur.
+          // Eski sürümde hiç seçim kaydedilmemişse salonları sınavı olan
+          // sınıflara göre ilk kez ayarla (eski 'tümü işaretli' davranışı değil).
+          const hasSavedSelection = parsed.salonSelectionInitialized === true ||
+            savedInactive.length > 0 || Boolean(parsed.generatedSeating);
+          const loadedInactiveSalons = hasSavedSelection ? savedInactive : unplannedDefaultSalons;
           setInactiveDefaultSalons(loadedInactiveSalons);
           setSavedInactiveDefaultSalons(loadedInactiveSalons);
           const loadedRoomTeacherAssignments = parsed.roomTeacherAssignments && typeof parsed.roomTeacherAssignments === 'object'
@@ -631,8 +658,8 @@ export default function KelebekSystemAModule({
           setCrossSittingActive(false);
           setSeatingCriteria({ ...DEFAULT_SEATING_CRITERIA });
           setBackupSalons([]);
-          setInactiveDefaultSalons([]);
-          setSavedInactiveDefaultSalons([]);
+          setInactiveDefaultSalons(unplannedDefaultSalons);
+          setSavedInactiveDefaultSalons(unplannedDefaultSalons);
           setRoomTeacherAssignments({});
           setSavedRoomTeacherAssignments({});
           setActiveExtraSalons([]);
@@ -646,7 +673,7 @@ export default function KelebekSystemAModule({
       }
     };
     loadSeatingConfig();
-  }, [selectedBSlot, selectedTerm, selectedExamNo, defaultSalons]);
+  }, [selectedBSlot, selectedTerm, selectedExamNo, defaultSalons, unplannedDefaultSalons]);
 
   const saveSeatingConfig = async (updatedFields: any) => {
     if (!selectedBSlot) return;
@@ -660,6 +687,7 @@ export default function KelebekSystemAModule({
       seatingCriteria,
       backupSalons,
       inactiveDefaultSalons,
+      salonSelectionInitialized: true,
       activeExtraSalons,
       roomTeacherAssignments,
       manualStudentAssignments,
@@ -1171,7 +1199,7 @@ export default function KelebekSystemAModule({
       const studentClass = normalizeBranch(student?.classroom);
       const matchingExam = selectedBSlot?.exams?.find((exam: any) => {
         if (student?.examCourse && exam?.courseName === student.examCourse) return true;
-        return exam?.classrooms?.some((cls: string) => normalizeBranch(cls) === studentClass);
+        return exam?.classrooms?.some((cls: string) => matchesExamClassroom(student, cls));
       });
       const examTypes = parseBookletTypes(matchingExam?.bookletTypes || matchingExam?.bookletType || matchingExam?.booklets);
       return examTypes.length > 0 ? Array.from(new Set(examTypes)) : ["A"];
@@ -1190,11 +1218,13 @@ export default function KelebekSystemAModule({
     const fixedAssignmentsResolved: Array<{ assignment: { studentId: string; roomName: string; deskId: number; side: 'left' | 'right' }; student: any }> = [];
     Object.values(fixedSeatAssignments || {}).forEach((assignment) => {
       const stdId = String(assignment?.studentId || "");
-      const rawStudent = examStudents.find((s) => String(s.id) === stdId) || students.find((s) => String(s.id) === stdId);
+      // Eski elle yerleştirme kayıtları, bu oturumda sınavı olmayan grupların
+      // öğrencilerini yeniden sınava dahil edemez.
+      const rawStudent = examStudents.find((s) => String(s.id) === stdId);
       if (!rawStudent) return;
       const matchExam = selectedBSlot?.exams?.find((ex: any) => {
         const sClass = normalizeBranch(rawStudent.classroom);
-        return ex.classrooms?.some((c: string) => normalizeBranch(c) === sClass);
+        return ex.classrooms?.some((c: string) => matchesExamClassroom(rawStudent, c));
       });
       const student = {
         ...rawStudent,
@@ -1210,11 +1240,11 @@ export default function KelebekSystemAModule({
       Object.entries(manualStudentAssignments).forEach(([stdId, roomName]) => {
         if (manualAssignedSet.has(String(stdId))) return;
         const rName = roomName as string;
-        const rawStudent = examStudents.find((s) => String(s.id) === String(stdId)) || students.find((s) => String(s.id) === String(stdId));
+        const rawStudent = examStudents.find((s) => String(s.id) === String(stdId));
         if (!rawStudent) return;
         const matchExam = selectedBSlot?.exams?.find((ex: any) => {
           const sClass = normalizeBranch(rawStudent.classroom);
-          return ex.classrooms?.some((c: string) => normalizeBranch(c) === sClass);
+          return ex.classrooms?.some((c: string) => matchesExamClassroom(rawStudent, c));
         });
         const student = {
           ...rawStudent,
@@ -2738,6 +2768,7 @@ export default function KelebekSystemAModule({
         seatingCriteria,
         backupSalons: [],
         inactiveDefaultSalons,
+        salonSelectionInitialized: true,
         activeExtraSalons: [],
         roomTeacherAssignments,
         manualStudentAssignments,
