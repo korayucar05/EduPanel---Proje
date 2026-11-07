@@ -452,14 +452,20 @@ export default function KelebekSystemAModule({
     if (!selectedBSlot?.exams) return [];
     // Bina Bilgileri'ndeki bütün fiziksel salonlar listelenir. Yalnızca bu
     // oturumda sınavı olan sınıfların salonları başlangıçta işaretli olur.
-    const rooms = new Set<string>(buildingClassrooms);
+    // Aynı fiziksel salon farklı kaynaklarda 9-B, 9/B, 9 B şeklinde
+    // tutulabiliyor. Görünür ad olarak Bina Bilgileri'ndeki adı önceliklendir,
+    // ancak her normalleştirilmiş salonu sadece bir kez listele.
+    const roomByKey = new Map<string, string>();
+    const addRoom = (value: unknown) => {
+      const name = physicalRoomName(value);
+      const key = normalizeRoom(name);
+      if (key && !roomByKey.has(key)) roomByKey.set(key, name);
+    };
+    buildingClassrooms.forEach(addRoom);
     (selectedBSlot.exams || []).forEach((exam: any) => {
-      (exam.classrooms || []).forEach((cls: string) => {
-        const name = physicalRoomName(cls);
-        if (name) rooms.add(name);
-      });
+      (exam.classrooms || []).forEach(addRoom);
     });
-    return [...rooms].sort(compareClassroomNames);
+    return [...roomByKey.values()].sort(compareClassroomNames);
   }, [selectedBSlot, buildingClassrooms]);
 
   const unplannedDefaultSalons = useMemo(() =>
