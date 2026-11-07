@@ -5396,20 +5396,9 @@ export default function CourseModule({
         </div>
       ) : currentSubTab === "seating-plan" ? (
         <CourseSeatingPlanPanel
-          setClassrooms={setClassrooms}
-          classError={classError}
-          classForm={classForm}
-          setClassForm={setClassForm}
-          editingClassId={editingClassId}
           classrooms={classrooms}
-          teachers={teachers}
-          students={students}
-          getBranchLetter={getBranchLetter}
-          handleLevelChangeInModal={handleLevelChangeInModal}
-          handleBranchNameChange={handleBranchNameChange}
-          handleAddClass={handleAddClass}
-          handleDeleteClass={handleDeleteClass}
-          openEditClassModal={openEditClassModal}
+          setClassrooms={setClassrooms}
+          editingClassId={editingClassId}
           seatingPlanClassName={seatingPlanClassName}
         />
       ) : currentSubTab === "classrooms" ? (
