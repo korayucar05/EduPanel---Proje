@@ -375,17 +375,39 @@ export default function ClassCourseAssignmentPanel({
     [selectedClass],
   );
 
-  const totalHours = (() => {
-    const countedParallelGroups = new Set<string>();
-    return assigned.reduce((sum:number,item:any)=>{
-      const hours=Number(item.weeklyHours||0);
-      const splitId=String(item.splitGroupId||item.parallelGroupId||"").trim();
-      if (!splitId) return sum+hours;
-      if (countedParallelGroups.has(splitId)) return sum;
-      countedParallelGroups.add(splitId);
-      return sum+hours;
-    },0);
-  })();
+  // Görünüm ve haftalık toplam için aynı ders + aynı grup bir kez sayılır.
+  // Kaynak kayıtlara dokunulmaz; farklı gruplara ait gerçek atamalar korunur.
+  const assignmentGroups = useMemo(() => {
+    const groups = new Map<string, any[]>();
+    assigned.forEach((item: any) => {
+      const key = `${normalize(item.courseName)}|${courseScope(item)}`;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key)!.push(item);
+    });
+    return [...groups.values()];
+  }, [assigned]);
+  const visibleAssignments = useMemo(() => assignmentGroups.map((items) => items[0]), [assignmentGroups]);
+  const classGroupHours = useMemo(() => {
+    const namedGroups = [...new Map(
+      [...(Array.isArray(selectedClass?.groups) ? selectedClass.groups : []),
+        selectedClass?.group1Name, selectedClass?.group2Name]
+        .map((g) => String(g || "").trim()).filter(Boolean)
+        .map((g) => [normalize(g), g])
+    ).values()];
+    const common = assignmentGroups
+      .filter((items) => courseScope(items[0]) === "ORTAK")
+      .reduce((total, items) => total + Math.max(...items.map((item) => Number(item.weeklyHours) || 0)), 0);
+    const totals = namedGroups.map((group) => ({
+      name: group,
+      hours: common + assignmentGroups
+        .filter((items) => courseScope(items[0]).split(",").includes(normalize(group)))
+        .reduce((total, items) => total + Math.max(...items.map((item) => Number(item.weeklyHours) || 0)), 0),
+    }));
+    return { common, totals };
+  }, [assignmentGroups, selectedClass]);
+  const totalHours = classGroupHours.totals.length
+    ? Math.max(...classGroupHours.totals.map((group) => group.hours))
+    : assignmentGroups.reduce((sum, items) => sum + Math.max(...items.map((item) => Number(item.weeklyHours) || 0)), 0);
 
   const assignedKeys = new Set(assigned.map((item: any) => normalize(item.courseName)));
   const classGroupNames = useMemo(() => {
@@ -1041,6 +1063,37 @@ export default function ClassCourseAssignmentPanel({
     );
   };
 
+  // Öğretmen adının yanındaki X yalnız seçili öğretmeni ve aynı ders/grup
+  // anahtarıyla oluşmuş tekrar kayıtlarındaki atamasını temizler.
+  // Kayıtların kendisi ve diğer grupların atamaları korunur.
+  const removeTeacherFromCourse = async (assignment: any, teacherId: string) => {
+    if (!selectedClass || saving || !teacherId) return;
+    const key = `${normalize(assignment.courseName)}|${courseScope(assignment)}`;
+    const nextClassrooms = classrooms.map((classroom) => {
+      if (classroom.id !== selectedClass.id) return classroom;
+      return {
+        ...classroom,
+        assignedCourses: (classroom.assignedCourses || []).map((item: any) => {
+          if (`${normalize(item.courseName)}|${courseScope(item)}` !== key) return item;
+          const first = String(item.teacherId || "") === teacherId;
+          const second = String(item.teacherId2 || "") === teacherId;
+          if (!first && !second) return item;
+          const nextId = first ? String(item.teacherId2 || "") : String(item.teacherId || "");
+          const nextName = first ? String(item.teacherName2 || "") : String(item.teacherName || "");
+          return {
+            ...item,
+            teacherId: nextId,
+            teacherName: nextId ? nextName : "Öğretmen Atanmadı",
+            teacherId2: "",
+            teacherName2: "",
+            teacherAssignmentCleared: !nextId,
+          };
+        }),
+      };
+    });
+    await persistClasses(nextClassrooms, `${assignment.courseName} (${courseScope(assignment)}): öğretmen ataması kaldırıldı.`);
+  };
+
   const unassignTeacher = async (teacher: Teacher) => {
     if (!selectedClass || !selectedAssignedCourse || saving) return;
 
@@ -1394,8 +1447,8 @@ export default function ClassCourseAssignmentPanel({
       </aside>}
 
       {/* 2. sütun: atanmış dersler */}
-      <section className="border-r border-slate-200">
-        <div className="flex items-center justify-between border-b border-slate-200 bg-emerald-50/50 px-4 py-3">
+      <section className="flex min-h-0 flex-col overflow-hidden border-r border-slate-200">
+        <div className="shrink-0 flex items-center justify-between border-b border-slate-200 bg-emerald-50/50 px-4 py-3">
           <div>
             <h3 className="text-sm font-black text-slate-900">
               {selectedClass?.name || "Sınıf seçiniz"} — Atanmış Dersler
@@ -1407,7 +1460,7 @@ export default function ClassCourseAssignmentPanel({
           <Check className="h-5 w-5 text-emerald-600" />
         </div>
 
-        <div className="h-[calc(100%-62px)] overflow-y-auto">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain" style={{ scrollbarWidth: "thin" }}>
           <table className="w-full table-fixed border-collapse">
             <thead className="sticky top-0 z-10 bg-white">
               <tr className="text-left text-[9px] font-black uppercase tracking-wide text-slate-400">
@@ -1418,16 +1471,16 @@ export default function ClassCourseAssignmentPanel({
               </tr>
             </thead>
             <tbody>
-              {assigned.length === 0 ? (
+              {visibleAssignments.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="p-10 text-center text-xs font-bold text-slate-400">
                     Bu sınıfa henüz ders atanmamış.
                   </td>
                 </tr>
               ) : (
-                assigned.map((item: any) => (
+                visibleAssignments.map((item: any) => (
                   <tr
-                    key={`${selectedClass?.id}-${normalize(item.courseName)}`}
+                    key={`${selectedClass?.id}-${normalize(item.courseName)}-${courseScope(item)}`}
                     onClick={() => setSelectedAssignedCourseName(assignmentRowKey(item))}
                     className={`cursor-pointer border-b border-slate-100 bg-white hover:bg-slate-50 ${
                       selectedAssignedCourseName === assignmentRowKey(item)
@@ -1448,7 +1501,10 @@ export default function ClassCourseAssignmentPanel({
                           <div className="truncate text-[14px] font-black leading-tight text-slate-800">
                             {item.courseName}
                           </div>
-                          <div className="text-[10px] font-bold text-violet-600">{courseScope(item) === "ORTAK" ? "ORTAK" : `Grup: ${courseScope(item)}`}</div>
+                          <div className="text-[10px] font-bold text-violet-600">
+                            {courseScope(item) === "ORTAK" ? "ORTAK" : `Grup: ${courseScope(item)}`}
+                            {assignmentGroups.find((items) => items[0] === item)?.length! > 1 ? " • Mükerrer kayıtlar tek gösteriliyor" : ""}
+                          </div>
                           {(() => {
                             const groupId = parallelGroupIdOf(item);
                             if (!groupId) return null;
@@ -1467,16 +1523,29 @@ export default function ClassCourseAssignmentPanel({
                       </div>
                     </td>
                     <td className="px-2 py-1.5">
-                      <div className={`truncate text-[12px] font-black leading-tight ${
-                        item.teacherId ? "text-red-600" : "text-slate-400"
-                      }`}>
-                        {item.teacherId && item.teacherName
-                          ? item.teacherName
-                          : "Öğretmen atanmadı"}
+                      <div className="flex flex-col gap-1">
+                        {(() => {
+                          const groupItems = assignmentGroups.find((items) => items[0] === item) || [item];
+                          const teachersById = new Map<string, string>();
+                          groupItems.forEach((entry: any) => {
+                            if (entry.teacherId) teachersById.set(String(entry.teacherId), String(entry.teacherName || "Öğretmen"));
+                            if (entry.teacherId2) teachersById.set(String(entry.teacherId2), String(entry.teacherName2 || "Öğretmen"));
+                          });
+                          if (!teachersById.size) return <span className="text-xs text-slate-400">Öğretmen atanmadı</span>;
+                          return [...teachersById].map(([id, name]) => (
+                            <div key={id} className="flex items-center justify-between gap-1">
+                              <span className="min-w-0 truncate text-[11px] font-black text-red-600" title={name}>{name}</span>
+                              <button type="button" disabled={saving}
+                                onClick={(event) => { event.stopPropagation(); void removeTeacherFromCourse(item, id); }}
+                                className="shrink-0 rounded border border-rose-200 px-1.5 text-rose-600 hover:bg-rose-50 disabled:opacity-50"
+                                title={`${name} öğretmenini yalnız bu ders/gruptan kaldır`}>×</button>
+                            </div>
+                          ));
+                        })()}
                       </div>
                     </td>
                     <td className="px-1.5 py-1.5 text-center text-[12px] font-black text-slate-700">
-                      {Number(item.weeklyHours || 0)}
+                      {Math.max(...(assignmentGroups.find((items) => items[0] === item) || [item]).map((entry) => Number(entry.weeklyHours) || 0))}
                     </td>
                     <td className="px-1 py-1 text-center">
                       <button
@@ -1498,7 +1567,7 @@ export default function ClassCourseAssignmentPanel({
             <tfoot className="sticky bottom-0 bg-emerald-50">
               <tr>
                 <td className="border-t border-emerald-200 px-2 py-2 text-[12px] font-black text-emerald-900">
-                  Haftalık Toplam
+                  {classGroupHours.totals.length ? "En yüksek grup toplamı" : "Haftalık Toplam"}
                 </td>
                 <td className="border-t border-emerald-200" />
                 <td className="border-t border-emerald-200 px-1.5 py-2 text-center text-base font-black text-emerald-700">
@@ -1508,6 +1577,12 @@ export default function ClassCourseAssignmentPanel({
               </tr>
             </tfoot>
           </table>
+          {classGroupHours.totals.length > 0 && (
+            <div className="sticky bottom-0 border-t border-emerald-200 bg-emerald-50 px-3 py-2 text-[11px] font-bold text-emerald-900">
+              {classGroupHours.totals.map((group) => `${group.name}: ${group.hours} saat`).join(" • ")}
+              {" • Ortak: "}{classGroupHours.common} saat
+            </div>
+          )}
         </div>
       </section>
 
