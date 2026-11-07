@@ -30,3 +30,16 @@ CREATE TABLE IF NOT EXISTS deneme_sinavi_tarihleri (
   KEY idx_deneme_sinif (okul_id, sinif_seviyesi),
   CONSTRAINT fk_deneme_tarihi_okul FOREIGN KEY (okul_id) REFERENCES okullar (okul_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Ortak Sınav: ders planı, oturum tercihleri ve salon yerleşimlerinin
+-- okul bazında kalıcı kaydı. Mevcut tabloları veya verileri değiştirmez.
+CREATE TABLE IF NOT EXISTS kelebek_planlama_kayitlari (
+  okul_id VARCHAR(20) NOT NULL,
+  koleksiyon VARCHAR(80) NOT NULL,
+  belge_id VARCHAR(191) NOT NULL,
+  veri JSON NOT NULL,
+  guncellenme_zamani VARCHAR(40) NOT NULL,
+  PRIMARY KEY (okul_id, koleksiyon, belge_id),
+  CONSTRAINT fk_kelebek_planlama_kayit_okul FOREIGN KEY (okul_id)
+    REFERENCES okullar (okul_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
