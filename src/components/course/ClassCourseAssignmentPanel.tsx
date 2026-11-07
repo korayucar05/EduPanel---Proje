@@ -141,6 +141,14 @@ const classIdentityKey = (classroom: any) => {
 const courseIdentityKey = (course: any) =>
   normalize(course?.courseId || course?.courseName || "")
     .replace(/\s*\((SAY|EA|SÖZ|SOZ|DİL|DIL|ORTAK)\)\s*$/i, "");
+const courseScope = (course: any) => {
+  if (course?.assignmentScope === "ORTAK" || course?.isCommonElective === true) return "ORTAK";
+  const group = String(course?.groupName || (course?.targetGroups || []).find((g: string) => normalize(g) !== "ORTAK") || "").trim();
+  return group ? normalize(group).replace(/\s*,\s*/g, ",") : "ORTAK";
+};
+const assignmentRowKey = (course: any) =>
+  String(course?.id || "").trim() || `${courseIdentityKey(course)}|${courseScope(course)}`;
+const sameAssignment = (left: any, right: any) => assignmentRowKey(left) === assignmentRowKey(right);
 
 const buildTeacherHourSummary = (classrooms: Classroom[], teacherId: string) => {
   const details: TeacherHourDetail[] = [];
@@ -171,6 +179,7 @@ const buildTeacherHourSummary = (classrooms: Classroom[], teacherId: string) => 
 
 const isCommonAssignedCourse = (course: any) => {
   if (!course) return false;
+  if (course?.assignmentScope) return courseScope(course) === "ORTAK";
   if (course?.isCommonElective === true) return true;
   if (Array.isArray(course?.targetGroups) && course.targetGroups.some((g: any) => normalize(g) === "ORTAK")) {
     return true;
@@ -188,6 +197,7 @@ const shouldMirrorCommonCourseAssignment = (
   sourceClass?.id !== targetClass?.id &&
   classIdentityKey(sourceClass) === classIdentityKey(targetClass) &&
   courseIdentityKey(sourceCourse) === courseIdentityKey(targetCourse) &&
+  courseScope(sourceCourse) === "ORTAK" && courseScope(targetCourse) === "ORTAK" &&
   isCommonAssignedCourse(sourceCourse) &&
   isCommonAssignedCourse(targetCourse);
 
@@ -260,6 +270,9 @@ export default function ClassCourseAssignmentPanel({
     focusedGrade && focusedGrade !== 999 ? [focusedGrade] : [],
   );
   const [selectedAssignedCourseName, setSelectedAssignedCourseName] = useState<string>("");
+  const [pendingPoolCourse, setPendingPoolCourse] = useState<any | null>(null);
+  const [pendingTargetGroups, setPendingTargetGroups] = useState<string[]>(["ORTAK"]);
+  const [pendingWeeklyHours, setPendingWeeklyHours] = useState(2);
   const [branchLoadModalOpen, setBranchLoadModalOpen] = useState(false);
   const [copiedClass, setCopiedClass] = useState<{ id: string; name: string; courses: any[] } | null>(null);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; classId: string } | null>(null);
@@ -375,6 +388,12 @@ export default function ClassCourseAssignmentPanel({
   })();
 
   const assignedKeys = new Set(assigned.map((item: any) => normalize(item.courseName)));
+  const classGroupNames = useMemo(() => {
+    if (!selectedClass) return [] as string[];
+    const names = [...(Array.isArray(selectedClass.groups) ? selectedClass.groups : []), selectedClass.group1Name, selectedClass.group2Name]
+      .map((value) => String(value || "").trim()).filter(Boolean);
+    return [...new Map(names.map((name) => [normalize(name), name])).values()];
+  }, [selectedClass]);
 
   const commonCourseKeys = useMemo(() => {
     const counts = new Map<string, Set<string>>();
@@ -403,9 +422,7 @@ export default function ClassCourseAssignmentPanel({
   };
 
   const selectedAssignedCourse =
-    assigned.find(
-      (item: any) => normalize(item.courseName) === normalize(selectedAssignedCourseName),
-    ) || null;
+    assigned.find((item: any) => assignmentRowKey(item) === selectedAssignedCourseName) || null;
 
   const selectedParallelGroupId = selectedAssignedCourse
     ? parallelGroupIdOf(selectedAssignedCourse)
@@ -854,84 +871,70 @@ export default function ClassCourseAssignmentPanel({
     );
   };
 
-  const addCourse = async (poolCourse: any) => {
+  const openCourseAssignment = (poolCourse: any) => {
     if (!selectedClass || saving) return;
-    if (assignedKeys.has(poolCourse.key)) {
-      notify(`${poolCourse.courseName} zaten ${selectedClass.name} sınıfına atanmış.`);
-      return;
-    }
-
-    const nextClassrooms = classrooms.map((classroom) =>
-      classroom.id === selectedClass.id
-        ? {
-            ...classroom,
-            assignedCourses: [
-              ...(classroom.assignedCourses || []),
-              {
-                id: `assigned-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-                courseName: poolCourse.courseName,
-                weeklyHours: Number(poolCourse.weeklyHours || 0),
-                teacherId: "",
-                teacherName: "Öğretmen Atanmadı",
-                teacherAssignmentCleared: true,
-                type: poolCourse.type,
-                branch: poolCourse.branch,
-                targetGroups: poolCourse.targetGroups,
-                groupName: poolCourse.courseGroup,
-              } as any,
-            ],
-          }
-        : classroom,
-    );
-
-    await persistClasses(
-      nextClassrooms,
-      `${poolCourse.courseName} → ${selectedClass.name} sınıfına atandı.`,
-    );
+    setPendingPoolCourse(poolCourse);
+    setPendingTargetGroups(["ORTAK"]);
+    setPendingWeeklyHours(Number(poolCourse.weeklyHours || 2));
   };
 
-  const removeCourse = async (courseName: string) => {
-    if (!selectedClass || saving) return;
-
-    const approved = window.confirm(
-      `"${courseName}" dersini ${selectedClass.name} sınıfından kaldırmak istiyor musunuz?`,
-    );
-    if (!approved) return;
-
-    const courseKey = normalize(courseName);
-    const beforeCount = (selectedClass.assignedCourses || []).length;
-    const removedCourse = (selectedClass.assignedCourses || []).find(
-      (item: any) => normalize(item.courseName) === courseKey,
-    );
-    const removedParallelGroupId = parallelGroupIdOf(removedCourse);
-
-    const nextClassrooms = classrooms.map((classroom) =>
-      classroom.id === selectedClass.id
-        ? {
-            ...classroom,
-            assignedCourses: (classroom.assignedCourses || [])
-              .filter((item: any) => normalize(item.courseName) !== courseKey)
-              .map((item: any) =>
-                removedParallelGroupId && parallelGroupIdOf(item) === removedParallelGroupId
-                  ? clearClassParallelFields(item)
-                  : item,
-              ),
-          }
-        : classroom,
-    );
-
-    const updatedClass = nextClassrooms.find((classroom) => classroom.id === selectedClass.id);
-    const afterCount = (updatedClass?.assignedCourses || []).length;
-
-    if (afterCount >= beforeCount) {
-      notify(`${courseName} dersi sınıf kaydında bulunamadığı için kaldırılamadı.`);
+  const addCourseToGroups = async (poolCourse: any, groups: string[], hours: number) => {
+    if (!selectedClass || saving || groups.length === 0) return;
+    const targets = groups.includes("ORTAK") ? ["ORTAK"] : groups;
+    const previous = selectedClass.assignedCourses || [];
+    const additions: any[] = [];
+    for (const group of targets) {
+      const scope = group === "ORTAK" ? "ORTAK" : normalize(group);
+      // Ortak ders ile gruba özgü aynı isimli ders çakışmasın:
+      // Önce aynı adı taşıyan ORTAK veya grup ataması varsa kullanıcıya
+      // müdahalesiz uyarı ver. Mevcut kayıtları otomatik dönüştürme/silme.
+      if (previous.some((entry: any) =>
+        normalize(entry.courseName) === normalize(poolCourse.courseName) &&
+        (courseScope(entry) === scope || scope === "ORTAK" || courseScope(entry) === "ORTAK")
+      )) continue;
+      additions.push({
+        id: `assigned-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+        courseName: poolCourse.courseName,
+        weeklyHours: hours,
+        teacherId: "",
+        teacherName: "Öğretmen Atanmadı",
+        teacherAssignmentCleared: true,
+        type: poolCourse.type,
+        branch: poolCourse.branch,
+        assignmentScope: scope,
+        groupName: scope === "ORTAK" ? undefined : group,
+        targetGroups: [scope],
+        isCommonElective: scope === "ORTAK" && isElective(poolCourse),
+      });
+    }
+    if (!additions.length) {
+      notify("Ders seçilen grupta zaten atanmış.");
       return;
     }
-
-    await persistClasses(
-      nextClassrooms,
-      `${courseName} dersi ${selectedClass.name} sınıfından kalıcı olarak kaldırıldı.`,
+    const updated = classrooms.map((classroom) =>
+      classroom.id === selectedClass.id
+        ? { ...classroom, assignedCourses: [...(classroom.assignedCourses || []), ...additions] }
+        : classroom,
     );
+    const saved = await persistClasses(updated,
+      `${poolCourse.courseName}: ${additions.map(courseScope).join(", ")} atandı.`);
+    if (saved) setPendingPoolCourse(null);
+  };
+
+  const removeCourse = async (assignment: any) => {
+    if (!selectedClass || saving) return;
+    if (!window.confirm(`"${assignment.courseName}" (${courseScope(assignment)}) dersini kaldırmak istiyor musunuz?`)) return;
+    const parallelId = parallelGroupIdOf(assignment);
+    const updated = classrooms.map((classroom) => classroom.id !== selectedClass.id ? classroom : {
+      ...classroom,
+      assignedCourses: (classroom.assignedCourses || [])
+        .filter((entry: any) => !sameAssignment(entry, assignment))
+        .map((entry: any) => parallelId && parallelGroupIdOf(entry) === parallelId
+          ? clearClassParallelFields(entry) : entry),
+    });
+    const saved = await persistClasses(updated,
+      `${assignment.courseName} (${courseScope(assignment)}) kaldırıldı.`);
+    if (saved && selectedAssignedCourseName === assignmentRowKey(assignment)) setSelectedAssignedCourseName("");
   };
 
   const assignTeacher = async (teacher: Teacher) => {
@@ -1005,7 +1008,7 @@ export default function ClassCourseAssignmentPanel({
         ...classroom,
         assignedCourses: (classroom.assignedCourses || []).map((item: any) => {
           const shouldUpdate = isSourceClass
-            ? courseIdentityKey(item) === courseIdentityKey(selectedAssignedCourse)
+            ? sameAssignment(item, selectedAssignedCourse)
             : shouldMirrorCommonCourseAssignment(
                 selectedClass,
                 classroom,
@@ -1082,7 +1085,7 @@ export default function ClassCourseAssignmentPanel({
         ...classroom,
         assignedCourses: (classroom.assignedCourses || []).map((item: any) => {
           const shouldUpdate = isSourceClass
-            ? courseIdentityKey(item) === courseIdentityKey(selectedAssignedCourse)
+            ? sameAssignment(item, selectedAssignedCourse)
             : shouldMirrorCommonCourseAssignment(
                 selectedClass,
                 classroom,
@@ -1140,7 +1143,7 @@ export default function ClassCourseAssignmentPanel({
         ...classroom,
         assignedCourses: (classroom.assignedCourses || []).map((item: any) => {
           const shouldUpdate = isSourceClass
-            ? courseIdentityKey(item) === courseIdentityKey(selectedAssignedCourse)
+            ? sameAssignment(item, selectedAssignedCourse)
             : shouldMirrorCommonCourseAssignment(
                 selectedClass,
                 classroom,
@@ -1425,9 +1428,9 @@ export default function ClassCourseAssignmentPanel({
                 assigned.map((item: any) => (
                   <tr
                     key={`${selectedClass?.id}-${normalize(item.courseName)}`}
-                    onClick={() => setSelectedAssignedCourseName(item.courseName)}
+                    onClick={() => setSelectedAssignedCourseName(assignmentRowKey(item))}
                     className={`cursor-pointer border-b border-slate-100 bg-white hover:bg-slate-50 ${
-                      normalize(selectedAssignedCourseName) === normalize(item.courseName)
+                      selectedAssignedCourseName === assignmentRowKey(item)
                         ? "ring-2 ring-inset ring-indigo-400"
                         : ""
                     }`}
@@ -1445,6 +1448,7 @@ export default function ClassCourseAssignmentPanel({
                           <div className="truncate text-[14px] font-black leading-tight text-slate-800">
                             {item.courseName}
                           </div>
+                          <div className="text-[10px] font-bold text-violet-600">{courseScope(item) === "ORTAK" ? "ORTAK" : `Grup: ${courseScope(item)}`}</div>
                           {(() => {
                             const groupId = parallelGroupIdOf(item);
                             if (!groupId) return null;
@@ -1479,7 +1483,7 @@ export default function ClassCourseAssignmentPanel({
                         type="button"
                         onClick={(event) => {
                           event.stopPropagation();
-                          void removeCourse(item.courseName);
+                          void removeCourse(item);
                         }}
                         className="rounded-lg p-1 text-slate-300 hover:bg-rose-50 hover:text-rose-600"
                         title="Dersi kaldır"
@@ -1725,14 +1729,14 @@ export default function ClassCourseAssignmentPanel({
                 </thead>
                 <tbody>
                   {pool.map((item) => {
-                    const alreadyAssigned = assignedKeys.has(item.key);
+                    const alreadyAssigned = classGroupNames.length === 0 && assignedKeys.has(item.key);
                     const elective = isElective(item);
                     const htElective = isHtElective(item);
 
                     return (
                       <tr
                         key={item.key}
-                        onClick={() => !alreadyAssigned && void addCourse(item)}
+                        onClick={() => !alreadyAssigned && openCourseAssignment(item)}
                         className={`border-b border-white/70 ${
                           alreadyAssigned
                             ? "cursor-not-allowed bg-slate-50 opacity-40"
@@ -1770,6 +1774,40 @@ export default function ClassCourseAssignmentPanel({
           </>
         )}
       </section>
+
+      {pendingPoolCourse && selectedClass && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-950/55 p-4">
+          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
+            <h3 className="text-lg font-black">{selectedClass.name} • {pendingPoolCourse.courseName}</h3>
+            <p className="mt-2 text-sm text-slate-600">Dersi hangi öğrenciler alacak? ORTAK seçimi tek ders kaydı; birden fazla grup seçimi ise her grup için ayrı öğretmen ataması oluşturur.</p>
+            <div className="mt-4 space-y-2">
+              {["ORTAK", ...classGroupNames].map((group) => (
+                <label key={group} className="flex cursor-pointer items-center gap-3 rounded-xl border p-3 text-sm font-semibold">
+                  <input type="checkbox" checked={pendingTargetGroups.includes(group)}
+                    onChange={() => setPendingTargetGroups((previous) => {
+                      if (group === "ORTAK") return ["ORTAK"];
+                      const selected = previous.includes("ORTAK") ? [] : previous;
+                      return selected.includes(group) ? selected.filter((entry) => entry !== group) : [...selected, group];
+                    })}/>
+                  {group === "ORTAK" ? "ORTAK — tüm gruplar birlikte" : group}
+                </label>
+              ))}
+            </div>
+            <label className="mt-4 block text-sm font-bold">
+              Haftalık ders saati
+              <input className="mt-1 w-full rounded-xl border p-2" type="number" min={1} max={40} value={pendingWeeklyHours}
+                onChange={(event) => setPendingWeeklyHours(Number(event.target.value))}/>
+            </label>
+            <p className="mt-3 text-xs text-slate-500">Öğretmenler ders atandıktan sonra ilgili grup satırından atanır.</p>
+            <div className="mt-5 flex justify-end gap-2">
+              <button type="button" className="rounded-xl bg-slate-100 px-4 py-2" onClick={() => setPendingPoolCourse(null)}>Vazgeç</button>
+              <button type="button" disabled={saving || !pendingTargetGroups.length || pendingWeeklyHours < 1 || pendingWeeklyHours > 40}
+                className="rounded-xl bg-emerald-600 px-4 py-2 font-bold text-white disabled:opacity-50"
+                onClick={() => void addCourseToGroups(pendingPoolCourse, pendingTargetGroups, pendingWeeklyHours)}>Dersleri Ata</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {branchLoadModalOpen && selectedAssignedCourse && (
         <div className="fixed inset-0 z-[10000] flex items-stretch justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
