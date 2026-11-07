@@ -5330,6 +5330,8 @@ export default function CourseModule({
           courses={courses}
           customCreatedCourses={customCreatedCourses}
           setCustomCreatedCourses={setCustomCreatedCourses}
+          selectedElectives={selectedElectives}
+          customElectives={customElectives}
           teachers={teachers}
           students={students}
           notify={triggerNotification}

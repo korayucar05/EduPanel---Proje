@@ -3,6 +3,7 @@ import { BookOpen, Check, ClipboardPaste, Copy, Trash2, UserRound, X } from "luc
 import type { Classroom, Course, Student, Teacher } from "../../types";
 import { classroomService } from "../../modules/classroom";
 import { compareClassrooms } from "../../utils/classroomSort";
+import { ELECTIVE_COURSES_POOL } from "./courseCatalog";
 
 interface Props {
   classrooms: Classroom[];
@@ -10,6 +11,8 @@ interface Props {
   courses: Course[];
   customCreatedCourses: any[];
   setCustomCreatedCourses: React.Dispatch<React.SetStateAction<any[]>>;
+  selectedElectives: Record<string, number>;
+  customElectives: any[];
   teachers: Teacher[];
   students: Student[];
   notify: (message: string) => void;
@@ -239,6 +242,8 @@ export default function ClassCourseAssignmentPanel({
   setClassrooms,
   courses,
   customCreatedCourses,
+  selectedElectives,
+  customElectives,
   teachers,
   students,
   notify,
@@ -330,8 +335,26 @@ export default function ClassCourseAssignmentPanel({
 
     courses.forEach((course: any) => add(course.name, course));
 
+    // Eski sınıf ders havuzu yalnız courses ve customCreatedCourses okuduğu
+    // için "Seçmeli Dersler" ekranındaki seçilmiş ve özel seçmeli dersler
+    // burada görünmüyordu. Seçili sınıf düzeyinin havuzunu da ekle.
+    const grade = selectedClass ? getLevelNumber(selectedClass.level || selectedClass.name) : 0;
+    const gradeLabel = `${grade}. Sınıf`;
+    const electives = [...ELECTIVE_COURSES_POOL, ...customElectives];
+    electives.forEach((elective: any) => {
+      const hours = Number(selectedElectives[`${elective.id}_${gradeLabel}`] || 0);
+      if (hours <= 0) return;
+      const allowedHours = elective.hoursMap?.[gradeLabel];
+      if (Array.isArray(allowedHours) && allowedHours.length === 0) return;
+      add(elective.name, {
+        courseName: elective.name,
+        weeklyHours: hours,
+        courseType: "Seçmeli Ders",
+      });
+    });
+
     return [...map.values()].sort(sortCourses);
-  }, [courses, customCreatedCourses]);
+  }, [courses, customCreatedCourses, selectedClass, selectedElectives, customElectives]);
 
   const assigned = useMemo(
     () =>
