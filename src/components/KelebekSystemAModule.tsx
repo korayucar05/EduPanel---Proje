@@ -3041,15 +3041,16 @@ export default function KelebekSystemAModule({
       try {
         const planningState = await planningService.getState(selectedTerm, selectedExamNo);
         const savedPlansData = planningState?.savedPlans;
-        if (savedPlansData && Array.isArray(savedPlansData) && savedPlansData.length > 0) {
-          const plan = planningState?.currentPlan || savedPlansData[0];
+        const plan = planningState?.currentPlan || (Array.isArray(savedPlansData) ? savedPlansData[0] : null);
+        if (plan) {
           setBPlan(plan);
           if (plan.slots && plan.slots.length > 0) {
             const requestedSlot = selectedSessionKeyValue
               ? plan.slots.find((slot: any) => getSessionWorkflowKey(slot) === selectedSessionKeyValue)
               : null;
-            // Gömülü ortak sınav akışında seçim yalnız Ortak Sınav Planlama ekranından gelir.
-            setSelectedBSlot(requestedSlot || (!embedded ? plan.slots[0] : null));
+            // Kayıtlı oturum bulunduğunda, geçici seçim anahtarı kaybolmuş olsa
+            // bile salon ekranı boş kalmamalı.
+            setSelectedBSlot(requestedSlot || plan.slots.find((slot: any) => (slot.exams || []).length > 0) || plan.slots[0]);
           } else {
             setSelectedBSlot(null);
           }
