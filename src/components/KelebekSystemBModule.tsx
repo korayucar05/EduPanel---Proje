@@ -267,6 +267,11 @@ export default function KelebekSystemBModule({ students, courses, classrooms = [
         const restoredPlan = planningState?.currentPlan || (Array.isArray(savedPlansData) ? savedPlansData[0] : null) || null;
         setSavedPlans(Array.isArray(savedPlansData) ? savedPlansData : (restoredPlan ? [restoredPlan] : []));
         setCurrentPlan(restoredPlan);
+        // Modüle yeniden girildiğinde son sınav oturumu seçili gelsin.
+        // Seçilmemiş oturum nedeniyle salonlar ekranının boş kalmasını önle.
+        const firstPlannedSession = restoredPlan?.slots?.find((slot: any) => (slot.exams || []).length > 0)
+          || restoredPlan?.slots?.[0];
+        setSelectedWorkflowSlotKey(firstPlannedSession ? getSessionWorkflowKey(firstPlannedSession) : null);
 
         // Kilit artık oturum bazındadır. Eski tekil kilit kaydı varsa ilk planlı
         // oturuma bir kez aktarılır; yeni oturumlar bu nedenle bloke olmaz.
@@ -275,7 +280,6 @@ export default function KelebekSystemBModule({ students, courses, classrooms = [
           if (firstPlannedSlot) loadedPlanningLocks[getSessionWorkflowKey(firstPlannedSlot)] = true;
         }
         setPlanningLocks(loadedPlanningLocks);
-        setSelectedWorkflowSlotKey(null);
         setIntegratedSeatingView(null);
 
         // 2. Load exam calendar config directly from the single local SQLite database.
@@ -1095,53 +1099,39 @@ export default function KelebekSystemBModule({ students, courses, classrooms = [
   };
 
   const handleManualSaveConfig = async () => {
+    // Sınav planı ve takvim bağımsız kayıtlardır. Takvim kaydı hata verdiğinde
+    // ders atamalarının kaydını atlama; iki sonucun durumunu ayrı bildir.
+    const errors: string[] = [];
+    const finalPlans = currentPlan
+      ? (savedPlans.some(p => p.id === currentPlan.id)
+          ? savedPlans.map(p => p.id === currentPlan.id ? currentPlan : p)
+          : [currentPlan, ...savedPlans])
+      : savedPlans;
+
     try {
-      const suffix = getKeySuffix(selectedTerm, selectedExamNo);
-      
-      // Save config
-      const configToSave = {
-        computedDates,
-        selectedTerm,
-        selectedExamNo,
-        startDate,
-        daysCount,
-        sessionsPerDay
-      };
-      await writeExamCalendarToSQLite(computedDates);
-      
-      // Save current plan
-      if (currentPlan) {
-        const planExists = savedPlans.some(p => p.id === currentPlan.id);
-        let updatedPlans;
-        if (planExists) {
-          updatedPlans = savedPlans.map(p => p.id === currentPlan.id ? currentPlan : p);
-        } else {
-          updatedPlans = [currentPlan, ...savedPlans];
-        }
-        setSavedPlans(updatedPlans);
-        await planningService.savePlans(selectedTerm, selectedExamNo, updatedPlans, currentPlan);
-      }
-
-      // Save course assoc configs
-      await planningService.saveCourseSettings(selectedTerm, selectedExamNo, difficultCourses, excludedCourseNames);
-
-      const finalPlans = currentPlan
-        ? (savedPlans.some(p => p.id === currentPlan.id)
-            ? savedPlans.map(p => p.id === currentPlan.id ? currentPlan : p)
-            : [currentPlan, ...savedPlans])
-        : savedPlans;
-
       await planningService.saveState(selectedTerm, selectedExamNo, {
         savedPlans: finalPlans,
         currentPlan,
         difficultCourses,
         excludedCourseNames,
       });
+      setSavedPlans(finalPlans);
+    } catch (error) {
+      console.error("Ortak sınav ders/plan kaydı başarısız:", error);
+      errors.push("Sınav dersleri ve planı kaydedilemedi");
+    }
 
+    try {
+      await writeExamCalendarToSQLite(computedDates);
+    } catch (error) {
+      console.error("Ortak sınav takvim kaydı başarısız:", error);
+      errors.push("Sınav takvimi kaydedilemedi");
+    }
+
+    if (errors.length) {
+      alert(errors.join("\\n") + ". Lütfen bağlantıyı kontrol ediniz.");
+    } else {
       alert("Tüm yapılandırma ve planlama bilgileri kalıcı olarak kaydedildi!");
-    } catch (err) {
-      console.error("Save error:", err);
-      alert("Kaydetme işlemi sırasında bir hata oluştu!");
     }
   };
 
@@ -1276,10 +1266,15 @@ export default function KelebekSystemBModule({ students, courses, classrooms = [
 
   const openIntegratedViewForSelectedSession = (view: 'sorular' | 'yerlesim' | 'bilgiler' | 'planlar') => {
     if (!selectedWorkflowSlotKey) {
-      setIntegratedSeatingView(null);
-      setActiveSubTab('B');
-      alert("Önce Ortak Sınav Planlama ekranından bir sınav oturumu seçiniz.");
-      return;
+      const fallbackSession = currentPlan?.slots?.find((slot: any) => (slot.exams || []).length > 0)
+        || currentPlan?.slots?.[0];
+      if (!fallbackSession) {
+        setIntegratedSeatingView(null);
+        setActiveSubTab('B');
+        alert("Önce Ortak Sınav Planlama ekranından bir sınav oturumu oluşturunuz.");
+        return;
+      }
+      setSelectedWorkflowSlotKey(getSessionWorkflowKey(fallbackSession));
     }
     setIntegratedSeatingView(view);
   };
