@@ -387,6 +387,25 @@ export default function ClassCourseAssignmentPanel({
     return [...groups.values()];
   }, [assigned]);
   const visibleAssignments = useMemo(() => assignmentGroups.map((items) => items[0]), [assignmentGroups]);
+  // Aynı paralel bağlantıdaki iki ders aynı anda yürütülür. Öğrenci
+  // grubu toplamında bu iki dersin saatleri toplanmaz; biri sayılır.
+  const sumScheduledHours = (entries: any[][]): number => {
+    const byTimeSlot = new Map<string, number>();
+    entries.forEach((items) => {
+      const first = items[0];
+      const scope = courseScope(first);
+      const parallelId = parallelGroupIdOf(first);
+      const hasPartner = Boolean(parallelId && assigned.some((candidate: any) =>
+        candidate !== first && parallelGroupIdOf(candidate) === parallelId &&
+        courseScope(candidate) === scope));
+      const key = hasPartner ? `${scope}|PARALEL|${parallelId}`
+        : `${scope}|DERS|${normalize(first.courseName)}`;
+      const hours = Math.max(...items.map((item) => Number(item.weeklyHours) || 0));
+      byTimeSlot.set(key, Math.max(byTimeSlot.get(key) || 0, hours));
+    });
+    return [...byTimeSlot.values()].reduce((total, hours) => total + hours, 0);
+  };
+
   const classGroupHours = useMemo(() => {
     const namedGroups = [...new Map(
       [...(Array.isArray(selectedClass?.groups) ? selectedClass.groups : []),
@@ -394,20 +413,40 @@ export default function ClassCourseAssignmentPanel({
         .map((g) => String(g || "").trim()).filter(Boolean)
         .map((g) => [normalize(g), g])
     ).values()];
-    const common = assignmentGroups
-      .filter((items) => courseScope(items[0]) === "ORTAK")
-      .reduce((total, items) => total + Math.max(...items.map((item) => Number(item.weeklyHours) || 0)), 0);
+    const common = sumScheduledHours(assignmentGroups.filter((items) => courseScope(items[0]) === "ORTAK"));
     const totals = namedGroups.map((group) => ({
       name: group,
-      hours: common + assignmentGroups
-        .filter((items) => courseScope(items[0]).split(",").includes(normalize(group)))
-        .reduce((total, items) => total + Math.max(...items.map((item) => Number(item.weeklyHours) || 0)), 0),
+      hours: common + sumScheduledHours(assignmentGroups
+        .filter((items) => courseScope(items[0]).split(",").includes(normalize(group)))),
     }));
     return { common, totals };
-  }, [assignmentGroups, selectedClass]);
+  }, [assignmentGroups, selectedClass, assigned]);
   const totalHours = classGroupHours.totals.length
     ? Math.max(...classGroupHours.totals.map((group) => group.hours))
-    : assignmentGroups.reduce((sum, items) => sum + Math.max(...items.map((item) => Number(item.weeklyHours) || 0)), 0);
+    : sumScheduledHours(assignmentGroups);
+
+  // Paralel dersler aynı satırda ikiye bölünerek gösterilir; her ikisinin
+  // seçim/öğretmen/sil işlemleri gerçek ders kaydına bağlı kalır.
+  const parallelDisplayRows = useMemo(() => {
+    const visited = new Set<string>();
+    const rows: Array<{ first: any; second?: any }> = [];
+    visibleAssignments.forEach((first: any) => {
+      const key = `${normalize(first.courseName)}|${courseScope(first)}`;
+      if (visited.has(key)) return;
+      visited.add(key);
+      const id = parallelGroupIdOf(first);
+      const second = id
+        ? visibleAssignments.find((candidate: any) =>
+            candidate !== first && parallelGroupIdOf(candidate) === id &&
+            courseScope(candidate) === courseScope(first))
+        : null;
+      if (second) {
+        visited.add(`${normalize(second.courseName)}|${courseScope(second)}`);
+        rows.push({ first, second });
+      } else rows.push({ first });
+    });
+    return rows;
+  }, [visibleAssignments]);
 
   const assignedKeys = new Set(assigned.map((item: any) => normalize(item.courseName)));
   const classGroupNames = useMemo(() => {
@@ -1478,7 +1517,61 @@ export default function ClassCourseAssignmentPanel({
                   </td>
                 </tr>
               ) : (
-                visibleAssignments.map((item: any) => (
+                parallelDisplayRows.map(({first: item, second}: {first: any; second?: any}) => second ? (
+                  <tr
+                    key={`parallel-${assignmentRowKey(item)}-${assignmentRowKey(second)}`}
+                    className="border-b border-violet-200 bg-violet-50/30"
+                  >
+                    <td colSpan={4} className="p-1.5">
+                      <div className="grid grid-cols-2 overflow-hidden rounded-xl border border-violet-200 bg-white">
+                        {[item, second].map((part: any, index: number) => (
+                          <div key={assignmentRowKey(part)}
+                            className={`min-w-0 p-2 ${index === 0 ? "border-r border-violet-200" : ""}`}>
+                            <button type="button"
+                              onClick={() => setSelectedAssignedCourseName(assignmentRowKey(part))}
+                              className="w-full text-left"
+                              title="Paralel dersin öğretmenini veya öğrencilerini düzenle">
+                              <div className="truncate text-[12px] font-black text-slate-900">{part.courseName}</div>
+                              <div className="text-[9px] font-bold text-violet-600">
+                                Paralel Ders • {courseScope(part)}
+                              </div>
+                            </button>
+                            <div className="mt-1 flex flex-col gap-1">
+                              {(() => {
+                                const related = assignmentGroups.find((items) => items[0] === part) || [part];
+                                const names = new Map<string, string>();
+                                related.forEach((entry: any) => {
+                                  if (entry.teacherId) names.set(String(entry.teacherId), String(entry.teacherName || "Öğretmen"));
+                                  if (entry.teacherId2) names.set(String(entry.teacherId2), String(entry.teacherName2 || "Öğretmen"));
+                                });
+                                if (!names.size) return <span className="text-[10px] text-slate-400">Öğretmen atanmadı</span>;
+                                return [...names].map(([id, name]) => (
+                                  <div key={id} className="flex min-w-0 items-center justify-between gap-1">
+                                    <span className="min-w-0 truncate text-[10px] font-bold text-red-600">{name}</span>
+                                    <button type="button" disabled={saving}
+                                      onClick={() => void removeTeacherFromCourse(part, id)}
+                                      className="shrink-0 rounded border border-rose-200 px-1 text-rose-600"
+                                      title="Bu öğretmeni kaldır">×</button>
+                                  </div>
+                                ));
+                              })()}
+                            </div>
+                            <div className="mt-1 flex items-center justify-between">
+                              <span className="text-[10px] font-black text-slate-700">{Number(part.weeklyHours || 0)} saat</span>
+                              <button type="button" onClick={() => void removeCourse(part)}
+                                className="text-slate-400 hover:text-rose-600" title="Bu paralel dersi kaldır">
+                                <Trash2 className="h-3.5 w-3.5"/>
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-1 text-center text-[10px] font-black text-violet-700">
+                        Tek zaman dilimi • Haftalık {Math.max(Number(item.weeklyHours || 0), Number(second.weeklyHours || 0))} saat
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
                   <tr
                     key={`${selectedClass?.id}-${normalize(item.courseName)}-${courseScope(item)}`}
                     onClick={() => setSelectedAssignedCourseName(assignmentRowKey(item))}
