@@ -5149,7 +5149,7 @@ export default function CourseModule({
               }`}
             >
               <LayoutTemplate className="w-4 h-4 shrink-0" />
-              Sınıf Krokisi
+              Sınıflar
             </button>
           )}
           {(displayMode === "all" || displayMode === "courses") && (
@@ -5396,19 +5396,9 @@ export default function CourseModule({
         </div>
       ) : currentSubTab === "seating-plan" ? (
         <CourseSeatingPlanPanel
-          classError={classError}
-          classForm={classForm}
-          setClassForm={setClassForm}
-          editingClassId={editingClassId}
           classrooms={classrooms}
-          teachers={teachers}
-          students={students}
-          getBranchLetter={getBranchLetter}
-          handleLevelChangeInModal={handleLevelChangeInModal}
-          handleBranchNameChange={handleBranchNameChange}
-          handleAddClass={handleAddClass}
-          handleDeleteClass={handleDeleteClass}
-          openEditClassModal={openEditClassModal}
+          setClassrooms={setClassrooms}
+          editingClassId={editingClassId}
           seatingPlanClassName={seatingPlanClassName}
         />
       ) : currentSubTab === "classrooms" ? (
