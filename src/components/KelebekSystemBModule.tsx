@@ -264,17 +264,9 @@ export default function KelebekSystemBModule({ students, courses, classrooms = [
           ? { ...planningState.planningLocks } as Record<string, boolean>
           : {};
         const savedPlansData = planningState?.savedPlans;
-        if (savedPlansData && Array.isArray(savedPlansData)) {
-          setSavedPlans(savedPlansData);
-          if (savedPlansData.length > 0) {
-            setCurrentPlan(planningState?.currentPlan || savedPlansData[0]);
-          } else {
-            setCurrentPlan(null);
-          }
-        } else {
-          setSavedPlans([]);
-          setCurrentPlan(null);
-        }
+        const restoredPlan = planningState?.currentPlan || (Array.isArray(savedPlansData) ? savedPlansData[0] : null) || null;
+        setSavedPlans(Array.isArray(savedPlansData) ? savedPlansData : (restoredPlan ? [restoredPlan] : []));
+        setCurrentPlan(restoredPlan);
 
         // Kilit artık oturum bazındadır. Eski tekil kilit kaydı varsa ilk planlı
         // oturuma bir kez aktarılır; yeni oturumlar bu nedenle bloke olmaz.
@@ -296,9 +288,23 @@ export default function KelebekSystemBModule({ students, courses, classrooms = [
         }
 
 
+        // Eski sınav planlarında takvim ayrı kaydedilmemiş olabilir.
+        // Bu durumda oturumları ve dersleri kayıtlı plandan geri getir.
+        const restoredSlots = (restoredPlan?.slots || []).filter((slot: any) => slot?.dateStr);
+        const restoredCalendar = restoredSlots.map((slot: any) => ({
+          id: slot.id,
+          dateStr: slot.dateStr,
+          dayName: slot.dayName || "",
+          lessonHour: Number(slot.lessonHour || 1),
+          sessionIndex: Number(slot.sessionIndex || 1),
+          timeStr: slot.timeStr || "",
+          makeupDateStr: slot.makeupDateStr,
+          makeupDayName: slot.makeupDayName,
+          makeupTimeStr: slot.makeupTimeStr,
+        }));
         if (savedConfigData) {
           const savedConfig: any = savedConfigData;
-          if (savedConfig.computedDates) {
+          if (Array.isArray(savedConfig.computedDates) && savedConfig.computedDates.length > 0) {
             const preparedDates = savedConfig.computedDates.map((d: any, idx: number) => ({
               ...d,
               id: d.id || `day_loaded_${idx}_${Date.now()}`
@@ -313,16 +319,16 @@ export default function KelebekSystemBModule({ students, courses, classrooms = [
             });
             setComputedDates(preparedDates);
           } else {
-            setComputedDates([]);
+            setComputedDates(restoredCalendar);
           }
           if (savedConfig.startDate) setStartDate(savedConfig.startDate);
           if (savedConfig.daysCount) setDaysCount(savedConfig.daysCount);
           if (savedConfig.sessionsPerDay) setSessionsPerDay(savedConfig.sessionsPerDay);
         } else {
-          setComputedDates([]);
-          setStartDate("2026-07-06");
-          setDaysCount(5);
-          setSessionsPerDay(2);
+          setComputedDates(restoredCalendar);
+          setStartDate(restoredPlan?.startDate || "2026-07-06");
+          setDaysCount(restoredPlan?.daysCount || 5);
+          setSessionsPerDay(restoredPlan?.sessionsPerDay || 2);
         }
 
         // 3. Load sub-tab A (Associated courses) settings
@@ -1476,6 +1482,9 @@ export default function KelebekSystemBModule({ students, courses, classrooms = [
       return;
     }
     if (computedDates.length === 0) return;
+    // Ders listesi henüz yüklenmediyse kayıtlı planın boş ders listesiyle
+    // otomatik olarak yeniden yazılmasını engelle.
+    if (activeExams.length === 0) return;
 
     setCurrentPlan(prevPlan => {
       const planId = prevPlan?.id || "plan_" + Date.now().toString();
@@ -1520,7 +1529,9 @@ export default function KelebekSystemBModule({ students, courses, classrooms = [
           }
         });
         const activeExamsIds = new Set(activeExams.map(e => e.id));
-        unplacedExams = unplacedExams.filter(e => activeExamsIds.has(e.id));
+        // Ders kaynakları modül açılırken geç yüklenebilir. Henüz kaynakta
+        // görünmeyen kayıtlı dersleri silmek yerine plan üzerinde koru.
+        // Dersin kaldırılması yalnızca kullanıcının açık işlemiyle yapılır.
       }
 
       const updatedPlan = {
