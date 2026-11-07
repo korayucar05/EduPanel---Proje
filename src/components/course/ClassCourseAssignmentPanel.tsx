@@ -179,6 +179,7 @@ const buildTeacherHourSummary = (classrooms: Classroom[], teacherId: string) => 
 
 const isCommonAssignedCourse = (course: any) => {
   if (!course) return false;
+  if (course?.assignmentScope) return courseScope(course) === "ORTAK";
   if (course?.isCommonElective === true) return true;
   if (Array.isArray(course?.targetGroups) && course.targetGroups.some((g: any) => normalize(g) === "ORTAK")) {
     return true;
@@ -389,7 +390,7 @@ export default function ClassCourseAssignmentPanel({
   const assignedKeys = new Set(assigned.map((item: any) => normalize(item.courseName)));
   const classGroupNames = useMemo(() => {
     if (!selectedClass) return [] as string[];
-    const names = [...(selectedClass.groups || []), selectedClass.group1Name, selectedClass.group2Name]
+    const names = [...(Array.isArray(selectedClass.groups) ? selectedClass.groups : []), selectedClass.group1Name, selectedClass.group2Name]
       .map((value) => String(value || "").trim()).filter(Boolean);
     return [...new Map(names.map((name) => [normalize(name), name])).values()];
   }, [selectedClass]);
@@ -884,9 +885,12 @@ export default function ClassCourseAssignmentPanel({
     const additions: any[] = [];
     for (const group of targets) {
       const scope = group === "ORTAK" ? "ORTAK" : normalize(group);
+      // Ortak ders ile gruba özgü aynı isimli ders çakışmasın:
+      // Önce aynı adı taşıyan ORTAK veya grup ataması varsa kullanıcıya
+      // müdahalesiz uyarı ver. Mevcut kayıtları otomatik dönüştürme/silme.
       if (previous.some((entry: any) =>
         normalize(entry.courseName) === normalize(poolCourse.courseName) &&
-        courseScope(entry) === scope
+        (courseScope(entry) === scope || scope === "ORTAK" || courseScope(entry) === "ORTAK")
       )) continue;
       additions.push({
         id: `assigned-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
