@@ -86,6 +86,14 @@ import {
   upsertRelationalExamPlanningDocument,
 } from "./relationalExamPlanning.ts";
 import {
+  deleteRelationalExamArchiveDocument,
+  ensureRelationalExamArchiveSchema,
+  loadRelationalExamArchiveDocuments,
+  relationalExamArchiveCollectionInfo,
+  replaceRelationalExamArchiveCollection,
+  upsertRelationalExamArchiveDocument,
+} from "./relationalExamArchive.ts";
+import {
   deleteRelationalAttendanceDocument,
   ensureRelationalAttendanceSchema,
   isRelationalAttendanceReady,
@@ -146,6 +154,7 @@ let relationalHomeworkEnabled = false;
 let relationalCurriculumEnabled = false;
 let relationalCalendarsEnabled = false;
 let relationalExamPlanningEnabled = false;
+let relationalExamArchiveEnabled = false;
 let relationalAttendanceEnabled = false;
 let relationalAnnouncementsEnabled = false;
 let relationalScheduleEnabled = false;
@@ -192,6 +201,7 @@ export const getDocumentStoreStatus = () => ({
   relationalCurriculum: relationalCurriculumEnabled,
   relationalCalendars: relationalCalendarsEnabled,
   relationalExamPlanning: relationalExamPlanningEnabled,
+  relationalExamArchive: relationalExamArchiveEnabled,
   relationalAttendance: relationalAttendanceEnabled,
   relationalAnnouncements: relationalAnnouncementsEnabled,
   relationalSchedule: relationalScheduleEnabled,
@@ -361,6 +371,17 @@ export const initializeDocumentStore = async () => {
       }
       console.log(`[mysql-relational-exam-planning] Loaded ${planningRows.length} relational exam planning records.`);
     }
+    await ensureRelationalExamArchiveSchema();
+    relationalExamArchiveEnabled = true;
+    const examArchiveRows = await loadRelationalExamArchiveDocuments();
+    for (const row of examArchiveRows) {
+      cacheCollection(row.collectionName).set(row.documentId, {
+        documentId: row.documentId,
+        data: row.data,
+        updatedAt: row.updatedAt,
+      });
+    }
+    console.log(`[mysql-relational-exam-archive] Loaded ${examArchiveRows.length} records.`);
     await ensureRelationalAttendanceSchema();
     relationalAttendanceEnabled = await isRelationalAttendanceReady();
     if (relationalAttendanceEnabled) {
@@ -439,6 +460,7 @@ const hasRelationalCollectionRepository = (collectionName: string) => Boolean(
   || (relationalCurriculumEnabled && relationalCurriculumCollectionInfo(collectionName))
   || (relationalCalendarsEnabled && relationalCalendarCollectionInfo(collectionName))
   || (relationalExamPlanningEnabled && relationalExamPlanningCollectionInfo(collectionName))
+  || (relationalExamArchiveEnabled && relationalExamArchiveCollectionInfo(collectionName))
   || (relationalAttendanceEnabled && relationalAttendanceCollectionInfo(collectionName))
   || (relationalAnnouncementsEnabled && relationalAnnouncementCollectionInfo(collectionName))
   || (relationalQuestionBankAuxEnabled && relationalQuestionBankAuxCollectionInfo(collectionName))
@@ -548,6 +570,10 @@ export function replaceCollection(collectionName: string, documents: any[]) {
       await replaceRelationalExamPlanningCollection(collectionName, [...nextCollection.values()]);
       return;
     }
+    if (relationalExamArchiveEnabled && relationalExamArchiveCollectionInfo(collectionName)) {
+      await replaceRelationalExamArchiveCollection(collectionName, [...nextCollection.values()]);
+      return;
+    }
     if (relationalAttendanceEnabled && relationalAttendanceCollectionInfo(collectionName)) {
       await replaceRelationalAttendanceCollection(collectionName, [...nextCollection.values()]);
       return;
@@ -607,6 +633,8 @@ export function replaceCollections(collections: Record<string, any[]>) {
         await replaceRelationalCalendarCollection(collectionName, [...collection.values()]);
       } else if (relationalExamPlanningEnabled && relationalExamPlanningCollectionInfo(collectionName)) {
         await replaceRelationalExamPlanningCollection(collectionName, [...collection.values()]);
+      } else if (relationalExamArchiveEnabled && relationalExamArchiveCollectionInfo(collectionName)) {
+        await replaceRelationalExamArchiveCollection(collectionName, [...collection.values()]);
       } else if (relationalAttendanceEnabled && relationalAttendanceCollectionInfo(collectionName)) {
         await replaceRelationalAttendanceCollection(collectionName, [...collection.values()]);
       } else if (relationalAnnouncementsEnabled && relationalAnnouncementCollectionInfo(collectionName)) {
@@ -664,6 +692,10 @@ export function upsertDocument(collectionName: string, documentId: string, data:
     }
     if (relationalExamPlanningEnabled && relationalExamPlanningCollectionInfo(collectionName)) {
       await upsertRelationalExamPlanningDocument(collectionName, documentId, data, updatedAt);
+      return;
+    }
+    if (relationalExamArchiveEnabled && relationalExamArchiveCollectionInfo(collectionName)) {
+      await upsertRelationalExamArchiveDocument(collectionName, documentId, data, updatedAt);
       return;
     }
     if (relationalAttendanceEnabled && relationalAttendanceCollectionInfo(collectionName)) {
@@ -730,6 +762,10 @@ export function deleteDocument(collectionName: string, documentId: string) {
     }
     if (relationalExamPlanningEnabled && relationalExamPlanningCollectionInfo(collectionName)) {
       await deleteRelationalExamPlanningDocument(collectionName, documentId);
+      return;
+    }
+    if (relationalExamArchiveEnabled && relationalExamArchiveCollectionInfo(collectionName)) {
+      await deleteRelationalExamArchiveDocument(collectionName, documentId);
       return;
     }
     if (relationalAttendanceEnabled && relationalAttendanceCollectionInfo(collectionName)) {
