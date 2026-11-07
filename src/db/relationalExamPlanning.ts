@@ -9,7 +9,8 @@ type QueryClient = Awaited<ReturnType<typeof pool.connect>>;
 type Kind = "string" | "number" | "boolean";
 type Field = readonly [column: string, key: string, kind?: Kind];
 
-const COLLECTIONS = new Set(["education_coach_exam_contents", "trial_exam_dates"]);
+const JOINT_EXAM_COLLECTIONS = new Set(["examPlanningStates", "examPlanningPreferences", "examSeatingPlans"]);
+const COLLECTIONS = new Set(["education_coach_exam_contents", "trial_exam_dates", ...JOINT_EXAM_COLLECTIONS]);
 const PLAN_FIELDS: readonly Field[] = [
   ["takvim_id", "calendarId"], ["sinif_seviyesi", "gradeLevel"], ["sinav_adi", "examName"],
   ["sinav_sirasi", "examNumber", "number"], ["sinav_tarihi", "examDate"],
@@ -88,15 +89,29 @@ const upsertTrialDate = async (client: QueryClient, schoolId: string, row: ExamP
     ON DUPLICATE KEY UPDATE ${columns.slice(2).map((column) => `${column}=VALUES(${column})`).join(",")}`, values);
 };
 
-const writeDocument = (client: QueryClient, schoolId: string, collectionName: string, row: ExamPlanningSourceDocument) =>
-  collectionName === "education_coach_exam_contents" ? upsertContentPlan(client, schoolId, row) : upsertTrialDate(client, schoolId, row);
+const writeDocument = async (client: QueryClient, schoolId: string, collectionName: string, row: ExamPlanningSourceDocument) => {
+  if (JOINT_EXAM_COLLECTIONS.has(collectionName)) {
+    await client.query(`INSERT INTO kelebek_planlama_kayitlari
+      (okul_id, koleksiyon, belge_id, veri, guncellenme_zamani) VALUES (?,?,?,?,?)
+      ON DUPLICATE KEY UPDATE veri=VALUES(veri), guncellenme_zamani=VALUES(guncellenme_zamani)`,
+      [schoolId, collectionName, row.documentId, JSON.stringify(row.data), isoDate(row.updatedAt)]);
+    return;
+  }
+  return collectionName === "education_coach_exam_contents"
+    ? upsertContentPlan(client, schoolId, row) : upsertTrialDate(client, schoolId, row);
+};
 
 export async function replaceRelationalExamPlanningCollection(collectionName: string, documents: ExamPlanningSourceDocument[]) {
   if (!COLLECTIONS.has(collectionName)) throw new Error(`İlişkisel sınav planlama koleksiyonu desteklenmiyor: ${collectionName}`);
   const table = collectionName === "education_coach_exam_contents" ? "egitim_kocu_sinav_icerik_planlari" : "deneme_sinavi_tarihleri";
   const schoolId = await primarySchoolId(); const client = await pool.connect();
   try {
-    await client.query("START TRANSACTION"); await client.query(`DELETE FROM ${table} WHERE okul_id=?`, [schoolId]);
+    await client.query("START TRANSACTION");
+    if (JOINT_EXAM_COLLECTIONS.has(collectionName)) {
+      await client.query("DELETE FROM kelebek_planlama_kayitlari WHERE okul_id=? AND koleksiyon=?", [schoolId, collectionName]);
+    } else {
+      await client.query(`DELETE FROM ${table} WHERE okul_id=?`, [schoolId]);
+    }
     for (const row of documents) await writeDocument(client, schoolId, collectionName, row);
     await client.query("COMMIT");
   } catch (error) { await client.query("ROLLBACK"); throw error; } finally { client.release(); }
@@ -112,19 +127,26 @@ export async function upsertRelationalExamPlanningDocument(collectionName: strin
 }
 
 export async function deleteRelationalExamPlanningDocument(collectionName: string, documentId: string) {
+  const schoolId = await primarySchoolId();
+  if (JOINT_EXAM_COLLECTIONS.has(collectionName)) {
+    await pool.query("DELETE FROM kelebek_planlama_kayitlari WHERE okul_id=? AND koleksiyon=? AND belge_id=?",
+      [schoolId, collectionName, documentId]);
+    return;
+  }
   const table = collectionName === "education_coach_exam_contents" ? "egitim_kocu_sinav_icerik_planlari"
     : collectionName === "trial_exam_dates" ? "deneme_sinavi_tarihleri" : "";
   const idColumn = collectionName === "education_coach_exam_contents" ? "plan_id" : "kayit_id";
   if (!table) throw new Error(`İlişkisel sınav planlama koleksiyonu desteklenmiyor: ${collectionName}`);
-  const schoolId = await primarySchoolId(); await pool.query(`DELETE FROM ${table} WHERE okul_id=? AND ${idColumn}=?`, [schoolId, documentId]);
+  await pool.query(`DELETE FROM ${table} WHERE okul_id=? AND ${idColumn}=?`, [schoolId, documentId]);
 }
 
 export async function loadRelationalExamPlanningDocuments(): Promise<ExamPlanningRelationalDocument[]> {
   const schoolId = await primarySchoolId(); const result: ExamPlanningRelationalDocument[] = [];
-  const [plans, scopes, dates] = await Promise.all([
+  const [plans, scopes, dates, jointRecords] = await Promise.all([
     pool.query("SELECT * FROM egitim_kocu_sinav_icerik_planlari WHERE okul_id=? ORDER BY guncellenme_zamani,plan_id", [schoolId]),
     pool.query("SELECT * FROM egitim_kocu_sinav_icerik_kapsamlari WHERE okul_id=? ORDER BY plan_id,sira_no", [schoolId]),
     pool.query("SELECT * FROM deneme_sinavi_tarihleri WHERE okul_id=? ORDER BY sinav_tarihi,kayit_id", [schoolId]),
+    pool.query("SELECT koleksiyon, belge_id, veri, guncellenme_zamani FROM kelebek_planlama_kayitlari WHERE okul_id=? ORDER BY guncellenme_zamani, belge_id", [schoolId]),
   ]);
   const scopeMap = new Map<string, any[]>();
   for (const row of scopes.rows) {
@@ -140,6 +162,11 @@ export async function loadRelationalExamPlanningDocuments(): Promise<ExamPlannin
     const documentId = String(row.kayit_id);
     result.push({ collectionName: "trial_exam_dates", documentId,
       data: { id: documentId, ...restoreFields(row, DATE_FIELDS) }, updatedAt: String(row.guncellenme_zamani) });
+  }
+  for (const row of jointRecords.rows) {
+    const data = typeof row.veri === "string" ? JSON.parse(row.veri) : row.veri;
+    result.push({ collectionName: String(row.koleksiyon), documentId: String(row.belge_id),
+      data, updatedAt: String(row.guncellenme_zamani) });
   }
   return result;
 }
