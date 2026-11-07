@@ -1747,7 +1747,7 @@ export default function ClassCourseAssignmentPanel({
               <div className="mb-3 rounded-xl border border-violet-200 bg-violet-50/70 p-3">
                 <div className="mb-1 flex items-center justify-between gap-2">
                   <label className="text-[11px] font-black text-violet-900">
-                    Bu sınıfta eş zamanlı ders
+                    Paralel Ders (Aynı Ders Saati)
                   </label>
                   <span className="rounded-full bg-white px-2 py-0.5 text-[9px] font-black text-violet-600">
                     Yalnız {selectedClass?.name}
@@ -1773,7 +1773,7 @@ export default function ClassCourseAssignmentPanel({
                     ))}
                 </select>
                 <p className="mt-1 text-[9px] font-semibold leading-relaxed text-violet-700">
-                  Önce iki dersi de bu sınıfa atayın. Buradan ortaklaştırdığınız dersler ders dağıtımında aynı hücreye, kendi öğretmenleriyle birlikte yerleşir.
+                  Önce iki dersi de sınıfa atayın ve saatlerinin eşit olduğunu kontrol edin. Paralel Ders olarak bağlandıklarında öğrenci kolları farklı öğretmenlere gider, dersler aynı zaman dilimine yerleşir ve haftalık toplamda yalnız bir kez sayılır.
                 </p>
                 {selectedParallelPartner && (
                   <div className="mt-3 rounded-xl border border-violet-200 bg-white p-2.5">
