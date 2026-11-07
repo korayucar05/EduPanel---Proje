@@ -312,6 +312,7 @@ export default function KelebekSystemAModule({
   const [classCapacities, setClassCapacities] = useState<{[roomName: string]: number}>({});
   const [classStudentCapacities, setClassStudentCapacities] = useState<{[roomName: string]: number}>({});
   const [roomLocations, setRoomLocations] = useState<{[roomName: string]: { buildingName: string; floorName: string }}>({});
+  const [buildingClassrooms, setBuildingClassrooms] = useState<string[]>([]);
   const [roomLayoutGeometry, setRoomLayoutGeometry] = useState<Record<string, { deskColumns: 3 | 4; deskRows: number; activeDesks: boolean[] }>>({});
   const [roomLayoutElements, setRoomLayoutElements] = useState<Record<string, any[]>>({});
 
@@ -327,9 +328,11 @@ export default function KelebekSystemAModule({
       const elementsByRoom: Record<string, any[]> = {};
       const roomByName = new Map<string, any>();
 
+      const roomsFromBuildings: string[] = [];
       buildings.forEach((building) => {
-        building.floors.forEach((floor: any) => {
-          floor.rooms.forEach((room: any) => {
+        (building.floors || []).forEach((floor: any) => {
+          (floor.rooms || []).forEach((room: any) => {
+            if (String(room.name || "").trim()) roomsFromBuildings.push(String(room.name).trim());
             const roomKey = normalizeClassroomKey(room.name);
             roomByName.set(roomKey, room);
             locations[roomKey] = { buildingName: String(building.name || "Bina"), floorName: String(floor.name || "") };
@@ -346,7 +349,9 @@ export default function KelebekSystemAModule({
 
       const plannedRooms = (selectedBSlot?.exams || []).flatMap((exam: any) =>
         (exam.classrooms || []).map((room: string) => physicalRoomName(room)));
-      Array.from(new Set([...allSchoolClassrooms, ...plannedRooms])).forEach((cls) => {
+      const uniqueBuildingRooms = Array.from(new Set(roomsFromBuildings)).sort(compareClassroomNames);
+      setBuildingClassrooms(uniqueBuildingRooms);
+      Array.from(new Set([...uniqueBuildingRooms, ...allSchoolClassrooms, ...plannedRooms])).forEach((cls) => {
         const normalizedKey = normalizeClassroomKey(cls);
         const room = roomByName.get(normalizedKey);
         if (!room) {
@@ -425,8 +430,12 @@ export default function KelebekSystemAModule({
         });
       }
     });
-    return Array.from(rooms).sort();
-  }, [selectedBSlot]);
+    // Sınav salonu kaynağı Bina Bilgileri'ndeki fiziksel dersliklerdir.
+    // Sınava seçilen şubeler yalnızca bu dersliklerden hangisinin
+    // varsayılan olarak işaretleneceğini belirler.
+    return (buildingClassrooms.length ? buildingClassrooms : Array.from(rooms))
+      .slice().sort(compareClassroomNames);
+  }, [selectedBSlot, buildingClassrooms]);
 
   const extraSchoolClassrooms = useMemo(() => {
     const defaultsClean = new Set(defaultSalons.map(s => s.replace(/[\s\-\/]/g, "").toUpperCase()));
