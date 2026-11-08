@@ -117,6 +117,12 @@ export default function TrialClubView({
   const [electronicBooklet, setElectronicBooklet] = React.useState("");
   const [electronicAnswers, setElectronicAnswers] = React.useState<Record<string, string[]>>({});
   const [electronicSaving, setElectronicSaving] = React.useState(false);
+  const [electronicRevision, setElectronicRevision] = React.useState(0);
+  const electronicAutoSaveQueue = React.useRef<Promise<void>>(Promise.resolve());
+  const electronicDraftRef = React.useRef<{ examId: string; booklet: string; answers: Record<string, string[]> }>({ examId: "", booklet: "", answers: {} });
+  const electronicLastSavedRevision = React.useRef(0);
+  const electronicAutoSaveError = React.useRef("");
+
   const [selectedAnswerDetail, setSelectedAnswerDetail] = React.useState("");
   const [examPage, setExamPage] = React.useState<"answers" | "result">("answers");
   const examTouchX = React.useRef<number | null>(null);
@@ -171,6 +177,66 @@ export default function TrialClubView({
   }, [exams, mode, selectedGrade]);
 
   const selectedExam = exams.find((exam) => exam.id === selectedExamId) || null;
+  // Yalnız öğrencinin değiştirdiği cevaplar için ara kayıt gönder.
+  // Birden çok isteğin eski cevapları yeni cevapların üzerine yazmaması için
+  // istekler tek sırada işlenir. Veriler sunucuda saklandığı için cihaz değişse de devam eder.
+  const persistElectronicDraft = React.useCallback((examId: string, booklet: string, answers: Record<string, string[]>) => {
+    if (!examId || !booklet || mode !== "portal") return electronicAutoSaveQueue.current;
+    const save = async () => {
+      const result = await requestJson<{ success?: boolean; finalized?: boolean; serverNow?: number }>(
+        `/api/public-portal/${encodeURIComponent(token)}/trial-club/exams/${encodeURIComponent(examId)}/submit`,
+        { method: "POST", body: JSON.stringify({ bookletType: booklet, answers }) },
+      );
+      if (Number.isFinite(result.serverNow)) setClockOffset(Number(result.serverNow) - Date.now());
+      if (result.finalized) {
+        setPayload((current) => ({ ...current, exams: (current.exams || []).map((exam) =>
+          exam.id === examId ? { ...exam, finalized: true, submitted: true } : exam) }));
+      }
+      electronicAutoSaveError.current = "";
+    };
+    // Zincir bir önceki isteğin hatası olsa bile sonraki kayıtları engellemez.
+    const pending = electronicAutoSaveQueue.current.catch(() => {}).then(save);
+    electronicAutoSaveQueue.current = pending.catch((reason: any) => {
+      electronicAutoSaveError.current = reason?.message || "Ara kayıt başarısız";
+    });
+    return pending;
+  }, [mode, token]);
+
+  React.useEffect(() => {
+    electronicDraftRef.current = { examId: selectedExamId, booklet: electronicBooklet, answers: electronicAnswers };
+  }, [selectedExamId, electronicBooklet, electronicAnswers]);
+
+  React.useEffect(() => {
+    if (!selectedExamId || !electronicRevision || !electronicBooklet || mode !== "portal") return;
+    const exam = payload.exams?.find((item) => item.id === selectedExamId);
+    if (!exam?.electronic || exam.finalized || !exam.startsAt || !exam.endsAt) return;
+    const now = Date.now() + clockOffset;
+    if (now < exam.startsAt || now >= exam.endsAt) return;
+    const revision = electronicRevision;
+    const timer = window.setTimeout(() => {
+      if (electronicLastSavedRevision.current >= revision) return;
+      void persistElectronicDraft(selectedExamId, electronicBooklet, electronicAnswers)
+        .then(() => { electronicLastSavedRevision.current = Math.max(electronicLastSavedRevision.current, revision); })
+        .catch(() => { setError("ARA KAYIT YAPILAMADI. KAYDET BUTONUNU KULLANINIZ."); });
+    }, 1000);
+    return () => window.clearTimeout(timer);
+  }, [selectedExamId, electronicBooklet, electronicAnswers, electronicRevision, mode, clockOffset, persistElectronicDraft]);
+
+  // Süre dolarken bekleyen son işaretlemeleri de kaydet; sunucu optiği kesinleştirir.
+  React.useEffect(() => {
+    if (!selectedExam?.electronic || selectedExam.finalized || !selectedExam.endsAt || mode !== "portal") return;
+    const ms = Number(selectedExam.endsAt) - (Date.now() + clockOffset);
+    if (ms <= 0) return;
+    const timer = window.setTimeout(() => {
+      const draft = electronicDraftRef.current;
+      if (draft.examId !== selectedExam.id || !draft.booklet) return;
+      void persistElectronicDraft(draft.examId, draft.booklet, draft.answers)
+        .then(() => { void load(); })
+        .catch(() => { void load(); });
+    }, ms + 50);
+    return () => window.clearTimeout(timer);
+  }, [selectedExam?.id, selectedExam?.endsAt, selectedExam?.finalized, clockOffset, mode, persistElectronicDraft, load]);
+
   React.useEffect(() => {
     if (!selectedExam?.electronic || !selectedExam.endsAt || selectedExam.answerKey || clock + clockOffset < selectedExam.endsAt) return;
     const interval = window.setInterval(() => { void load(); }, 10000);
@@ -187,6 +253,8 @@ export default function TrialClubView({
     setTargetDraft(next);
     setElectronicBooklet(exam.savedBooklet || "");
     setElectronicAnswers(exam.savedAnswers || {});
+    setElectronicRevision(0);
+    electronicLastSavedRevision.current = 0;
     setNotice("");
     setError("");
     setSelectedAnswerDetail("");
@@ -244,6 +312,7 @@ export default function TrialClubView({
       nextSubject[questionIndex] = nextSubject[questionIndex] === option ? "" : option;
       return { ...current, [subjectName]: nextSubject };
     });
+    setElectronicRevision((value) => value + 1);
   };
 
   const submitElectronicExam = async () => {
@@ -253,10 +322,12 @@ export default function TrialClubView({
     setElectronicSaving(true);
     setError("");
     try {
+      await electronicAutoSaveQueue.current;
       const result = await requestJson<{ success?: boolean; finalized?: boolean; serverNow?: number }>(
         `/api/public-portal/${encodeURIComponent(token)}/trial-club/exams/${encodeURIComponent(selectedExam.id)}/submit`,
         { method: "POST", body: JSON.stringify({ bookletType: electronicBooklet, answers: electronicAnswers }) },
       );
+      electronicLastSavedRevision.current = electronicRevision;
       if (Number.isFinite(result.serverNow)) setClockOffset(Number(result.serverNow) - Date.now());
       if (result.finalized) {
         setNotice("SINAV SONA ERDİ. OPTİK FORM KAPATILDI. CEVAP ANAHTARI BİR SAAT BOYUNCA GÖRÜNTÜLENEBİLİR.");
@@ -367,8 +438,8 @@ export default function TrialClubView({
         </div>
       ) : null}
       {pending ? <div className="rounded-2xl bg-amber-50 p-5 text-center text-sm font-black text-amber-900">SINAV SAATİ GELMEDEN OPTİK FORM AÇILMAZ.</div> : null}
-      {expired && !exam.finalized ? <div className="rounded-2xl border border-rose-300 bg-rose-50 p-4 text-center text-xs font-black text-rose-900">Sınav sona ermiştir. Şu andan itibaren cevaplama işlemi yapılamayacaktır. Kaydet tuşuna basarak optik formu kapatabilirsiniz.</div> : null}
-      {!pending && !exam.finalized ? <><div className="sticky top-0 z-10 rounded-[24px] border border-violet-200 bg-white/95 p-4 shadow-sm backdrop-blur">
+      {expired && !exam.finalized ? <div className="rounded-2xl border border-rose-300 bg-rose-50 p-4 text-center text-xs font-black text-rose-900">Sınav süresi doldu. Kaydedilmiş cevaplar otomatik olarak kesinleştirilir ve değerlendirmeye alınır.</div> : null}
+      {!pending && !expired && !exam.finalized ? <><div className="sticky top-0 z-10 rounded-[24px] border border-violet-200 bg-white/95 p-4 shadow-sm backdrop-blur">
         <div className="text-[9px] font-black uppercase tracking-[0.18em] text-violet-600">1. ADIM · KİTAPÇIK TÜRÜ</div>
         <div className="mt-2 flex items-center gap-2">
           <div className="flex min-w-0 flex-1 flex-wrap gap-2">
@@ -377,7 +448,7 @@ export default function TrialClubView({
               return <button
                 key={booklet}
                 type="button"
-                onClick={() => { setElectronicBooklet(booklet); setError(""); }}
+                onClick={() => { setElectronicBooklet(booklet); setElectronicRevision((value) => value + 1); setError(""); }}
                 className={`relative flex h-12 min-w-[88px] items-center justify-center gap-2 rounded-2xl border-2 px-4 text-base font-black transition ${selected ? "border-fuchsia-700 bg-fuchsia-700 text-white shadow-[0_10px_24px_rgba(162,28,175,0.35)] ring-2 ring-fuchsia-200" : "border-violet-200 bg-white text-violet-700"}`}
                 aria-pressed={selected}
               >
