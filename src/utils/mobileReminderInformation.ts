@@ -14,7 +14,7 @@ export const reminderTime = (value: unknown): number => {
   const raw = String(value || "").trim();
   if (!raw) return Number.NaN;
   // datetime-local is a Türkiye local time; parse its timestamp consistently.
-  const time = Date.parse(/Z$|[+-]\\d{2}:?\\d{2}$/.test(raw) ? raw : `${raw.slice(0, 16)}:00+03:00`);
+  const time = Date.parse(/Z$|[+-]\d{2}:?\d{2}$/.test(raw) ? raw : `${raw.slice(0, 16)}:00+03:00`);
   return time;
 };
 
@@ -41,8 +41,8 @@ export const activeCustomReminders = (
 
 export const localExamTimestamp = (date: unknown, time: unknown): string => {
   const dateText = String(date || "").trim();
-  const day = /^\\d{4}-\\d{2}-\\d{2}/.exec(dateText)?.[0];
-  const match = /^(\\d{1,2}):(\\d{2})/.exec(String(time || "").trim());
+  const day = /^\d{4}-\d{2}-\d{2}/.exec(dateText)?.[0];
+  const match = /^(\d{1,2}):(\d{2})/.exec(String(time || "").trim());
   return day && match ? `${day}T${match[1].padStart(2, "0")}:${match[2]}` : "";
 };
 
