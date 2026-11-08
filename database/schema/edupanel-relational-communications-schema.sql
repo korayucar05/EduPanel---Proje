@@ -1,3 +1,15 @@
+CREATE TABLE IF NOT EXISTS mhatsapp_runtime_ayarlari (
+  okul_id VARCHAR(20) NOT NULL,
+  kayit_id VARCHAR(191) NOT NULL,
+  api_base_url VARCHAR(255) NULL,
+  api_token TEXT NULL,
+  guncelleme_zamani VARCHAR(40) NULL,
+  guncellenme_zamani VARCHAR(40) NOT NULL,
+  PRIMARY KEY (okul_id, kayit_id),
+  CONSTRAINT fk_mhatsapp_runtime_ayarlari_okul FOREIGN KEY (okul_id)
+    REFERENCES okullar (okul_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS mesaj_kanitlari (
   okul_id VARCHAR(20) NOT NULL,
   kayit_id VARCHAR(191) NOT NULL,
