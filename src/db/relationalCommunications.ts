@@ -11,6 +11,10 @@ type SourceDocument = { documentId: string; data: any; updatedAt: string };
 type RelationalDocument = SourceDocument & { collectionName: string };
 
 const CONFIGS: Record<string, Config> = {
+  mhatsappRuntimeSettings: { tableName: "mhatsapp_runtime_ayarlari", fields: [
+    ["api_base_url", "baseUrl"], ["api_token", "token"],
+    ["guncelleme_zamani", "updatedAt"],
+  ] },
   messageEvidenceRecords: { tableName: "mesaj_kanitlari", fields: [
     ["token_ozeti", "tokenHash"], ["alici_ad_soyad", "recipientName"], ["alici_telefon", "recipientPhone"],
     ["alici_rolu", "recipientRole"], ["ogrenci_ad_soyad", "studentName"], ["ogrenci_no", "studentNo"],
