@@ -1890,7 +1890,7 @@ export default function ParentStudentPortalView() {
       }));
       const trialItems = trialClub.filter((exam: any) =>
         exam && exam.electronic === true && exam.submitted !== true &&
-        inNext48Hours(exam.startsAt)
+        Number.isFinite(Number(exam.startsAt)) && Number(exam.startsAt) >= Date.now() && Number(exam.startsAt) <= Date.now() + 48 * 60 * 60 * 1000
       ).map((exam: any) => {
         const start = Number(exam.startsAt);
         const duration = Number(exam.durationMinutes);
