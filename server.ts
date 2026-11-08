@@ -14864,7 +14864,17 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
     if (portalNo && rowNo && portalNo === rowNo) return true;
     const portalId = trialClubText(portal?.studentId);
     const rowIds = [record?.studentId, record?.matchedSystemStudentId, record?.systemStudentId].map(trialClubText).filter(Boolean);
-    return Boolean(portalId && rowIds.includes(portalId));
+    if (portalId && rowIds.includes(portalId)) return true;
+    // Eski portal bağlantılarında öğrenci numarası/ID eksik kalabiliyor.
+    // Aynı ad ve sınıf bilgisi mevcutsa kaydı yine aynı öğrenciye bağla.
+    const normalizeName = (value: unknown) => trialClubNormalizedName(value);
+    const normalizeClassroom = (value: unknown) => trialClubText(value).toLocaleUpperCase("tr-TR").replace(/[\s\-_/]+/g, "");
+    const portalName = normalizeName(portal?.studentName);
+    const recordName = normalizeName(record?.studentName || record?.name);
+    const portalClass = normalizeClassroom(portal?.classroom);
+    const recordClass = normalizeClassroom(record?.classroom || record?.gradeLevel);
+    return Boolean(portalName && recordName && portalName === recordName &&
+      (!portalClass || !recordClass || portalClass === recordClass));
   };
 
   const trialTimedStart = (exam: any) => {
@@ -15149,6 +15159,13 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
         return response.json({ exams: [], canEditTargets: false, studentName: trialClubText(portal?.studentName), gradeLevel });
       }
 
+      const portalIdentity = {
+        ...portal,
+        studentId: trialClubText(portal?.studentId || registration?.studentId),
+        studentNumber: trialClubText(portal?.studentNumber || registration?.studentNumber),
+        studentName: trialClubText(portal?.studentName || registration?.studentName),
+        classroom: trialClubText(portal?.classroom || registration?.classroom || registration?.gradeLevel),
+      };
       const examRows = (listDocuments("exams") as any[])
         .filter((exam: any) => exam && isTrialClubExamRecord(exam))
         .filter((exam: any) => {
@@ -15167,8 +15184,8 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
         const definitions = trialClubSubjectDefinitions(exam);
         const electronic = isElectronicTrialClubExam(exam);
         const submitted = electronic && (Array.isArray(exam?.studentTxtRecords) ? exam.studentTxtRecords : [])
-          .some((record: any) => trialClubRecordMatchesPortal(record, portal));
-        const lateWindow = trialLateWindow(exam, portal?.studentNumber || registration?.studentNumber);
+          .some((record: any) => trialClubRecordMatchesPortal(record, portalIdentity));
+        const lateWindow = trialLateWindow(exam, portalIdentity.studentNumber);
         const studentStartsAt = lateWindow?.startsAt || trialTimedStart(exam);
         const studentEndsAt = lateWindow?.endsAt || trialTimedEnd(exam);
         // Publish only this authenticated student's own evaluated result.
@@ -15189,7 +15206,7 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
           });
         });
         subjectRankings.forEach((rows) => rows.sort((a, b) => b.net - a.net || b.correct - a.correct));
-        const studentResult = evaluated.find((row: any) => trialClubRecordMatchesPortal(row, portal));
+        const studentResult = evaluated.find((row: any) => trialClubRecordMatchesPortal(row, portalIdentity));
         const resultPublished = Boolean(exam?.electronicResultsPublished && exam?.isEvaluated && studentResult);
         const ownResult = resultPublished ? {
           subjects: (Array.isArray(studentResult.subjects) ? studentResult.subjects : []).map((subject: any) => {
@@ -15216,13 +15233,13 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
         } : undefined;
         // Cevap anahtarı öğrenciye yalnız kendi kitapçığının sırasıyla gönderilir.
         const ownSubmission = (Array.isArray(exam?.studentTxtRecords) ? exam.studentTxtRecords : [])
-          .find((record: any) => trialClubRecordMatchesPortal(record, portal) && record?.source === "electronic-optic");
+          .find((record: any) => trialClubRecordMatchesPortal(record, portalIdentity) && record?.source === "electronic-optic");
         const ownBooklet = trialClubText(ownSubmission?.bookletType).toUpperCase();
         const keyWindowOpen = trialTimedEnd(exam) > 0 && Date.now() >= trialTimedEnd(exam) && Date.now() < trialTimedEnd(exam) + 3_600_000;
         // Yönetici cevapları/sonuçları yayımladıysa cevap anahtarı süre
         // penceresine bağlı kalmadan öğrencinin kendi kitapçığı için görünür.
         const keyVisible = Boolean(electronic && ownSubmission?.finalizedAt && ownBooklet &&
-          (exam?.electronicResultsPublished === true || keyWindowOpen));
+          (exam?.trialAnswerKeyPublished === true || exam?.electronicResultsPublished === true || keyWindowOpen));
         const answerKeyForStudent: Record<string, string[]> = {};
         const answerStats: Record<string, Array<{ correct: number; wrong: number; empty: number }>> = {};
         if (keyVisible) {
@@ -15281,9 +15298,9 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
           electronic,
           bookletOptions: electronic ? trialClubBookletOptions(exam) : [],
           submitted,
-          finalized: submitted && (Array.isArray(exam?.studentTxtRecords) ? exam.studentTxtRecords : []).some((record: any) => trialClubRecordMatchesPortal(record, portal) && Boolean(record?.finalizedAt)),
-          savedBooklet: submitted ? trialClubText((exam?.studentTxtRecords || []).find((record: any) => trialClubRecordMatchesPortal(record, portal))?.bookletType) : "",
-          savedAnswers: submitted ? ((exam?.studentTxtRecords || []).find((record: any) => trialClubRecordMatchesPortal(record, portal))?.draftAnswers || {}) : {},
+          finalized: submitted && (Array.isArray(exam?.studentTxtRecords) ? exam.studentTxtRecords : []).some((record: any) => trialClubRecordMatchesPortal(record, portalIdentity) && Boolean(record?.finalizedAt)),
+          savedBooklet: submitted ? trialClubText((exam?.studentTxtRecords || []).find((record: any) => trialClubRecordMatchesPortal(record, portalIdentity))?.bookletType) : "",
+          savedAnswers: submitted ? ((exam?.studentTxtRecords || []).find((record: any) => trialClubRecordMatchesPortal(record, portalIdentity))?.draftAnswers || {}) : {},
         };
       }).filter((exam: any) => exam.id && exam.subjects.length > 0);
 
@@ -15314,6 +15331,13 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
       if (!registration) {
         return response.status(403).json({ error: "Bu öğrenci Deneme Kulübü üyesi değil." });
       }
+      const portalIdentity = {
+        ...portal,
+        studentId: trialClubText(portal?.studentId || registration?.studentId),
+        studentNumber: trialClubText(portal?.studentNumber || registration?.studentNumber),
+        studentName: trialClubText(portal?.studentName || registration?.studentName),
+        classroom: trialClubText(portal?.classroom || registration?.classroom || registration?.gradeLevel),
+      };
 
       const exams = listDocuments("exams") as any[];
       const exam: any = exams.find((item: any) => String(item?.id || item?.__documentId || "") === examId);
@@ -15327,7 +15351,7 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
       }
 
       const existing = (Array.isArray(exam?.studentTxtRecords) ? exam.studentTxtRecords : [])
-        .find((record: any) => trialClubRecordMatchesPortal(record, portal));
+        .find((record: any) => trialClubRecordMatchesPortal(record, portalIdentity));
       const nowMillis = Date.now();
       const lateWindow = trialLateWindow(exam, portal?.studentNumber || registration?.studentNumber);
       const submissionStart = lateWindow?.startsAt || trialTimedStart(exam);
@@ -15362,12 +15386,12 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
       }
 
       const now = new Date().toISOString();
-      const studentNumber = trialClubNumber(portal?.studentNumber || registration?.studentNumber);
-      const studentName = trialClubText(portal?.studentName || registration?.studentName || "Öğrenci");
-      const classroom = trialClubText(portal?.classroom || registration?.classroom || `${memberGrade}. Sınıf`);
+      const studentNumber = trialClubNumber(portalIdentity.studentNumber);
+      const studentName = trialClubText(portalIdentity.studentName || "Öğrenci");
+      const classroom = trialClubText(portalIdentity.classroom || `${memberGrade}. Sınıf`);
       const record = {
         id: `electronic-${examId}-${studentNumber || trialClubText(portal?.studentId)}`,
-        studentId: trialClubText(portal?.studentId || registration?.studentId),
+        studentId: trialClubText(portalIdentity.studentId),
         studentNumber,
         studentName,
         gradeLevel: classroom,
@@ -15391,7 +15415,7 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
 
       const nextExam = {
         ...exam,
-        studentTxtRecords: [...(Array.isArray(exam?.studentTxtRecords) ? exam.studentTxtRecords : []).filter((item: any) => !trialClubRecordMatchesPortal(item, portal)), record],
+        studentTxtRecords: [...(Array.isArray(exam?.studentTxtRecords) ? exam.studentTxtRecords : []).filter((item: any) => !trialClubRecordMatchesPortal(item, portalIdentity)), record],
         updatedAt: now,
         // Yeni cevap gelince eski sonuçlar geçerli sayılmaz; yönetici yeniden yayımlar.
         isEvaluated: false,
@@ -15407,6 +15431,70 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
       console.error("[Trial Club Electronic Submit]", error);
       return response.status(500).json({ error: error?.message || "Elektronik optik cevapları kaydedilemedi." });
     }
+  });
+
+  // Deneme Kulübü idareci mobil yönetimi. Bu uçlar yalnızca yönetici bağlantısı
+  // üzerinden cevap anahtarı, değerlendirme, yayınlama ve arşivleme işlemlerini
+  // çalıştırır; öğrenci portalı bu yetkiye sahip değildir.
+  app.get("/api/behavior/teacher-links/:token/trial-club", (request, response) => {
+    const access = requireBehaviorAdminLink(String(request.params.token || ""));
+    if ("error" in access) return response.status(access.status).json({ error: access.error });
+    const exams = (listDocuments("exams") as any[])
+      .filter((exam: any) => isTrialClubExamRecord(exam) && exam?.isArchived !== true)
+      .sort((a: any, b: any) => String(a?.examDate || "").localeCompare(String(b?.examDate || "")))
+      .map((exam: any, index: number) => {
+        const evaluated = Array.isArray(exam?.evaluationResults) ? exam.evaluationResults : [];
+        const definitions = trialClubSubjectDefinitions(exam);
+        const total = (field: string) => evaluated.reduce((sum: number, row: any) => sum + (Array.isArray(row?.subjects) ? row.subjects.reduce((n: number, subject: any) => n + Number(subject?.[field] || 0), 0) : 0), 0);
+        return {
+          id: trialClubText(exam?.id || exam?.__documentId), examName: trialClubText(exam?.examName || exam?.name || `${index + 1}. Deneme`),
+          examType: trialClubExamType(exam), gradeLevel: trialClubGrade(exam?.gradeLevel), examNumber: Number(exam?.examNumber || index + 1),
+          examDate: trialClubText(exam?.examDate || exam?.date).slice(0, 10), electronic: isElectronicTrialClubExam(exam),
+          subjects: definitions.map((subject) => ({ name: subject.name, totalQuestions: subject.count, scopes: [] })),
+          submitted: (Array.isArray(exam?.studentTxtRecords) ? exam.studentTxtRecords : []).some((row: any) => row?.source === "electronic-optic"),
+          finalized: (Array.isArray(exam?.studentTxtRecords) ? exam.studentTxtRecords : []).some((row: any) => row?.source === "electronic-optic" && row?.finalizedAt),
+          answerKey: trialAnswerKey(exam), answerKeyPublished: exam?.trialAnswerKeyPublished === true,
+          isEvaluated: exam?.isEvaluated === true, electronicResultsPublished: exam?.electronicResultsPublished === true,
+          resultStatus: exam?.isEvaluated ? (exam?.electronicResultsPublished ? "published" : "not-published") : "not-evaluated",
+          totals: { correct: total("correct"), wrong: total("wrong"), empty: total("empty"), net: Number((total("net")).toFixed(2)), participantCount: evaluated.length },
+        };
+      });
+    response.setHeader("Cache-Control", "private, no-store");
+    return response.json({ exams, canEditTargets: false });
+  });
+
+  app.post("/api/behavior/teacher-links/:token/trial-club/exams/:examId/action", (request, response) => {
+    const access = requireBehaviorAdminLink(String(request.params.token || ""));
+    if ("error" in access) return response.status(access.status).json({ error: access.error });
+    const examId = String(request.params.examId || "");
+    const action = trialClubText(request.body?.action).toLocaleLowerCase("tr-TR");
+    const exam = (listDocuments("exams") as any[]).find((row: any) => String(row?.id || row?.__documentId || "") === examId);
+    if (!exam || !isTrialClubExamRecord(exam)) return response.status(404).json({ error: "Deneme sınavı bulunamadı." });
+    if (action === "archive") {
+      const updated = { ...exam, isArchived: true, archivedAt: new Date().toISOString() };
+      upsertDocument("exams", examId, updated);
+      return response.json({ ok: true, action, archived: true });
+    }
+    if (action === "repair" || action === "evaluate") {
+      const reset = action === "repair" ? { ...exam, isEvaluated: false, electronicResultsPublished: false, evaluationResults: [], electronicAutoEvaluationStatus: "pending" } : exam;
+      const result = trialAutoEvaluationRun(reset, Date.now());
+      if (result.status.startsWith("missing-answer-key") || result.status === "no-answers" || result.status === "no-subjects") {
+        return response.status(409).json({ error: `Değerlendirme tamamlanamadı: ${result.status}` });
+      }
+      return response.json({ ok: true, action, status: result.status, evaluated: result.exam?.isEvaluated === true });
+    }
+    if (action === "publish-answer-key") {
+      const updated = { ...exam, trialAnswerKeyPublished: true, answerKeyPublishedAt: new Date().toISOString() };
+      upsertDocument("exams", examId, updated);
+      return response.json({ ok: true, action, answerKeyPublished: true });
+    }
+    if (action === "publish-results") {
+      if (exam?.isEvaluated !== true) return response.status(409).json({ error: "Önce sınavı değerlendirin." });
+      const updated = { ...exam, electronicResultsPublished: true, electronicPublishedAt: new Date().toISOString() };
+      upsertDocument("exams", examId, updated);
+      return response.json({ ok: true, action, published: true });
+    }
+    return response.status(400).json({ error: "Geçersiz Deneme Kulübü işlemi." });
   });
 
   app.get("/api/public-portal/:token/exam-results", (request, response) => {
