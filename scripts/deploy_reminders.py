@@ -162,7 +162,7 @@ teacher=required_replace(teacher,
 '          <div className="flex flex-wrap items-center gap-2"><button type="button" onClick={() => setShowReminders(value => !value)} className="inline-flex items-center gap-2 rounded-xl bg-sky-700 px-4 py-2.5 text-sm font-black text-white"><BellRing className="h-4 w-4" /> Hatırlatma Bilgileri</button><span className="rounded-2xl bg-white px-3 py-2 text-xs font-black text-slate-600 shadow-sm">{rows.length} öğretmen</span></div>',"teacher action")
 teacher=required_replace(teacher,'      {message ? <div','      {showReminders ? <ReminderInformationManager schoolId={schoolId} /> : null}\n      {!showReminders && message ? <div',"teacher manager entry")
 teacher=required_replace(teacher,'      {lastUrl ? (','      {!showReminders && lastUrl ? (',"teacher result")
-teacher=required_replace(teacher,'      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">','      {!showReminders ? <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">',"teacher grid")
+teacher=required_replace(teacher,'      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">','      {!showReminders ? (<div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">',"teacher grid")
 teacher=required_replace(teacher,'      {!filtered.length ?','      ) : null}\n      {!showReminders && !filtered.length ?',"teacher grid close")
 
 portal=current["src/components/ParentStudentPortalView.tsx"]
