@@ -323,7 +323,6 @@ export default function KelebekSystemAModule({
   const [classCapacities, setClassCapacities] = useState<{[roomName: string]: number}>({});
   const [classStudentCapacities, setClassStudentCapacities] = useState<{[roomName: string]: number}>({});
   const [roomLocations, setRoomLocations] = useState<{[roomName: string]: { buildingName: string; floorName: string }}>({});
-  const [buildingClassrooms, setBuildingClassrooms] = useState<string[]>([]);
   const [roomLayoutGeometry, setRoomLayoutGeometry] = useState<Record<string, { deskColumns: 3 | 4; deskRows: number; activeDesks: boolean[] }>>({});
   const [roomLayoutElements, setRoomLayoutElements] = useState<Record<string, any[]>>({});
 

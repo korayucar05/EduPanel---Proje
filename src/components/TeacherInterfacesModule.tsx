@@ -207,9 +207,7 @@ export default function TeacherInterfacesModule({ teachers, students, schoolId =
             </button>
           );
         })}
-      </div>
-
-      ) : null}
+      </div> : null}
 
       {!showReminders && !filtered.length ? <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-sm font-bold text-slate-400">Öğretmen bulunamadı.</div> : null}
     </div>
