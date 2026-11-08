@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Safely deploy minimal trial-club autosave and simple exam reminders."""
-import datetime,os,pathlib,subprocess,shutil,tarfile,urllib.request,time
+import datetime,os,pathlib,subprocess,shutil,tarfile,urllib.request,time,re
 LIVE=pathlib.Path("/var/www/vhosts/dersbende.com/edupanel.dersbende.com")
 ROOT=pathlib.Path("/root/edupanel-gecici-arsivler")
 CLONE=ROOT/"hatirlatma-github"
@@ -72,7 +72,14 @@ mergedOptic=replace_region(currentOptic,latestOptic,'  const [electronicSaving, 
 mergedOptic=replace_region(mergedOptic,latestOptic,'  const selectedExam = exams.find((exam) => exam.id === selectedExamId) || null;','  React.useEffect(() => {\n    if (!selectedExam?.electronic || !selectedExam.endsAt || selectedExam.answerKey || clock + clockOffset < selectedExam.endsAt) return;')
 mergedOptic=replace_region(mergedOptic,latestOptic,'  const openExam = (exam: TrialClubExam) => {','  const closeExam = () => {')
 mergedOptic=replace_region(mergedOptic,latestOptic,'  const setElectronicAnswer = (subjectName: string, questionIndex: number, option: string) => {','  const formatCountdown = (milliseconds: number) => {')
-mergedOptic=replace_once_or_already(mergedOptic,'onClick={() => { setElectronicBooklet(booklet); setError(""); }}','onClick={() => { setElectronicBooklet(booklet); setElectronicRevision((value) => value + 1); setError(""); }}')
+# Preserve the live JSX around the booklet button; only add revision tracking
+# to its existing click handler. The button markup varies between deployments.
+bookletCalls=list(re.finditer(r'setElectronicBooklet\\s*\\(\\s*booklet\\s*\\)\\s*;',mergedOptic))
+require(len(bookletCalls)==1,"Expected one booklet selection handler; found "+str(len(bookletCalls)))
+bookletCall=bookletCalls[0]
+handlerTail=mergedOptic[bookletCall.end():bookletCall.end()+180].split("}",1)[0]
+if "setElectronicRevision" not in handlerTail:
+    mergedOptic=mergedOptic[:bookletCall.end()]+ " setElectronicRevision((value) => value + 1);"+mergedOptic[bookletCall.end():]
 mergedOptic=replace_once_or_already(mergedOptic,'Sınav sona ermiştir. Şu andan itibaren cevaplama işlemi yapılamayacaktır. Kaydet tuşuna basarak optik formu kapatabilirsiniz.','Sınav süresi doldu. Kaydedilmiş cevaplar otomatik olarak kesinleştirilir ve değerlendirmeye alınır.')
 mergedOptic=replace_once_or_already(mergedOptic,'{!pending && !exam.finalized ? <><div className=','{!pending && !expired && !exam.finalized ? <><div className=')
 require('persistElectronicDraft' in mergedOptic and 'electronicAutoSaveQueue' in mergedOptic,"Draft save not applied")
