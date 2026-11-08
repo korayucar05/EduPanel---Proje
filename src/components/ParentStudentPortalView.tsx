@@ -1833,7 +1833,7 @@ export default function ParentStudentPortalView() {
 
   // Öğrencinin açılış bildirimleri, sunucuda kendi bağlantı anahtarıyla yetkilendirilir.
   React.useEffect(() => {
-    if (!token || !payload?.studentId || kind !== "student") return;
+    if (!token || kind !== "student") return;
     let active = true;
     const getRows = async (url: string) => {
       try {
@@ -1864,7 +1864,15 @@ export default function ParentStudentPortalView() {
       setOpeningReminderVisible(items.length > 0);
     };
     void load();
-    return () => { active = false; };
+    // PWA arka plandan açıldığında ve tarayıcı sekmesine dönüldüğünde yeniden denetle.
+    const refresh = () => { if (!document.hidden) void load(); };
+    document.addEventListener("visibilitychange", refresh);
+    window.addEventListener("focus", refresh);
+    return () => {
+      active = false;
+      document.removeEventListener("visibilitychange", refresh);
+      window.removeEventListener("focus", refresh);
+    };
   }, [payload?.studentId, payload?.schoolId, kind, token]);
 
   const openAnnouncements = async () => {
@@ -4217,7 +4225,7 @@ export default function ParentStudentPortalView() {
 
   return (
     <>
-      {openingReminderVisible && view === "home" && openingReminders.length > 0 ? (
+      {openingReminderVisible && openingReminders.length > 0 ? (
         <div className="fixed inset-0 z-[110000] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Yaklaşan sınav hatırlatmaları">
           <section className="w-full max-w-md overflow-hidden rounded-[26px] bg-white shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
