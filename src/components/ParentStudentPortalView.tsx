@@ -1832,54 +1832,84 @@ export default function ParentStudentPortalView() {
     }
   }, [kind, payload?.studentId, payload?.studentNumber]);
 
-  // Açılış hatırlatmaları yalnızca ilgili öğrenciye ait yerleşim ve sınıfın denemelerini içerir.
+  // Öğrencinin kendi sınavlarına ait hatırlatmalar, açılıştan itibaren 48 saatlik pencerede görünür.
   React.useEffect(() => {
     if (!payload?.studentId || openingReminderLoaded.current) return;
     openingReminderLoaded.current = true;
     let active = true;
+    const getRows = async (url: string, field = "reminders") => {
+      try {
+        const response = await fetch(url, { cache: "no-store" });
+        if (!response.ok) return [] as any[];
+        const json = await response.json();
+        return Array.isArray(json) ? json : Array.isArray(json?.[field]) ? json[field] : [];
+      } catch { return [] as any[]; }
+    };
+    const eventTime = (date: unknown, time: unknown): string => {
+      const raw = String(date || "").trim();
+      if (/T\\d{2}:\\d{2}/.test(raw)) return raw;
+      return localExamTimestamp(raw, time) || ( /^\\d{4}-\\d{2}-\\d{2}/.test(raw) ? raw.slice(0, 10) + "T00:00" : "" );
+    };
+    const momentLabel = (date: unknown, time: unknown): string => {
+      const raw = eventTime(date, time);
+      const ms = Date.parse(/(?:Z|[+-]\\d{2}:?\\d{2})$/.test(raw) ? raw : raw + ":00+03:00");
+      const day = Number.isFinite(ms) ? new Intl.DateTimeFormat("tr-TR", {
+        timeZone: "Europe/Istanbul", weekday: "long", day: "2-digit", month: "2-digit", year: "numeric",
+      }).format(ms) : String(date || "").slice(0, 10);
+      const clock = String(time || "").trim() || (/T(\\d{2}:\\d{2})/.exec(raw)?.[1] || "");
+      return day + (clock ? " · Saat " + clock.slice(0, 5) : " · Saat belirtilmedi");
+    };
     const load = async () => {
-      const getRows = async (url: string) => {
-        try {
-          const response = await fetch(url, { cache: "no-store" });
-          if (!response.ok) return [] as any[];
-          const data = await response.json();
-          return Array.isArray(data) ? data : Array.isArray(data?.reminders) ? data.reminders : [];
-        } catch { return [] as any[]; }
-      };
-      const [seating, trial, manual] = await Promise.all([
-        getRows("/api/database/collections/studentAppAnnouncements"),
-        getRows(`/api/public-portal/${encodeURIComponent(token)}/trial-exam-reminders`),
-        getRows("/api/database/collections/reminderInformation"),
+      // Bu ekranın verileri yalnızca öğrencinin kendi bağlantısıyla sorgulanır.
+      const [seating, trialClub, manual] = await Promise.all([
+        getRows("/api/database/collections/studentAppAnnouncements", "reminders"),
+        kind === "student" ? getRows(`/api/public-portal/${encodeURIComponent(token)}/trial-club`, "exams") : Promise.resolve([] as any[]),
+        getRows(`/api/public-portal/${encodeURIComponent(token)}/reminder-information`),
       ]);
       if (!active) return;
-      const dateParts = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Istanbul", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
-      const part = (type: string) => dateParts.find((item) => item.type === type)?.value || "";
-      const today = `${part("year")}-${part("month")}-${part("day")}`;
-      const daysUntil = (value: unknown) => {
-        const key = String(value || "").slice(0, 10);
-        const valid = /^\d{4}-\d{2}-\d{2}$/.test(key);
-        if (!valid) return Number.NaN;
-        return Math.round((Date.parse(`${key}T00:00:00Z`) - Date.parse(`${today}T00:00:00Z`)) / 86400000);
-      };
       const sid = String(payload.studentId || "").trim();
       const snum = String(payload.studentNumber || "").trim();
+      const schoolId = String(payload.schoolId || "school-main");
       const placement = seating.filter((row: any) => {
-        if (String(row?.source) !== "exam-seating") return false;
-        if (String(row?.recipientStudentId || "").trim() !== sid && (!snum || String(row?.recipientStudentNumber || "").trim() !== snum)) return false;
-        const days = daysUntil(row.examDate || row.date);
-        const at = localExamTimestamp(row.examDate || row.date, row.examTime);
-        return at ? inNext48Hours(at) : days >= 0 && days <= 2;
+        if (row?.source !== "exam-seating") return false;
+        if (row?.schoolId && String(row.schoolId) !== schoolId) return false;
+        const belongs = (sid && String(row?.recipientStudentId || "").trim() === sid) ||
+          (snum && String(row?.recipientStudentNumber || "").trim() === snum);
+        return belongs && inNext48Hours(eventTime(row.examDate || row.date, row.examTime || row.startTime));
       }).map((row: any) => ({
-        id: `seating:${row.id}`,
-        title: String(row.title || row.courseName || row.examName || "Ortak sınav yerleşimi"),
-        detail: [displayExamMoment(row.examDate || row.date, row.examTime), row.buildingName, row.floorName, row.roomName, row.seatNumber != null && row.seatNumber !== "" ? `Sıra: ${row.seatNumber}` : "", "Modül: Ortak Sınavlar"].filter(Boolean).join(" · "),
+        id: "seating:" + String(row.id),
+        title: "Ortak sınav: " + String(row.courseName || row.subjectName || row.lessonName || row.examName || row.title || "Sınav"),
+        detail: [
+          momentLabel(row.examDate || row.date, row.examTime || row.startTime),
+          row.buildingName ? "Bina: " + row.buildingName : "",
+          row.roomName || row.classroomName ? "Sınıf/Salon: " + String(row.roomName || row.classroomName) : "",
+          row.seatNumber != null && row.seatNumber !== "" ? "Sıra No: " + row.seatNumber : "",
+          "Modül: Ortak Sınavlar",
+        ].filter(Boolean).join(" · "),
       }));
-      const trialItems = trial.filter((row: any) => {
-        const days = daysUntil(row?.meta?.date || row?.date);
-        const at = localExamTimestamp(row?.meta?.date || row?.date, row?.meta?.time || row?.time);
-        return at ? inNext48Hours(at) : days >= 0 && days <= 2;
-      }).map((row: any) => ({ id: String(row.id), title: String(row.title || "Deneme sınavı"), detail: `${displayExamMoment(row?.meta?.date || row?.date, row?.meta?.time || row?.time)} · Modül: Sınavlar / Deneme Sınavları` }));
-      const manualItems = activeCustomReminders(manual, kind, String(payload.schoolId || "school-main")).map(row => ({ id: `manual:${row.id}`, title: row.title, detail: `${row.body} · ${row.kind}` }));
+      const trialItems = trialClub.filter((exam: any) =>
+        exam && exam.electronic === true && exam.submitted !== true &&
+        inNext48Hours(exam.startsAt)
+      ).map((exam: any) => {
+        const start = Number(exam.startsAt);
+        const duration = Number(exam.durationMinutes);
+        const date = Number.isFinite(start) && start > 0 ? new Date(start).toISOString() : exam.examDate;
+        return {
+          id: "trial-club:" + String(exam.id),
+          title: "Deneme sınavı: " + String(exam.examName || "Deneme"),
+          detail: [
+            "Başlangıç: " + momentLabel(date, ""),
+            Number.isFinite(duration) && duration > 0 ? "Süre: " + duration + " dakika" : "",
+            "Deneme Kulübü → Sınav butonundan elektronik optik formunu doldurun.",
+            "Cevaplamayı bitirdiğinizde Kaydet butonuna tıklamayı unutmayın.",
+            "Kaydetme işlemi tek seferliktir.",
+          ].filter(Boolean).join(" · "),
+        };
+      });
+      const manualItems = manual.map((row: any) => ({
+        id: "manual:" + String(row.id), title: String(row.title || "Hatırlatma"),
+        detail: [row.body, row.kind].filter(Boolean).join(" · "),
+      }));
       const items = [...placement, ...trialItems, ...manualItems];
       setOpeningReminders(items);
       if (items.length) setOpeningReminderVisible(true);
