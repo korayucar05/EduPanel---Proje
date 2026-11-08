@@ -1847,17 +1847,18 @@ export default function ParentStudentPortalView() {
     };
     const eventTime = (date: unknown, time: unknown): string => {
       const raw = String(date || "").trim();
-      if (/T\\d{2}:\\d{2}/.test(raw)) return raw;
-      return localExamTimestamp(raw, time) || ( /^\\d{4}-\\d{2}-\\d{2}/.test(raw) ? raw.slice(0, 10) + "T00:00" : "" );
+      if (/T\d{2}:\d{2}/.test(raw)) return raw;
+      return localExamTimestamp(raw, time);
     };
     const momentLabel = (date: unknown, time: unknown): string => {
       const raw = eventTime(date, time);
-      const ms = Date.parse(/(?:Z|[+-]\\d{2}:?\\d{2})$/.test(raw) ? raw : raw + ":00+03:00");
-      const day = Number.isFinite(ms) ? new Intl.DateTimeFormat("tr-TR", {
-        timeZone: "Europe/Istanbul", weekday: "long", day: "2-digit", month: "2-digit", year: "numeric",
-      }).format(ms) : String(date || "").slice(0, 10);
-      const clock = String(time || "").trim() || (/T(\\d{2}:\\d{2})/.exec(raw)?.[1] || "");
-      return day + (clock ? " · Saat " + clock.slice(0, 5) : " · Saat belirtilmedi");
+      const ms = Date.parse(/(?:Z|[+-]\d{2}:?\d{2})$/.test(raw) ? raw : raw + ":00+03:00");
+      if (!Number.isFinite(ms)) return "Tarih veya saat belirtilmedi";
+      const formatter = new Intl.DateTimeFormat("tr-TR", {
+        timeZone: "Europe/Istanbul", weekday: "long", day: "2-digit", month: "2-digit",
+        year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false,
+      });
+      return formatter.format(ms);
     };
     const load = async () => {
       // Bu ekranın verileri yalnızca öğrencinin kendi bağlantısıyla sorgulanır.
@@ -1893,7 +1894,7 @@ export default function ParentStudentPortalView() {
       ).map((exam: any) => {
         const start = Number(exam.startsAt);
         const duration = Number(exam.durationMinutes);
-        const date = Number.isFinite(start) && start > 0 ? new Date(start).toISOString() : exam.examDate;
+        const date = Number.isFinite(start) && start > 0 ? new Date(start).toISOString() : "";
         return {
           id: "trial-club:" + String(exam.id),
           title: "Deneme sınavı: " + String(exam.examName || "Deneme"),
