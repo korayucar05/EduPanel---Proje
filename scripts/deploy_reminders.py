@@ -257,10 +257,14 @@ try:
     if (LIVE/"dist").exists():os.rename(LIVE/"dist",distBackup)
     shutil.copytree(STAGE/"dist",LIVE/"dist")
     try:
-        run(["plesk","ext","nodejs","--redeploy","-domain","edupanel.dersbende.com"])
+        # Plesk --redeploy runs npm install and can damage node_modules permissions.
+        # Restart only; do not install packages or rebuild on the production tree.
+        run(["plesk","ext","nodejs","--restart","-domain","edupanel.dersbende.com"])
     except Exception as restart_error:
-        print("Plesk redeploy was not successful:",restart_error)
-        raise
+        print("Plesk restart command not available, trying Passenger restart.txt:",restart_error)
+        passenger_restart = pathlib.Path("/var/www/vhosts/dersbende.com/tmp/restart.txt")
+        assertion(passenger_restart.parent.is_dir(),"Passenger restart directory")
+        passenger_restart.touch()
     import urllib.request
     with urllib.request.urlopen("https://edupanel.dersbende.com/api/health",timeout=20) as response:
         assertion(response.status==200,"health HTTP 200")
@@ -278,7 +282,7 @@ except Exception:
             ((LIVE/p).unlink() if (LIVE/p).exists() else None)
     if (LIVE/"dist").exists():shutil.rmtree(LIVE/"dist")
     if distBackup.exists():os.rename(distBackup,LIVE/"dist")
-    try:run(["plesk","ext","nodejs","--redeploy","-domain","edupanel.dersbende.com"])
+    try:run(["plesk","ext","nodejs","--restart","-domain","edupanel.dersbende.com"])
     except Exception: pass
     raise
 print("Changes:",", ".join(paths))
