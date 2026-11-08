@@ -21,16 +21,16 @@ export default function ReminderInformationManager({ schoolId }: { schoolId: str
   const [notice, setNotice] = React.useState("");
   const refresh = React.useCallback(async () => {
     try {
-      const res = await fetch(`/api/reminder-information?schoolId=${encodeURIComponent(schoolId)}`, { cache: "no-store" });
+      const res = await fetch(`/api/database/collections/reminderInformation?schoolId=${encodeURIComponent(schoolId)}`, { cache: "no-store" });
       if (!res.ok) throw new Error("Hatırlatmalar yüklenemedi.");
       const json = await res.json();
-      setItems(Array.isArray(json.reminders) ? json.reminders : []);
+      setItems((Array.isArray(json) ? json : []).filter((item: Reminder) => item.schoolId === schoolId));
     } catch (e: any) { setNotice(e.message || "Kayıtlar alınamadı."); }
   }, [schoolId]);
   React.useEffect(() => { void refresh(); }, [refresh]);
   const reset = () => { setDraft({ ...initial, recipients: [...initial.recipients] }); setEditId(""); };
   const save = async (record: Reminder) => {
-    const response = await fetch("/api/reminder-information", {
+    const response = await fetch(`/api/database/collections/reminderInformation/${encodeURIComponent(record.id)}`, {
       method: "PUT", headers: { "Content-Type": "application/json" },
       body: JSON.stringify(record),
     });
@@ -63,7 +63,7 @@ export default function ReminderInformationManager({ schoolId }: { schoolId: str
     if (!window.confirm("Bu hatırlatma silinsin mi?")) return;
     setBusy(true);
     try {
-      const res = await fetch(`/api/reminder-information/${encodeURIComponent(item.id)}?schoolId=${encodeURIComponent(schoolId)}`, { method: "DELETE" });
+      const res = await fetch(`/api/database/collections/reminderInformation/${encodeURIComponent(item.id)}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Hatırlatma silinemedi.");
       if (editId === item.id) reset();
       await refresh();
