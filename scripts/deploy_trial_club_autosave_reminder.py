@@ -72,18 +72,7 @@ mergedOptic=replace_region(currentOptic,latestOptic,'  const [electronicSaving, 
 mergedOptic=replace_region(mergedOptic,latestOptic,'  const selectedExam = exams.find((exam) => exam.id === selectedExamId) || null;','  React.useEffect(() => {\n    if (!selectedExam?.electronic || !selectedExam.endsAt || selectedExam.answerKey || clock + clockOffset < selectedExam.endsAt) return;')
 mergedOptic=replace_region(mergedOptic,latestOptic,'  const openExam = (exam: TrialClubExam) => {','  const closeExam = () => {')
 mergedOptic=replace_region(mergedOptic,latestOptic,'  const setElectronicAnswer = (subjectName: string, questionIndex: number, option: string) => {','  const formatCountdown = (milliseconds: number) => {')
-# Preserve the live JSX around the booklet button; only add revision tracking
-# to its existing click handler. The button markup varies between deployments.
-# The source handler is a one-line setter in all supported deployments.
-# Replace its setter alone, without assuming how the surrounding button is styled.
-plainBooklet="setElectronicBooklet(booklet);"
-trackedBooklet="setElectronicBooklet(booklet); setElectronicRevision((value) => value + 1);"
-if mergedOptic.count(trackedBooklet)==1:
-    pass
-else:
-    require(mergedOptic.count(plainBooklet)==1,"Expected one booklet handler; refusing ambiguous update")
-    mergedOptic=mergedOptic.replace(plainBooklet,trackedBooklet,1)
-mergedOptic=replace_once_or_already(mergedOptic,'Sınav sona ermiştir. Şu andan itibaren cevaplama işlemi yapılamayacaktır. Kaydet tuşuna basarak optik formu kapatabilirsiniz.','Sınav süresi doldu. Kaydedilmiş cevaplar otomatik olarak kesinleştirilir ve değerlendirmeye alınır.')
+# Kitapçık düğmesinin canlı JSX yapısını değiştirmiyoruz.\n# Otomatik ara kayıt yalnız cevap işaretlemeleriyle tetiklenir.\nmergedOptic=replace_once_or_already(mergedOptic,'Sınav sona ermiştir. Şu andan itibaren cevaplama işlemi yapılamayacaktır. Kaydet tuşuna basarak optik formu kapatabilirsiniz.','Sınav süresi doldu. Kaydedilmiş cevaplar otomatik olarak kesinleştirilir ve değerlendirmeye alınır.')
 mergedOptic=replace_once_or_already(mergedOptic,'{!pending && !exam.finalized ? <><div className=','{!pending && !expired && !exam.finalized ? <><div className=')
 require('persistElectronicDraft' in mergedOptic and 'electronicAutoSaveQueue' in mergedOptic,"Draft save not applied")
 # Restrict the notification popup to the heading and date/time only.
