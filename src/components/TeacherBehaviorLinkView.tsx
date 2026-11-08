@@ -6,6 +6,7 @@ import SchoolRadioView from "./SchoolRadioView";
 import TrialClubView from "./TrialClubView";
 import MobileSurveyView from "./MobileSurveyView";
 import React from "react";
+import { activeCustomReminders } from "../utils/mobileReminderInformation";
 import AdminBehaviorDisciplineView from "./AdminBehaviorDisciplineView";
 import {
   ArrowLeft,
@@ -3813,6 +3814,17 @@ const [messageTab, setMessageTab] = React.useState<"compose" | "inbox" | "sent">
         );
         const trialRows = Array.isArray(trials.reminders) ? trials.reminders : [];
         nextReminders.push(...trialRows.filter((item: any) => Number(item?.meta?.daysLeft) <= 2));
+      } catch {}
+      try {
+        const response = await fetch("/api/database/collections/reminderInformation", { cache: "no-store" });
+        if (response.ok) {
+          const rows = await response.json();
+          const schoolId = String((link as any)?.schoolId || "school-main");
+          nextReminders.push(...activeCustomReminders(rows, "teacher", schoolId).map(item => ({
+            id: "manual:" + item.id, type: "notice", title: item.title,
+            body: item.body + " · " + (item.kind || ""), action: "",
+          })));
+        }
       } catch {}
       setStartupReminders(nextReminders);
       if (nextReminders.length > 0) void playEnstituNotificationSound();
