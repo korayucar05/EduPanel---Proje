@@ -13782,7 +13782,7 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
           ? undefined
           : (lastData?.status || lastData?.error || lastData?.message || lastData?.rawResponse ||
             (lastStatus >= 200 && lastStatus < 300
-              ? "mHatsapp sunucusuna ulaÅŸÄ±ldÄ± ancak mesaj kimliÄŸi veya gÃ¶nderim onayÄ± alÄ±namadÄ±. mHatsapp panelindeki telefon baÄŸlantÄ±sÄ±nÄ± ve token durumunu kontrol edin."
+              ? "mHatsapp API isteğine HTTP 200 yanıtı verdi fakat gönderim onayı veya mesaj kimliği bulunamadı. Mesajın telefona teslim edildiği doğrulanmadı."
               : `HTTP ${lastStatus}`)),
       });
     } catch (err: any) {
@@ -13791,7 +13791,7 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
       return res.status(200).json({
         ok: false,
         error: timeoutError
-          ? "mHatsapp sunucusu 20 saniye iÃ§inde yanÄ±t vermedi. GÃ¶nderim beklemesi sonlandÄ±rÄ±ldÄ±."
+          ? "mHatsapp sunucusu 20 saniye içinde yanıt vermedi. Gönderim doğrulanamadı."
           : (err?.message || "mHatsapp proxy hatasÄ±"),
       });
     }
