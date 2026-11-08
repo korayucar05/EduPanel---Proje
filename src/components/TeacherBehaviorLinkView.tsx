@@ -3820,7 +3820,9 @@ const [messageTab, setMessageTab] = React.useState<"compose" | "inbox" | "sent">
         if (response.ok) {
           const rows = await response.json();
           const schoolId = String((link as any)?.schoolId || "school-main");
-          nextReminders.push(...activeCustomReminders(rows, "teacher", schoolId).map(item => ({
+          const role = String(serverStaffProfile?.role || serverStaffProfile?.staffRole || "").toUpperCase();
+          const recipient = role === "ADMIN" || role === "MANAGER" ? "admin" : "teacher";
+          nextReminders.push(...activeCustomReminders(rows, recipient, schoolId).map(item => ({
             id: "manual:" + item.id, type: "notice", title: item.title,
             body: item.body + " · " + (item.kind || ""), action: "",
           })));
@@ -3833,7 +3835,7 @@ const [messageTab, setMessageTab] = React.useState<"compose" | "inbox" | "sent">
     } finally {
       setStartupReminderBusy(false);
     }
-  }, [token, link]);
+  }, [token, link, serverStaffProfile?.role, serverStaffProfile?.staffRole]);
 
   React.useEffect(() => {
     if (!link || !token) return;
