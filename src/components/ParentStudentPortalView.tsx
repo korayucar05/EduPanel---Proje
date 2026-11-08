@@ -1,4 +1,5 @@
 import React from "react";
+import { activeCustomReminders, displayExamMoment, inNext48Hours, localExamTimestamp } from "../utils/mobileReminderInformation";
 import EduPanelMobileButton from "./common/EduPanelMobileButton";
 import MobileIdentityBanner from "./common/MobileIdentityBanner";
 import SchoolRadioView from "./SchoolRadioView";
@@ -1845,9 +1846,10 @@ export default function ParentStudentPortalView() {
           return Array.isArray(data) ? data : Array.isArray(data?.reminders) ? data.reminders : [];
         } catch { return [] as any[]; }
       };
-      const [seating, trial] = await Promise.all([
+      const [seating, trial, manual] = await Promise.all([
         getRows("/api/database/collections/studentAppAnnouncements"),
         getRows(`/api/public-portal/${encodeURIComponent(token)}/trial-exam-reminders`),
+        getRows("/api/database/collections/reminderInformation"),
       ]);
       if (!active) return;
       const dateParts = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Istanbul", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
@@ -1865,17 +1867,20 @@ export default function ParentStudentPortalView() {
         if (String(row?.source) !== "exam-seating") return false;
         if (String(row?.recipientStudentId || "").trim() !== sid && (!snum || String(row?.recipientStudentNumber || "").trim() !== snum)) return false;
         const days = daysUntil(row.examDate || row.date);
-        return days >= 0 && days <= 2;
+        const at = localExamTimestamp(row.examDate || row.date, row.examTime);
+        return at ? inNext48Hours(at) : days >= 0 && days <= 2;
       }).map((row: any) => ({
         id: `seating:${row.id}`,
         title: String(row.title || row.courseName || row.examName || "Ortak sınav yerleşimi"),
-        detail: [row.examDate || row.date, row.examTime, row.buildingName, row.floorName, row.roomName, row.seatNumber != null && row.seatNumber !== "" ? `Sıra: ${row.seatNumber}` : ""].filter(Boolean).join(" · "),
+        detail: [displayExamMoment(row.examDate || row.date, row.examTime), row.buildingName, row.floorName, row.roomName, row.seatNumber != null && row.seatNumber !== "" ? `Sıra: ${row.seatNumber}` : "", "Modül: Ortak Sınavlar"].filter(Boolean).join(" · "),
       }));
       const trialItems = trial.filter((row: any) => {
         const days = daysUntil(row?.meta?.date || row?.date);
-        return days >= 0 && days <= 2;
-      }).map((row: any) => ({ id: String(row.id), title: String(row.title || "Deneme sınavı"), detail: String(row.detail || "") }));
-      const items = [...placement, ...trialItems];
+        const at = localExamTimestamp(row?.meta?.date || row?.date, row?.meta?.time || row?.time);
+        return at ? inNext48Hours(at) : days >= 0 && days <= 2;
+      }).map((row: any) => ({ id: String(row.id), title: String(row.title || "Deneme sınavı"), detail: `${displayExamMoment(row?.meta?.date || row?.date, row?.meta?.time || row?.time)} · Modül: Sınavlar / Deneme Sınavları` }));
+      const manualItems = activeCustomReminders(manual, kind, String(payload.schoolId || "")).map(row => ({ id: `manual:${row.id}`, title: row.title, detail: `${row.body} · ${row.kind}` }));
+      const items = [...placement, ...trialItems, ...manualItems];
       setOpeningReminders(items);
       if (items.length) setOpeningReminderVisible(true);
     };
