@@ -1,5 +1,6 @@
 import React from "react";
-import { ExternalLink, Loader2, Search, Smartphone, UserRound } from "lucide-react";
+import ReminderInformationManager from "./ReminderInformationManager";
+import { BellRing, ExternalLink, Loader2, Search, Smartphone, UserRound } from "lucide-react";
 
 type AnyRow = Record<string, any>;
 
@@ -68,6 +69,7 @@ async function readBehaviors(schoolId: string) {
 
 export default function TeacherInterfacesModule({ teachers, students, schoolId = "school-main" }: Props) {
   const [query, setQuery] = React.useState("");
+  const [showReminders, setShowReminders] = React.useState(false);
   const [busyTeacherId, setBusyTeacherId] = React.useState("");
   const [message, setMessage] = React.useState("");
   const [lastUrl, setLastUrl] = React.useState("");
@@ -160,7 +162,7 @@ export default function TeacherInterfacesModule({ teachers, students, schoolId =
             </div>
             <p className="mt-1 text-sm font-medium text-slate-500">Bir öğretmene tıklayarak öğretmenin gerçek mobil arayüzünü yönetici olarak kontrol edin.</p>
           </div>
-          <span className="rounded-2xl bg-white px-3 py-2 text-xs font-black text-slate-600 shadow-sm">{rows.length} öğretmen</span>
+          <div className="flex flex-wrap items-center gap-2"><button type="button" onClick={() => setShowReminders(value => !value)} className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black ${showReminders ? "bg-sky-800 text-white" : "bg-white text-sky-800 shadow-sm"}`}><BellRing className="h-4 w-4" /> Hatırlatma Bilgileri</button><span className="rounded-2xl bg-white px-3 py-2 text-xs font-black text-slate-600 shadow-sm">{rows.length} öğretmen</span></div>
         </div>
 
         <label className="relative mt-4 block">
@@ -174,14 +176,16 @@ export default function TeacherInterfacesModule({ teachers, students, schoolId =
         </label>
       </div>
 
-      {message ? <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-800">{message}</div> : null}
-      {lastUrl ? (
+      {showReminders ? <ReminderInformationManager schoolId={schoolId} /> : null}
+
+      {!showReminders && message ? <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-800">{message}</div> : null}
+      {!showReminders && lastUrl ? (
         <button type="button" onClick={() => window.open(lastUrl, "_blank", "noopener,noreferrer")} className="inline-flex items-center gap-2 rounded-xl bg-sky-700 px-4 py-2.5 text-sm font-black text-white">
           <ExternalLink className="h-4 w-4" /> Mobil Arayüze Gir
         </button>
       ) : null}
 
-      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      {!showReminders ? <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((teacher) => {
           const busy = busyTeacherId === teacher.id;
           return (
@@ -205,7 +209,9 @@ export default function TeacherInterfacesModule({ teachers, students, schoolId =
         })}
       </div>
 
-      {!filtered.length ? <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-sm font-bold text-slate-400">Öğretmen bulunamadı.</div> : null}
+      ) : null}
+
+      {!showReminders && !filtered.length ? <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-sm font-bold text-slate-400">Öğretmen bulunamadı.</div> : null}
     </div>
   );
 }
