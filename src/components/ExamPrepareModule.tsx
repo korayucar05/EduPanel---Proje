@@ -14,6 +14,7 @@ import {
   BookOpen,
   BarChart2,
   Trash2,
+  Archive,
 } from "lucide-react";
 import QuestionManagerView from "./QuestionManagerView";
 import localforage from "localforage";
@@ -394,6 +395,7 @@ export default function ExamPrepareModule({ setAppActiveTab, initialExamId, onIn
   const [examStorageReady, setExamStorageReady] = useState(false);
   const [availableOpticForms, setAvailableOpticForms] = useState<any[]>([]);
   const [managingExam, setManagingExam] = useState<any | null>(null);
+  const [trialClubActionExam, setTrialClubActionExam] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState<"exams" | "questions" | "optic-settings" | "booklets" | "read-edit" | "evaluate">("exams");
   const [electronicSyncBusy, setElectronicSyncBusy] = useState(false);
   const [electronicNotice, setElectronicNotice] = useState("");
@@ -504,7 +506,7 @@ export default function ExamPrepareModule({ setAppActiveTab, initialExamId, onIn
 
       // Silinen sınavları eski localforage/localStorage kopyalarından kurtarma.
       resolvedExams = resolvedExams.filter((row: any) =>
-        !deletedExamIdsRef.current.has(String(row?.id || "").trim()),
+        !deletedExamIdsRef.current.has(String(row?.id || "").trim()) && row?.isArchived !== true,
       );
 
       // teacherTestAssignments ortak görev kaynağıdır. Önceki sürümlerde görev
@@ -2037,6 +2039,19 @@ export default function ExamPrepareModule({ setAppActiveTab, initialExamId, onIn
       }
     });
 
+  };
+
+  const archiveTrialClubExam = (exam: any) => {
+    const label = String(exam?.examName || "Bu deneme").trim();
+    if (!window.confirm(`"${label}" arşive kaldırılsın mı?`)) return;
+    const archived = { ...exam, isArchived: true, archivedAt: new Date().toISOString() };
+    handleUpdateExam(archived);
+    const next = examsRef.current.filter((item: any) => String(item?.id) !== String(exam?.id));
+    examsRef.current = next;
+    setExams(next);
+    setTrialClubActionExam(null);
+    setManagingExam(null);
+    setActiveTab("exams");
   };
 
   // Sunucu veya veritabanı yanıt vermediğinde yönetim butonları sonsuza dek kilitli kalmasın.
@@ -3588,6 +3603,12 @@ export default function ExamPrepareModule({ setAppActiveTab, initialExamId, onIn
             <div
               key={exam.id}
               onClick={() => {
+                const isTrialClub = String(exam?.participantGroup || "").toLowerCase() === "trial-club" ||
+                  String(exam?.participantLabel || "").toLocaleLowerCase("tr-TR").includes("deneme kulüb");
+                if (isTrialClub) {
+                  setTrialClubActionExam(exam);
+                  return;
+                }
                 setActiveTab("questions");
                 setManagingExam(exam);
               }}
@@ -3668,6 +3689,26 @@ export default function ExamPrepareModule({ setAppActiveTab, initialExamId, onIn
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {trialClubActionExam && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/60 p-4" onMouseDown={() => setTrialClubActionExam(null)}>
+          <div className="w-full max-w-md rounded-3xl border border-amber-200 bg-white p-5 shadow-2xl" onMouseDown={(event) => event.stopPropagation()}>
+            <div className="mb-4 flex items-start justify-between gap-3 border-b border-slate-100 pb-4">
+              <div>
+                <div className="text-[10px] font-black uppercase tracking-wider text-amber-700">Deneme Kulübü</div>
+                <h3 className="mt-1 text-lg font-black text-slate-900">{replaceLegacyExamTerminology(trialClubActionExam.examName)}</h3>
+              </div>
+              <button type="button" onClick={() => setTrialClubActionExam(null)} className="rounded-xl p-2 text-slate-400 hover:bg-slate-100" aria-label="Kapat"><X className="h-5 w-5" /></button>
+            </div>
+            <div className="grid gap-2">
+              <button type="button" onClick={() => { setManagingExam(trialClubActionExam); setActiveTab("optic-settings"); setTrialClubActionExam(null); }} className="flex items-center justify-center rounded-xl bg-indigo-700 px-4 py-3 text-sm font-black text-white hover:bg-indigo-800">Cevabı yayınla</button>
+              <button type="button" onClick={() => { setManagingExam(trialClubActionExam); setActiveTab("read-edit"); setTrialClubActionExam(null); }} className="flex items-center justify-center rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm font-black text-amber-900 hover:bg-amber-100">Hataları gider</button>
+              <button type="button" onClick={() => { setManagingExam(trialClubActionExam); setActiveTab("evaluate"); setTrialClubActionExam(null); }} className="flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-3 text-sm font-black text-white hover:bg-emerald-700">Sınavı değerlendir</button>
+              <button type="button" onClick={() => archiveTrialClubExam(trialClubActionExam)} className="flex items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-black text-rose-700 hover:bg-rose-100"><Archive className="h-4 w-4" />Arşive kaldır</button>
+            </div>
+          </div>
         </div>
       )}
 
