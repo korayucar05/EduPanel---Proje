@@ -29,6 +29,11 @@ def replace_region(live,latest,begin,end):
 def replace_once(live,old,new):
     require(live.count(old)==1,"Missing/duplicate old fragment: "+old[:100])
     return live.replace(old,new,1)
+def replace_once_or_already(live,old,new):
+    # Accept both clean old production and a previously updated identical fragment.
+    if live.count(old)==1 and live.count(new)==0:return live.replace(old,new,1)
+    if live.count(old)==0 and live.count(new)==1:return live
+    raise RuntimeError("STOP: Unrecognized/ambiguous source fragment: "+old[:100])
 def restart():
     # Plesk Passenger may have a socket-path error with passenger-config.
     # Use Passenger's standard restart marker, not npm redeploy.
@@ -67,9 +72,9 @@ mergedOptic=replace_region(currentOptic,latestOptic,'  const [electronicSaving, 
 mergedOptic=replace_region(mergedOptic,latestOptic,'  const selectedExam = exams.find((exam) => exam.id === selectedExamId) || null;','  React.useEffect(() => {\n    if (!selectedExam?.electronic || !selectedExam.endsAt || selectedExam.answerKey || clock + clockOffset < selectedExam.endsAt) return;')
 mergedOptic=replace_region(mergedOptic,latestOptic,'  const openExam = (exam: TrialClubExam) => {','  const closeExam = () => {')
 mergedOptic=replace_region(mergedOptic,latestOptic,'  const setElectronicAnswer = (subjectName: string, questionIndex: number, option: string) => {','  const formatCountdown = (milliseconds: number) => {')
-mergedOptic=replace_once(mergedOptic,'onClick={() => { setElectronicBooklet(booklet); setError(""); }}','onClick={() => { setElectronicBooklet(booklet); setElectronicRevision((value) => value + 1); setError(""); }}')
-mergedOptic=replace_once(mergedOptic,'Sınav sona ermiştir. Şu andan itibaren cevaplama işlemi yapılamayacaktır. Kaydet tuşuna basarak optik formu kapatabilirsiniz.','Sınav süresi doldu. Kaydedilmiş cevaplar otomatik olarak kesinleştirilir ve değerlendirmeye alınır.')
-mergedOptic=replace_once(mergedOptic,'{!pending && !exam.finalized ? <><div className=','{!pending && !expired && !exam.finalized ? <><div className=')
+mergedOptic=replace_once_or_already(mergedOptic,'onClick={() => { setElectronicBooklet(booklet); setError(""); }}','onClick={() => { setElectronicBooklet(booklet); setElectronicRevision((value) => value + 1); setError(""); }}')
+mergedOptic=replace_once_or_already(mergedOptic,'Sınav sona ermiştir. Şu andan itibaren cevaplama işlemi yapılamayacaktır. Kaydet tuşuna basarak optik formu kapatabilirsiniz.','Sınav süresi doldu. Kaydedilmiş cevaplar otomatik olarak kesinleştirilir ve değerlendirmeye alınır.')
+mergedOptic=replace_once_or_already(mergedOptic,'{!pending && !exam.finalized ? <><div className=','{!pending && !expired && !exam.finalized ? <><div className=')
 require('persistElectronicDraft' in mergedOptic and 'electronicAutoSaveQueue' in mergedOptic,"Draft save not applied")
 # Restrict the notification popup to the heading and date/time only.
 oldHeader='<div><div className="text-[10px] font-black uppercase tracking-widest text-rose-700">e-Nstitü</div><h2 className="text-lg font-black text-slate-950">Sınav Hatırlatmaları</h2></div>'
@@ -77,8 +82,8 @@ newHeader='<div><h2 className="text-lg font-black text-slate-950">Deneme Sınav�
 oldCard='<div className="text-sm font-black text-slate-900">{item.title}</div><div className="mt-1 text-xs font-semibold leading-5 text-slate-600">{item.detail}</div>'
 newCard='{item.title !== "Deneme Sınavınız Var" ? <div className="text-sm font-black text-slate-900">{item.title}</div> : null}<div className="text-sm font-semibold leading-6 text-slate-700">{item.detail}</div>'
 require(latestPortal.count(newHeader)==1 and latestPortal.count(newCard)==1,"GitHub popup format missing")
-mergedPortal=replace_once(currentPortal,oldHeader,newHeader)
-mergedPortal=replace_once(mergedPortal,oldCard,newCard)
+mergedPortal=replace_once_or_already(currentPortal,oldHeader,newHeader)
+mergedPortal=replace_once_or_already(mergedPortal,oldCard,newCard)
 require(currentServer!=mergedServer and currentOptic!=mergedOptic and currentPortal!=mergedPortal,"No changes detected")
 print("Staging production build...",flush=True)
 STAGE.mkdir(parents=True,exist_ok=False)
