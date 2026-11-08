@@ -2,7 +2,7 @@
 """EduPanel: token-scoped trial club, school and common-exam opening reminders.
 Apply only two known code regions; preserve all other live changes.
 """
-import datetime, os, pathlib, subprocess, shutil, tarfile, urllib.request
+import datetime, os, pathlib, subprocess, shutil, tarfile, urllib.request, urllib.error, time
 LIVE=pathlib.Path("/var/www/vhosts/dersbende.com/edupanel.dersbende.com")
 ROOT=pathlib.Path("/root/edupanel-gecici-arsivler")
 CLONE=ROOT/"hatirlatma-github"
@@ -19,6 +19,35 @@ def require(value,label):
 def shell(args,**opts):
     print("+"," ".join(map(str,args)),flush=True)
     subprocess.check_call(args,**opts)
+def restart_passenger():
+    # Explicit restart instead of redeploy: never npm-install on production.
+    cmd=shutil.which("passenger-config")
+    if cmd:
+        result=subprocess.call([cmd,"restart-app",str(LIVE)])
+        print("Passenger explicit restart result:",result,flush=True)
+        if result==0:return
+    # Standard Passenger restart notification.
+    rest=LIVE/"tmp"/"restart.txt"
+    rest.parent.mkdir(parents=True,exist_ok=True)
+    rest.touch()
+def check_endpoint():
+    url="https://edupanel.dersbende.com/api/public-portal/not-valid/exam-opening-reminders"
+    last="no response"
+    for attempt in range(18):
+        try:
+            with urllib.request.urlopen(url,timeout=8) as response:
+                kind=response.headers.get("Content-Type","")
+                last="HTTP "+str(response.status)+" "+kind
+        except urllib.error.HTTPError as error:
+            kind=error.headers.get("Content-Type","")
+            if error.code==404 and "application/json" in kind:
+                return
+            last="HTTP "+str(error.code)+" "+kind
+        except Exception as error:
+            last=str(error)
+        print("Waiting for new Passenger API: "+last,flush=True)
+        time.sleep(3)
+    raise RuntimeError("New authenticated API not running: "+last)
 def read(rel):
     return (LIVE/rel).read_text(encoding="utf-8")
 def github(rel):
@@ -98,18 +127,10 @@ try:
     for base,dirs,files in os.walk(str(LIVE/"dist")):
         for name in dirs+files: os.chown(os.path.join(base,name),owner.st_uid,owner.st_gid)
         os.chown(base,owner.st_uid,owner.st_gid)
-    rest=LIVE/"tmp"/"restart.txt"
-    rest.parent.mkdir(parents=True,exist_ok=True)
-    rest.touch()
-    with urllib.request.urlopen("https://edupanel.dersbende.com/api/health",timeout=30) as check:
-        require(check.status==200,"Health check failed")
-    # A fake token must be rejected by the new authenticated endpoint.
-    test="https://edupanel.dersbende.com/api/public-portal/not-valid/exam-opening-reminders"
-    try:
-        urllib.request.urlopen(test,timeout=20)
-        raise RuntimeError("Unsafe: invalid token accepted by exam reminder API")
-    except urllib.error.HTTPError as error:
-        require(error.code==404,"New API returned unexpected HTTP "+str(error.code))
+    restart_passenger()
+    check_endpoint()
+    with urllib.request.urlopen("https://edupanel.dersbende.com/api/health",timeout=20) as check:
+        require(check.status==200 and "application/json" in check.headers.get("Content-Type",""),"API health JSON check failed")
     print("DEPLOYMENT SUCCESS",flush=True)
     print("Backup: "+str(BACKUP),flush=True)
     print("Exam reminders: school students + registered trial club + assigned seating",flush=True)
@@ -124,5 +145,5 @@ except Exception:
     if assetsChanged:
         if (LIVE/"dist").exists():shutil.rmtree(str(LIVE/"dist"))
         if DISTOLD.exists():os.rename(str(DISTOLD),str(LIVE/"dist"))
-    (LIVE/"tmp"/"restart.txt").touch()
+    restart_passenger()
     raise
