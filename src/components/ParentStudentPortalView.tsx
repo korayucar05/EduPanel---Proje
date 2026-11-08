@@ -4229,11 +4229,11 @@ export default function ParentStudentPortalView() {
         <div className="fixed inset-0 z-[110000] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Yaklaşan sınav hatırlatmaları">
           <section className="w-full max-w-md overflow-hidden rounded-[26px] bg-white shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
-              <div><div className="text-[10px] font-black uppercase tracking-widest text-rose-700">e-Nstitü</div><h2 className="text-lg font-black text-slate-950">Sınav Hatırlatmaları</h2></div>
+              <div><h2 className="text-lg font-black text-slate-950">Deneme Sınavınız Var</h2></div>
               <button type="button" onClick={() => setOpeningReminderVisible(false)} aria-label="Hatırlatmaları kapat" className="rounded-xl bg-slate-100 px-4 py-2 text-sm font-black text-slate-800">Kapat</button>
             </div>
             <div className="max-h-[65vh] space-y-3 overflow-y-auto p-4">
-              {openingReminders.map((item) => <div key={item.id} className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-3"><div className="text-sm font-black text-slate-900">{item.title}</div><div className="mt-1 text-xs font-semibold leading-5 text-slate-600">{item.detail}</div></div>)}
+              {openingReminders.map((item) => <div key={item.id} className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-3">{item.title !== "Deneme Sınavınız Var" ? <div className="text-sm font-black text-slate-900">{item.title}</div> : null}<div className="text-sm font-semibold leading-6 text-slate-700">{item.detail}</div></div>)}
             </div>
           </section>
         </div>
