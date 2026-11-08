@@ -235,7 +235,7 @@ function PortalLinkManager({
           name: item.name,
           number: item.number,
           ok: Boolean(sent?.ok),
-          status: sent?.ok ? "WhatsApp altyapısı onayladı." : sent?.error || sent?.status || "Gönderim onaylanmadı.",
+          status: sent?.ok ? "API isteği kabul edildi; telefona teslimat henüz doğrulanmadı." : sent?.error || sent?.status || "Gönderim onaylanmadı.",
         };
       });
       const combined = [...initial, ...statuses];
@@ -243,7 +243,7 @@ function PortalLinkManager({
       setFailedLinkMessages(rows.filter((_, index) => !result.recipients?.[index]?.ok)
         .map((item) => ({ id: item.id, phone: item.phone, message: item.message })));
       const passed = combined.filter((item) => item.ok).length;
-      setInfo(`Seçilen: ${selectedTargets.length} · WhatsApp onaylı: ${passed} · Gönderilemeyen: ${combined.length - passed}. Ayrıntılar aşağıda.`);
+      setInfo(`Seçilen: ${selectedTargets.length} · API tarafından kabul edilen: ${passed} · Onay alınamayan: ${combined.length - passed}. API kabulü telefona teslimat anlamına gelmez. Ayrıntılar aşağıda.`);
     } catch (error: any) {
       setInfo(error?.message || "İşlem tamamlanamadı.");
     } finally {
@@ -266,7 +266,7 @@ function PortalLinkManager({
         outcome.set(item.id, {
           ok: Boolean(response?.ok),
           status: response?.ok
-            ? "Alternatif API gönderimi onayladı."
+            ? "Alternatif API isteği kabul etti; WhatsApp teslimatı doğrulanmadı."
             : response?.error || response?.status || "Alternatif API gönderimi onaylamadı.",
         });
       });
@@ -276,7 +276,7 @@ function PortalLinkManager({
       }));
       const stillFailed = pending.filter((item) => !outcome.get(item.id)?.ok);
       setFailedLinkMessages(stillFailed);
-      setInfo(`Alternatif API denemesi: ${pending.length - stillFailed.length} onaylı, ${stillFailed.length} onaysız. Başarılı alıcılara tekrar gönderim yapılmadı.`);
+      setInfo(`Alternatif API denemesi: ${pending.length - stillFailed.length} API kabulü, ${stillFailed.length} onaysız. Mesajların telefona ulaştığı doğrulanmadı; kabul edilen alıcılara tekrar gönderim yapılmadı.`);
     } catch (error: any) {
       setInfo(error?.message || "Alternatif API denemesi başarısız.");
     } finally {
