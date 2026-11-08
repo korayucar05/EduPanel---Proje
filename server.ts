@@ -14929,15 +14929,8 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
           exam.studentTxtRecords.some((record: any) => trialClubRecordMatchesPortal(record, portal));
         const duration = Number(exam.electronicDurationMinutes || exam.durationMinutes || exam.examDurationMinutes || 0);
         const label = trialClubText(exam.examName || exam.name || exam.title || exam.examType || "Deneme sınavı");
-        const detail = [
-          "Başlangıç: " + formatMoment(startsAt),
-          Number.isFinite(duration) && duration > 0 ? "Süre: " + Math.round(duration) + " dakika" : "",
-          electronic && club && !alreadySubmitted ? "Deneme Kulübü → Sınav butonundan elektronik optik formunu doldurun." : "",
-          electronic && club && !alreadySubmitted ? "Sınavı bitirince Kaydet butonuna tıklamayı unutmayın. Kayıt tek seferliktir." : "",
-          electronic && club && alreadySubmitted ? "Elektronik optik cevaplarınız kaydedilmiş. Tekrar gönderim yapılamaz." : "",
-          club ? "Katılımcı: Deneme Kulübü (Kayıt Merkezi)" : "Katılımcı: Okul Öğrencileri",
-        ].filter(Boolean).join(" · ");
-        rows.push({ id:"exam:"+String(exam.id || exam.__documentId), title:"Sınav hatırlatması: "+label, detail });
+        const detail = "Tarih ve saat: " + formatMoment(startsAt);
+        rows.push({ id:"exam:"+String(exam.id || exam.__documentId), title:"Deneme Sınavınız Var", detail });
       }
       // Seat assignments are included only for this student's own matching record.
       const seatingRows = listDocuments("studentAppAnnouncements") as any[];
@@ -15107,7 +15100,24 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
   };
   const trialAutoEvaluationPending = () => {
     const now = Date.now();
-    for (const exam of listDocuments("exams") as any[]) {
+    for (let exam of listDocuments("exams") as any[]) {
+      // Süre dolduğunda ara kayıtları öğrenci tekrar Kaydet'e basmasa bile
+      // tamamla. Geç katılımcıların kişisel süreleri korunur.
+      if (isTrialClubExamRecord(exam) && isElectronicTrialClubExam(exam)) {
+        const records = Array.isArray(exam?.studentTxtRecords) ? exam.studentTxtRecords : [];
+        let changed = false;
+        const finalizedRecords = records.map((record: any) => {
+          if (record?.source !== "electronic-optic" || record?.finalizedAt) return record;
+          const end = trialLateWindow(exam, record?.studentNumber)?.endsAt || trialTimedEnd(exam);
+          if (!end || now < end) return record;
+          changed = true;
+          return { ...record, finalizedAt: new Date(end).toISOString(), updatedAt: new Date(now).toISOString() };
+        });
+        if (changed) {
+          exam = { ...exam, studentTxtRecords: finalizedRecords, updatedAt: new Date(now).toISOString() };
+          upsertDocument("exams", trialClubText(exam.id || exam.__documentId), exam);
+        }
+      }
       if (!isTrialClubExamRecord(exam) || !isElectronicTrialClubExam(exam) || !trialEvaluationNeedsUpdate(exam)) continue;
       if (!trialTimedEnd(exam) || now < trialTimedEnd(exam)) continue;
       try {
