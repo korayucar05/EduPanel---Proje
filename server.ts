@@ -15178,16 +15178,34 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
           .reduce((sum: number, item: any) => sum + (Number(item?.[field]) || 0), 0);
         const ranked = [...evaluated].sort((left: any, right: any) =>
           scoreTotal(right, "net") - scoreTotal(left, "net") || scoreTotal(right, "correct") - scoreTotal(left, "correct"));
+        const subjectRankings = new Map<string, Array<{ result: any; net: number; correct: number }>>();
+        evaluated.forEach((result: any) => {
+          (Array.isArray(result?.subjects) ? result.subjects : []).forEach((subject: any) => {
+            const key = trialClubNormalizedName(subject?.subjectName || subject?.name);
+            if (!key) return;
+            const rows = subjectRankings.get(key) || [];
+            rows.push({ result, net: Number(subject?.net) || 0, correct: Number(subject?.correct) || 0 });
+            subjectRankings.set(key, rows);
+          });
+        });
+        subjectRankings.forEach((rows) => rows.sort((a, b) => b.net - a.net || b.correct - a.correct));
         const studentResult = evaluated.find((row: any) => trialClubRecordMatchesPortal(row, portal));
         const resultPublished = Boolean(exam?.electronicResultsPublished && exam?.isEvaluated && studentResult);
         const ownResult = resultPublished ? {
-          subjects: (Array.isArray(studentResult.subjects) ? studentResult.subjects : []).map((subject: any) => ({
-            name: trialClubText(subject?.subjectName || subject?.name),
-            correct: Number(subject?.correct) || 0,
-            wrong: Number(subject?.wrong) || 0,
-            empty: Number(subject?.empty) || 0,
-            net: Number(subject?.net) || 0,
-          })),
+          subjects: (Array.isArray(studentResult.subjects) ? studentResult.subjects : []).map((subject: any) => {
+            const name = trialClubText(subject?.subjectName || subject?.name);
+            const rows = subjectRankings.get(trialClubNormalizedName(name)) || [];
+            const rowIndex = rows.findIndex((item) => item.result === studentResult);
+            return {
+              name,
+              correct: Number(subject?.correct) || 0,
+              wrong: Number(subject?.wrong) || 0,
+              empty: Number(subject?.empty) || 0,
+              net: Number(subject?.net) || 0,
+              rank: rowIndex >= 0 ? rowIndex + 1 : undefined,
+              participantCount: rows.length,
+            };
+          }),
           correct: scoreTotal(studentResult, "correct"),
           wrong: scoreTotal(studentResult, "wrong"),
           empty: scoreTotal(studentResult, "empty"),
@@ -15200,8 +15218,11 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
         const ownSubmission = (Array.isArray(exam?.studentTxtRecords) ? exam.studentTxtRecords : [])
           .find((record: any) => trialClubRecordMatchesPortal(record, portal) && record?.source === "electronic-optic");
         const ownBooklet = trialClubText(ownSubmission?.bookletType).toUpperCase();
+        const keyWindowOpen = trialTimedEnd(exam) > 0 && Date.now() >= trialTimedEnd(exam) && Date.now() < trialTimedEnd(exam) + 3_600_000;
+        // Yönetici cevapları/sonuçları yayımladıysa cevap anahtarı süre
+        // penceresine bağlı kalmadan öğrencinin kendi kitapçığı için görünür.
         const keyVisible = Boolean(electronic && ownSubmission?.finalizedAt && ownBooklet &&
-          trialTimedEnd(exam) > 0 && Date.now() >= trialTimedEnd(exam) && Date.now() < trialTimedEnd(exam) + 3_600_000);
+          (exam?.electronicResultsPublished === true || keyWindowOpen));
         const answerKeyForStudent: Record<string, string[]> = {};
         const answerStats: Record<string, Array<{ correct: number; wrong: number; empty: number }>> = {};
         if (keyVisible) {
