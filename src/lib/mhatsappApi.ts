@@ -404,20 +404,26 @@ export async function sendPersonalizedBulkText(
   settings: MhatsappSettings,
   rows: MhatsappRecipientMessage[],
 ): Promise<MhatsappSendResult> {
-  const cleaned = rows
-    .map((row) => ({ number: normalizeMhatsappNumber(row.number), message: String(row.message || "").trim() }))
-    .filter((row) => isValidMhatsappNumber(row.number) && row.message);
-
-  if (cleaned.length === 0) return { ok: false, error: "Gönderilecek geçerli kayıt bulunamadı." };
-
-  // Her kişiye farklı anket bağlantısı gönderildiği için kişiselleştirilmiş
-  // mesajları tek tek gönderiyoruz. Go proxy katmanı `numbers` alanını []string
-  // olarak beklediğinden tek alıcıda dahi dizi kullanmak zorunludur.
   const recipients: MhatsappRecipientResult[] = [];
-  for (let index = 0; index < cleaned.length; index += 1) {
-    const row = cleaned[index];
-    // Her satır zaten tek alıcıya ayrı gönderiliyor. Böylece öğrenci/öğretmen
-    // kişisel linklerinde de "API kabul etti" yerine gerçek WhatsApp gönderimi doğrulanır.
+  const prepared = rows.map((row) => ({
+    number: normalizeMhatsappNumber(row.number),
+    message: String(row.message || "").trim(),
+  }));
+  if (!prepared.length) return { ok: false, error: "Gönderilecek kayıt bulunamadı.", successCount: 0, failureCount: 0, recipients: [] };
+
+  // Kayıtları sessizce eleme. Her öğrenci için ayrı teslim/ret durumu göster.
+  for (let index = 0; index < prepared.length; index += 1) {
+    const row = prepared[index];
+    if (!isValidMhatsappNumber(row.number) || !row.message) {
+      recipients.push({
+        number: row.number,
+        ok: false,
+        error: !row.number ? "Telefon numarası bulunamadı." : !isValidMhatsappNumber(row.number) ? "Telefon numarası geçersiz." : "Mesaj metni boş.",
+      });
+      continue;
+    }
+    // Blocking endpoint bir tek alıcı kabul eder. Sağlayıcı her mesajı ayrı
+    // değerlendirsin; hata alan öğrenci diğerlerinin gönderimini durdurmasın.
     const result = await postMhatsapp(settings, "/api/send-msg-blocking/", {
       action: {
         type: "text",
@@ -426,7 +432,6 @@ export async function sendPersonalizedBulkText(
         message: row.message,
       },
     });
-
     recipients.push({
       number: row.number,
       ok: result.ok,
@@ -435,8 +440,7 @@ export async function sendPersonalizedBulkText(
       error: result.error,
       raw: result.raw,
     });
-
-    if (index < cleaned.length - 1 && settings.delayMs > 0) {
+    if (index < prepared.length - 1 && settings.delayMs > 0) {
       await new Promise((resolve) => window.setTimeout(resolve, settings.delayMs));
     }
   }
@@ -444,12 +448,9 @@ export async function sendPersonalizedBulkText(
   const successCount = recipients.filter((item) => item.ok).length;
   const failureCount = recipients.length - successCount;
   const firstFailure = recipients.find((item) => !item.ok);
-
   return {
     ok: failureCount === 0,
-    status: failureCount === 0
-      ? `${successCount} kişiselleştirilmiş mesaj WhatsApp altyapısına gönderildi.`
-      : `${successCount} başarılı, ${failureCount} başarısız.`,
+    status: `${successCount} onaylandı, ${failureCount} başarısız. Toplam ${recipients.length} alıcı kontrol edildi.`,
     error: firstFailure?.error,
     successCount,
     failureCount,
@@ -457,7 +458,6 @@ export async function sendPersonalizedBulkText(
     raw: recipients.map((item) => ({ number: item.number, response: item.raw })),
   };
 }
-
 
 export function appendMhatsappLog(item: any) {
   try {
