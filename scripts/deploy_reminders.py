@@ -256,15 +256,15 @@ try:
     # Only publish assets after a successful staging build.
     if (LIVE/"dist").exists():os.rename(LIVE/"dist",distBackup)
     shutil.copytree(STAGE/"dist",LIVE/"dist")
-    try:
-        # Plesk --redeploy runs npm install and can damage node_modules permissions.
-        # Restart only; do not install packages or rebuild on the production tree.
-        run(["plesk","ext","nodejs","--restart","-domain","edupanel.dersbende.com"])
-    except Exception as restart_error:
-        print("Plesk restart command not available, trying Passenger restart.txt:",restart_error)
-        passenger_restart = pathlib.Path("/var/www/vhosts/dersbende.com/tmp/restart.txt")
-        assertion(passenger_restart.parent.is_dir(),"Passenger restart directory")
-        passenger_restart.touch()
+    owner = (LIVE/"server.ts").stat()
+    for base, dirs, files in os.walk(str(LIVE/"dist")):
+        for name in dirs + files:
+            os.chown(os.path.join(base,name),owner.st_uid,owner.st_gid)
+        os.chown(base,owner.st_uid,owner.st_gid)
+    # Plesk Passenger restart signal; avoids npm install.
+    passenger_restart = LIVE/"tmp"/"restart.txt"
+    passenger_restart.parent.mkdir(parents=True,exist_ok=True)
+    passenger_restart.touch()
     import urllib.request
     with urllib.request.urlopen("https://edupanel.dersbende.com/api/health",timeout=20) as response:
         assertion(response.status==200,"health HTTP 200")
@@ -282,7 +282,7 @@ except Exception:
             ((LIVE/p).unlink() if (LIVE/p).exists() else None)
     if (LIVE/"dist").exists():shutil.rmtree(LIVE/"dist")
     if distBackup.exists():os.rename(distBackup,LIVE/"dist")
-    try:run(["plesk","ext","nodejs","--restart","-domain","edupanel.dersbende.com"])
+    try:(LIVE/"tmp"/"restart.txt").touch()
     except Exception: pass
     raise
 print("Changes:",", ".join(paths))
