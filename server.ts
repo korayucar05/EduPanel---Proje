@@ -13701,16 +13701,10 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
       }
 
       const safeAction: any = { ...action };
-      // Tek alıcılı blocking mesajlarda gönderen istemcinin hazırladığı
-      // numbers dizisini koru. Medya/toplu uçlar önceki CSV biçimini kullanır.
-      if (safePath === "/api/send-msg-blocking/") {
-        if (typeof safeAction.numbers === "string") {
-          safeAction.numbers = safeAction.numbers.split(",").map((item: string) => item.trim()).filter(Boolean);
-        }
-      } else {
-        if (Array.isArray(safeAction.numbers)) safeAction.numbers = safeAction.numbers.join(",");
-        if (safeAction.numbers !== undefined) safeAction.numbers = String(safeAction.numbers);
-      }
+      // mHatsapp Go ActionStruct expects action.numbers as a string, not an array.
+      // Normalize one or multiple recipients to comma-separated text.
+      if (Array.isArray(safeAction.numbers)) safeAction.numbers = safeAction.numbers.join(",");
+      if (safeAction.numbers !== undefined) safeAction.numbers = String(safeAction.numbers);
       if (safeAction.message === undefined || safeAction.message === null) safeAction.message = " ";
       if (safeAction.filename) safeAction.filename = String(safeAction.filename);
       if (safeAction.file) safeAction.file = String(safeAction.file).replace(/^data:[^,]+,/, "");
