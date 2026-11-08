@@ -385,7 +385,6 @@ export default function ParentStudentPortalView() {
   });
   const [openingReminders, setOpeningReminders] = React.useState<Array<{ id: string; title: string; detail: string }>>([]);
   const [openingReminderVisible, setOpeningReminderVisible] = React.useState(false);
-  const openingReminderLoaded = React.useRef(false);
   const [error, setError] = React.useState("");
   const [loading, setLoading] = React.useState(() => payload === null);
   const cachePortalIdentity = React.useCallback((value: PortalPayload) => {
@@ -1834,8 +1833,7 @@ export default function ParentStudentPortalView() {
 
   // Öğrencinin kendi sınavlarına ait hatırlatmalar, açılıştan itibaren 48 saatlik pencerede görünür.
   React.useEffect(() => {
-    if (!payload?.studentId || openingReminderLoaded.current) return;
-    openingReminderLoaded.current = true;
+    if (!token || !payload || kind !== "student") return;
     let active = true;
     const getRows = async (url: string, field = "reminders") => {
       try {
