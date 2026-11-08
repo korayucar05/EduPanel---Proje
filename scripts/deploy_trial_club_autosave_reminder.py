@@ -48,12 +48,12 @@ latestOptic=github(OPTIC)
 currentServer=(LIVE/SERVER).read_text(encoding="utf-8")
 currentOptic=(LIVE/OPTIC).read_text(encoding="utf-8")
 # Only alter the reminder details and end-of-exam background evaluation loop.
-remindBegin='        const detail = '
+remindBegin='        const duration = Number('
 remindEnd='      }\n      // Seat assignments are included'
 sA,sB=region(currentServer,'  // BEGIN STUDENT_EXAM_OPENING_REMINDERS_V2','  // END STUDENT_EXAM_OPENING_REMINDERS_V2')
 gA,gB=region(latestServer,'  // BEGIN STUDENT_EXAM_OPENING_REMINDERS_V2','  // END STUDENT_EXAM_OPENING_REMINDERS_V2')
 livePart=currentServer[sA:sB]; newPart=latestServer[gA:gB]
-require(livePart.count(remindBegin)==1 and newPart.count(remindBegin)==1,"Reminder detail marker mismatch")
+require(livePart.count(remindBegin)==1 and newPart.count(remindBegin)==1,"Reminder date-time marker mismatch")
 livePart=replace_region(livePart,newPart,remindBegin,remindEnd)
 mergedServer=currentServer[:sA]+livePart+currentServer[sB:]
 mergedServer=replace_region(mergedServer,latestServer,'  const trialAutoEvaluationPending = () => {','  // Sunucu çalışırken 15 sn aralıklarla kontrol et; ilk tarama açılışta yapılır.')
