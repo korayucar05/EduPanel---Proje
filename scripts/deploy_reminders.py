@@ -22,7 +22,7 @@ def required_replace(s, old, new, what):
     return s.replace(old,new,1)
 
 def gitfile(path):
-    return subprocess.check_output(["git","-C",str(CLONE),"show","FETCH_HEAD:"+path],text=True)
+    return subprocess.check_output(["git","-C",str(CLONE),"show","FETCH_HEAD:"+path]).decode("utf-8")
 
 def write(path, content):
     file = STAGE/path
@@ -294,7 +294,7 @@ except Exception:
                 (LIVE/p).write_bytes(source.read())
     for p in paths[4:]:
         if p in changed:
-            (LIVE/p).unlink(missing_ok=True)
+            ((LIVE/p).unlink() if (LIVE/p).exists() else None)
     if (LIVE/"dist").exists():shutil.rmtree(LIVE/"dist")
     if distBackup.exists():os.rename(distBackup,LIVE/"dist")
     try:run(["plesk","ext","nodejs","--redeploy","-domain","edupanel.dersbende.com"])
