@@ -1831,91 +1831,41 @@ export default function ParentStudentPortalView() {
     }
   }, [kind, payload?.studentId, payload?.studentNumber]);
 
-  // Öğrencinin kendi sınavlarına ait hatırlatmalar, açılıştan itibaren 48 saatlik pencerede görünür.
+  // Öğrencinin açılış bildirimleri, sunucuda kendi bağlantı anahtarıyla yetkilendirilir.
   React.useEffect(() => {
-    if (!token || !payload || kind !== "student") return;
+    if (!token || !payload?.studentId || kind !== "student") return;
     let active = true;
-    const getRows = async (url: string, field = "reminders") => {
+    const getRows = async (url: string) => {
       try {
         const response = await fetch(url, { cache: "no-store" });
         if (!response.ok) return [] as any[];
         const json = await response.json();
-        return Array.isArray(json) ? json : Array.isArray(json?.[field]) ? json[field] : [];
+        return Array.isArray(json?.reminders) ? json.reminders : [];
       } catch { return [] as any[]; }
     };
-    const eventTime = (date: unknown, time: unknown): string => {
-      const raw = String(date || "").trim();
-      if (/T\d{2}:\d{2}/.test(raw)) return raw;
-      return localExamTimestamp(raw, time);
-    };
-    const momentLabel = (date: unknown, time: unknown): string => {
-      const raw = eventTime(date, time);
-      const ms = Date.parse(/(?:Z|[+-]\d{2}:?\d{2})$/.test(raw) ? raw : raw + ":00+03:00");
-      if (!Number.isFinite(ms)) return "Tarih veya saat belirtilmedi";
-      const formatter = new Intl.DateTimeFormat("tr-TR", {
-        timeZone: "Europe/Istanbul", weekday: "long", day: "2-digit", month: "2-digit",
-        year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false,
-      });
-      return formatter.format(ms);
-    };
     const load = async () => {
-      // Bu ekranın verileri yalnızca öğrencinin kendi bağlantısıyla sorgulanır.
-      const [seating, trialClub, manual] = await Promise.all([
-        getRows("/api/database/collections/studentAppAnnouncements", "reminders"),
-        kind === "student" ? getRows(`/api/public-portal/${encodeURIComponent(token)}/trial-club`, "exams") : Promise.resolve([] as any[]),
+      const [exams, manual] = await Promise.all([
+        getRows(`/api/public-portal/${encodeURIComponent(token)}/exam-opening-reminders`),
         getRows(`/api/public-portal/${encodeURIComponent(token)}/reminder-information`),
       ]);
       if (!active) return;
-      const sid = String(payload.studentId || "").trim();
-      const snum = String(payload.studentNumber || "").trim();
-      const schoolId = String(payload.schoolId || "school-main");
-      const placement = seating.filter((row: any) => {
-        if (row?.source !== "exam-seating") return false;
-        if (row?.schoolId && String(row.schoolId) !== schoolId) return false;
-        const belongs = (sid && String(row?.recipientStudentId || "").trim() === sid) ||
-          (snum && String(row?.recipientStudentNumber || "").trim() === snum);
-        return belongs && inNext48Hours(eventTime(row.examDate || row.date, row.examTime || row.startTime));
-      }).map((row: any) => ({
-        id: "seating:" + String(row.id),
-        title: "Ortak sınav: " + String(row.courseName || row.subjectName || row.lessonName || row.examName || row.title || "Sınav"),
-        detail: [
-          momentLabel(row.examDate || row.date, row.examTime || row.startTime),
-          row.buildingName ? "Bina: " + row.buildingName : "",
-          row.roomName || row.classroomName ? "Sınıf/Salon: " + String(row.roomName || row.classroomName) : "",
-          row.seatNumber != null && row.seatNumber !== "" ? "Sıra No: " + row.seatNumber : "",
-          "Modül: Ortak Sınavlar",
-        ].filter(Boolean).join(" · "),
-      }));
-      const trialItems = trialClub.filter((exam: any) =>
-        exam && exam.electronic === true && exam.submitted !== true &&
-        Number.isFinite(Number(exam.startsAt)) && Number(exam.startsAt) >= Date.now() && Number(exam.startsAt) <= Date.now() + 48 * 60 * 60 * 1000
-      ).map((exam: any) => {
-        const start = Number(exam.startsAt);
-        const duration = Number(exam.durationMinutes);
-        const date = Number.isFinite(start) && start > 0 ? new Date(start).toISOString() : "";
-        return {
-          id: "trial-club:" + String(exam.id),
-          title: "Deneme sınavı: " + String(exam.examName || "Deneme"),
-          detail: [
-            "Başlangıç: " + momentLabel(date, ""),
-            Number.isFinite(duration) && duration > 0 ? "Süre: " + duration + " dakika" : "",
-            "Deneme Kulübü → Sınav butonundan elektronik optik formunu doldurun.",
-            "Cevaplamayı bitirdiğinizde Kaydet butonuna tıklamayı unutmayın.",
-            "Kaydetme işlemi tek seferliktir.",
-          ].filter(Boolean).join(" · "),
-        };
-      });
-      const manualItems = manual.map((row: any) => ({
-        id: "manual:" + String(row.id), title: String(row.title || "Hatırlatma"),
-        detail: [row.body, row.kind].filter(Boolean).join(" · "),
-      }));
-      const items = [...placement, ...trialItems, ...manualItems];
+      const items = [
+        ...exams.map((row: any) => ({
+          id: String(row.id), title: String(row.title || "Sınav hatırlatması"),
+          detail: String(row.detail || ""),
+        })),
+        ...manual.map((row: any) => ({
+          id: "manual:" + String(row.id),
+          title: String(row.title || "Hatırlatma"),
+          detail: [row.body, row.kind].filter(Boolean).join(" · "),
+        })),
+      ];
       setOpeningReminders(items);
-      if (items.length) setOpeningReminderVisible(true);
+      setOpeningReminderVisible(items.length > 0);
     };
     void load();
     return () => { active = false; };
-  }, [payload?.studentId, payload?.studentNumber, payload?.schoolId, kind, token]);
+  }, [payload?.studentId, payload?.schoolId, kind, token]);
 
   const openAnnouncements = async () => {
     setAnnouncementTab("announcements");
