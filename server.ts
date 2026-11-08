@@ -14925,15 +14925,16 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
         const startsAt = trialTimedStart(exam);
         if (!inWindow(startsAt)) continue;
         const electronic = isElectronicTrialClubExam(exam);
-        if (electronic && Array.isArray(exam.studentTxtRecords) &&
-            exam.studentTxtRecords.some((record: any) => trialClubRecordMatchesPortal(record, portal))) continue;
+        const alreadySubmitted = electronic && Array.isArray(exam.studentTxtRecords) &&
+          exam.studentTxtRecords.some((record: any) => trialClubRecordMatchesPortal(record, portal));
         const duration = Number(exam.electronicDurationMinutes || exam.durationMinutes || exam.examDurationMinutes || 0);
         const label = trialClubText(exam.examName || exam.name || exam.title || exam.examType || "Deneme sınavı");
         const detail = [
           "Başlangıç: " + formatMoment(startsAt),
           Number.isFinite(duration) && duration > 0 ? "Süre: " + Math.round(duration) + " dakika" : "",
-          electronic && club ? "Deneme Kulübü → Sınav butonundan elektronik optik formunu doldurun." : "",
-          electronic && club ? "Sınavı bitirince Kaydet butonuna tıklamayı unutmayın. Kayıt tek seferliktir." : "",
+          electronic && club && !alreadySubmitted ? "Deneme Kulübü → Sınav butonundan elektronik optik formunu doldurun." : "",
+          electronic && club && !alreadySubmitted ? "Sınavı bitirince Kaydet butonuna tıklamayı unutmayın. Kayıt tek seferliktir." : "",
+          electronic && club && alreadySubmitted ? "Elektronik optik cevaplarınız kaydedilmiş. Tekrar gönderim yapılamaz." : "",
           club ? "Katılımcı: Deneme Kulübü (Kayıt Merkezi)" : "Katılımcı: Okul Öğrencileri",
         ].filter(Boolean).join(" · ");
         rows.push({ id:"exam:"+String(exam.id || exam.__documentId), title:"Sınav hatırlatması: "+label, detail });
