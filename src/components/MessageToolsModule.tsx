@@ -55,6 +55,7 @@ function PortalLinkManager({
   const [classroom, setClassroom] = useState("");
   const [busy, setBusy] = useState(false);
   const [info, setInfo] = useState("");
+  const [deliveryRows, setDeliveryRows] = useState<Array<{ id: string; name: string; number: string; status: string; ok: boolean }>>([]);
 
   useEffect(() => {
     let active = true;
@@ -163,24 +164,20 @@ function PortalLinkManager({
   }, [classroom]);
 
   const createAndSend = async (ids: string[]) => {
-    if (!ids.length) return;
+    if (!ids.length || busy) return;
     setBusy(true);
     setInfo("");
+    setDeliveryRows([]);
     try {
-      const selectedTargets = targets.filter((item) =>
-        ids.includes(item.id),
-      );
-
-      if (!selectedTargets.length) {
-        throw new Error("Seçilen öğrenci kayıtları bulunamadı.");
+      const uniqueIds = Array.from(new Set(ids));
+      const selectedTargets = targets.filter((item) => uniqueIds.includes(item.id));
+      if (selectedTargets.length !== uniqueIds.length) {
+        throw new Error("Bazı öğrenciler güncel listede bulunamadı. Sınıf listesini yeniden yükleyiniz.");
       }
 
       const response = await fetch("/api/behavior/teacher-links/public-portal-links", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...portalAuthHeaders(),
-        },
+        headers: { "Content-Type": "application/json", ...portalAuthHeaders() },
         body: JSON.stringify({
           kind,
           targets: selectedTargets.map((item) => ({
@@ -196,27 +193,52 @@ function PortalLinkManager({
       if (!response.ok) throw new Error(data?.error || "Linkler oluşturulamadı.");
 
       const links = Array.isArray(data.links) ? data.links : [];
-      const rows = links
-        .filter((item: any) => item.phone && item.url)
-        .map((item: any) => ({
-          number: item.phone,
-          message:
-            kind === "parent"
-              ? `e-Nstitü Veli Uygulaması\n\n${item.studentName} için size özel uygulama bağlantısı:\n${item.url}\n\nBağlantıyı açarak uygulamayı telefonunuza yükleyebilirsiniz.`
-              : `e-Nstitü Öğrenci Uygulaması\n\n${item.studentName}, size özel uygulama bağlantınız:\n${item.url}\n\nBağlantıyı açarak uygulamayı telefonunuza yükleyebilirsiniz.`,
-        }));
-
+      const linkById = new Map<string, any>(links.map((item: any) => [String(item.requestId || ""), item]));
+      const rows: Array<{ id: string; name: string; number: string; phone: string; message: string }> = [];
+      const initial: Array<{ id: string; name: string; number: string; status: string; ok: boolean }> = [];
+      for (const item of selectedTargets) {
+        const link = linkById.get(item.id);
+        if (!link?.url) {
+          initial.push({ id: item.id, name: item.name, number: item.number, status: "Kişisel bağlantı oluşturulamadı.", ok: false });
+          continue;
+        }
+        if (!link.phone) {
+          initial.push({ id: item.id, name: item.name, number: item.number, status: "Telefon numarası kayıtlı değil.", ok: false });
+          continue;
+        }
+        rows.push({
+          id: item.id,
+          name: item.name,
+          number: item.number,
+          message: kind === "parent"
+            ? `e-Nstitü Veli Uygulaması\n\n${item.name} için size özel uygulama bağlantısı:\n${link.url}\n\nBağlantıyı açarak uygulamayı telefonunuza yükleyebilirsiniz.`
+            : `e-Nstitü Öğrenci Uygulaması\n\n${item.name}, size özel uygulama bağlantınız:\n${link.url}\n\nBağlantıyı açarak uygulamayı telefonunuza yükleyebilirsiniz.`,
+          // Telefonu saklayan API'nin ürettiği değer kullanılır; öğrenci kartı üzerinden tahmin edilmez.
+          phone: String(link.phone),
+        });
+      }
       if (!rows.length) {
-        setInfo("Linkler oluşturuldu ancak seçilen kişilerde geçerli telefon numarası bulunamadı.");
+        setDeliveryRows(initial);
+        setInfo(`Seçilen ${selectedTargets.length} öğrencinin hiçbirine gönderim yapılamadı. Eksik telefon ve bağlantı durumlarını aşağıda kontrol ediniz.`);
         return;
       }
-
-      const result = await sendPersonalizedBulkText(settings, rows);
-      setInfo(
-        result.ok
-          ? `${rows.length} kişiye uygulama linki gönderildi.`
-          : result.error || result.status || "Gönderim tamamlanamadı."
-      );
+      const result = await sendPersonalizedBulkText(settings, rows.map((item) => ({
+        number: item.phone, message: item.message,
+      })));
+      const statuses = rows.map((item, index) => {
+        const sent = result.recipients?.[index];
+        return {
+          id: item.id,
+          name: item.name,
+          number: item.number,
+          ok: Boolean(sent?.ok),
+          status: sent?.ok ? "WhatsApp altyapısı onayladı." : sent?.error || sent?.status || "Gönderim onaylanmadı.",
+        };
+      });
+      const combined = [...initial, ...statuses];
+      setDeliveryRows(combined);
+      const passed = combined.filter((item) => item.ok).length;
+      setInfo(`Seçilen: ${selectedTargets.length} · WhatsApp onaylı: ${passed} · Gönderilemeyen: ${combined.length - passed}. Ayrıntılar aşağıda.`);
     } catch (error: any) {
       setInfo(error?.message || "İşlem tamamlanamadı.");
     } finally {
@@ -406,6 +428,16 @@ function PortalLinkManager({
       {info ? (
         <div className="mt-3 rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-600">
           {info}
+        </div>
+      ) : null}
+      {deliveryRows.length > 0 ? (
+        <div className="mt-3 max-h-64 space-y-1 overflow-y-auto rounded-xl border border-slate-200 p-2" aria-label="Öğrenci bazında mesaj gönderim sonuçları">
+          {deliveryRows.map((item) => (
+            <div key={item.id} className={`flex items-start justify-between gap-3 rounded-lg px-3 py-2 text-xs ${item.ok ? "bg-emerald-50 text-emerald-800" : "bg-rose-50 text-rose-800"}`}>
+              <span className="font-semibold">{item.name} · No {item.number || "—"}</span>
+              <span className="text-right font-bold">{item.status}</span>
+            </div>
+          ))}
         </div>
       ) : null}
     </section>
