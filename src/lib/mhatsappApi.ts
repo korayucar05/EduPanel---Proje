@@ -403,6 +403,7 @@ export async function sendMediaMessage(
 export async function sendPersonalizedBulkText(
   settings: MhatsappSettings,
   rows: MhatsappRecipientMessage[],
+  endpoint: "blocking" | "standard" = "blocking",
 ): Promise<MhatsappSendResult> {
   const recipients: MhatsappRecipientResult[] = [];
   const prepared = rows.map((row) => ({
@@ -424,7 +425,7 @@ export async function sendPersonalizedBulkText(
     }
     // Blocking endpoint bir tek alıcı kabul eder. Sağlayıcı her mesajı ayrı
     // değerlendirsin; hata alan öğrenci diğerlerinin gönderimini durdurmasın.
-    const result = await postMhatsapp(settings, "/api/send-msg-blocking/", {
+    const result = await postMhatsapp(settings, endpoint === "standard" ? "/api/v3/message/send/" : "/api/send-msg-blocking/", {
       action: {
         type: "text",
         token: [settings.token.trim()],
