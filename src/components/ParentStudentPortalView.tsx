@@ -1879,14 +1879,14 @@ export default function ParentStudentPortalView() {
         const at = localExamTimestamp(row?.meta?.date || row?.date, row?.meta?.time || row?.time);
         return at ? inNext48Hours(at) : days >= 0 && days <= 2;
       }).map((row: any) => ({ id: String(row.id), title: String(row.title || "Deneme sınavı"), detail: `${displayExamMoment(row?.meta?.date || row?.date, row?.meta?.time || row?.time)} · Modül: Sınavlar / Deneme Sınavları` }));
-      const manualItems = activeCustomReminders(manual, kind, String(payload.schoolId || "")).map(row => ({ id: `manual:${row.id}`, title: row.title, detail: `${row.body} · ${row.kind}` }));
+      const manualItems = activeCustomReminders(manual, kind, String(payload.schoolId || "school-main")).map(row => ({ id: `manual:${row.id}`, title: row.title, detail: `${row.body} · ${row.kind}` }));
       const items = [...placement, ...trialItems, ...manualItems];
       setOpeningReminders(items);
       if (items.length) setOpeningReminderVisible(true);
     };
     void load();
     return () => { active = false; };
-  }, [payload?.studentId, payload?.studentNumber, token]);
+  }, [payload?.studentId, payload?.studentNumber, payload?.schoolId, kind, token]);
 
   const openAnnouncements = async () => {
     setAnnouncementTab("announcements");
