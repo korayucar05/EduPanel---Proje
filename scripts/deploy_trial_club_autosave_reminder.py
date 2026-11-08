@@ -10,6 +10,7 @@ BACKUP=ROOT/("deneme-oto-kayit-yedek-"+STAMP+".tar.gz")
 DISTOLD=ROOT/("deneme-oto-kayit-eski-dist-"+STAMP)
 SERVER="server.ts"
 OPTIC="src/components/TrialClubView.tsx"
+PORTAL="src/components/ParentStudentPortalView.tsx"
 os.environ["PATH"]="/opt/plesk/node/22/bin:"+os.environ.get("PATH","")
 def require(ok,msg):
     if not ok:raise RuntimeError("STOP: "+msg)
@@ -42,11 +43,13 @@ def health():
         except Exception:pass
         time.sleep(2)
     raise RuntimeError("API health failed")
-require((LIVE/SERVER).is_file() and (LIVE/OPTIC).is_file(),"Live files missing")
+require((LIVE/SERVER).is_file() and (LIVE/OPTIC).is_file() and (LIVE/PORTAL).is_file(),"Live files missing")
 latestServer=github(SERVER)
 latestOptic=github(OPTIC)
+latestPortal=github(PORTAL)
 currentServer=(LIVE/SERVER).read_text(encoding="utf-8")
 currentOptic=(LIVE/OPTIC).read_text(encoding="utf-8")
+currentPortal=(LIVE/PORTAL).read_text(encoding="utf-8")
 # Only alter the reminder details and end-of-exam background evaluation loop.
 remindBegin='        const duration = Number('
 remindEnd='      }\n      // Seat assignments are included'
@@ -68,7 +71,15 @@ mergedOptic=replace_once(mergedOptic,'onClick={() => { setElectronicBooklet(book
 mergedOptic=replace_once(mergedOptic,'Sınav sona ermiştir. Şu andan itibaren cevaplama işlemi yapılamayacaktır. Kaydet tuşuna basarak optik formu kapatabilirsiniz.','Sınav süresi doldu. Kaydedilmiş cevaplar otomatik olarak kesinleştirilir ve değerlendirmeye alınır.')
 mergedOptic=replace_once(mergedOptic,'{!pending && !exam.finalized ? <><div className=','{!pending && !expired && !exam.finalized ? <><div className=')
 require('persistElectronicDraft' in mergedOptic and 'electronicAutoSaveQueue' in mergedOptic,"Draft save not applied")
-require(currentServer!=mergedServer and currentOptic!=mergedOptic,"No changes detected")
+# Restrict the notification popup to the heading and date/time only.
+oldHeader='<div><div className="text-[10px] font-black uppercase tracking-widest text-rose-700">e-Nstitü</div><h2 className="text-lg font-black text-slate-950">Sınav Hatırlatmaları</h2></div>'
+newHeader='<div><h2 className="text-lg font-black text-slate-950">Deneme Sınavınız Var</h2></div>'
+oldCard='<div className="text-sm font-black text-slate-900">{item.title}</div><div className="mt-1 text-xs font-semibold leading-5 text-slate-600">{item.detail}</div>'
+newCard='{item.title !== "Deneme Sınavınız Var" ? <div className="text-sm font-black text-slate-900">{item.title}</div> : null}<div className="text-sm font-semibold leading-6 text-slate-700">{item.detail}</div>'
+require(latestPortal.count(newHeader)==1 and latestPortal.count(newCard)==1,"GitHub popup format missing")
+mergedPortal=replace_once(currentPortal,oldHeader,newHeader)
+mergedPortal=replace_once(mergedPortal,oldCard,newCard)
+require(currentServer!=mergedServer and currentOptic!=mergedOptic and currentPortal!=mergedPortal,"No changes detected")
 print("Staging production build...",flush=True)
 STAGE.mkdir(parents=True,exist_ok=False)
 with subprocess.Popen(["tar","-C",str(LIVE),"--exclude=./node_modules","--exclude=./dist","--exclude=./backups","--exclude=./.git","-cf","-","."],stdout=subprocess.PIPE) as tar:
@@ -78,19 +89,21 @@ with subprocess.Popen(["tar","-C",str(LIVE),"--exclude=./node_modules","--exclud
 (STAGE/"node_modules").symlink_to(LIVE/"node_modules",target_is_directory=True)
 (STAGE/SERVER).write_text(mergedServer,encoding="utf-8")
 (STAGE/OPTIC).write_text(mergedOptic,encoding="utf-8")
+(STAGE/PORTAL).write_text(mergedPortal,encoding="utf-8")
 subprocess.check_call(["npm","run","build"],cwd=str(STAGE))
 require((STAGE/"dist"/"index.html").is_file(),"Build output missing")
 print("Backing up source and static assets...",flush=True)
 with tarfile.open(str(BACKUP),"w:gz") as saved:
     saved.add(str(LIVE/SERVER),arcname=SERVER)
     saved.add(str(LIVE/OPTIC),arcname=OPTIC)
+    saved.add(str(LIVE/PORTAL),arcname=PORTAL)
     saved.add(str(LIVE/"dist"),arcname="dist")
 require(BACKUP.stat().st_size>10000,"Backup incomplete")
-owners={rel:(LIVE/rel).stat() for rel in [SERVER,OPTIC]}
+owners={rel:(LIVE/rel).stat() for rel in [SERVER,OPTIC,PORTAL]}
 changed=[]
 assets=False
 try:
-    for rel,content in [(SERVER,mergedServer),(OPTIC,mergedOptic)]:
+    for rel,content in [(SERVER,mergedServer),(OPTIC,mergedOptic),(PORTAL,mergedPortal)]:
         dst=LIVE/rel
         temp=dst.with_name(dst.name+".deneme-oto-kayit-new")
         temp.write_text(content,encoding="utf-8")
