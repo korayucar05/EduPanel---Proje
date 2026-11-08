@@ -56,6 +56,8 @@ function PortalLinkManager({
   const [busy, setBusy] = useState(false);
   const [info, setInfo] = useState("");
   const [deliveryRows, setDeliveryRows] = useState<Array<{ id: string; name: string; number: string; status: string; ok: boolean }>>([]);
+  const [failedLinkMessages, setFailedLinkMessages] = useState<Array<{ id: string; phone: string; message: string }>>([]);
+
 
   useEffect(() => {
     let active = true;
@@ -168,6 +170,7 @@ function PortalLinkManager({
     setBusy(true);
     setInfo("");
     setDeliveryRows([]);
+    setFailedLinkMessages([]);
     try {
       const uniqueIds = Array.from(new Set(ids));
       const selectedTargets = targets.filter((item) => uniqueIds.includes(item.id));
@@ -237,10 +240,45 @@ function PortalLinkManager({
       });
       const combined = [...initial, ...statuses];
       setDeliveryRows(combined);
+      setFailedLinkMessages(rows.filter((_, index) => !result.recipients?.[index]?.ok)
+        .map((item) => ({ id: item.id, phone: item.phone, message: item.message })));
       const passed = combined.filter((item) => item.ok).length;
       setInfo(`Seçilen: ${selectedTargets.length} · WhatsApp onaylı: ${passed} · Gönderilemeyen: ${combined.length - passed}. Ayrıntılar aşağıda.`);
     } catch (error: any) {
       setInfo(error?.message || "İşlem tamamlanamadı.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const retryFailedViaStandard = async () => {
+    if (busy || !failedLinkMessages.length) return;
+    setBusy(true);
+    setInfo("Yalnız önceki denemede onay alınamayan alıcılar alternatif API ile kontrol ediliyor…");
+    const pending = [...failedLinkMessages];
+    try {
+      const result = await sendPersonalizedBulkText(settings, pending.map((item) => ({
+        number: item.phone, message: item.message,
+      })), "standard");
+      const outcome = new Map<string, { ok: boolean; status: string }>();
+      pending.forEach((item, index) => {
+        const response = result.recipients?.[index];
+        outcome.set(item.id, {
+          ok: Boolean(response?.ok),
+          status: response?.ok
+            ? "Alternatif API gönderimi onayladı."
+            : response?.error || response?.status || "Alternatif API gönderimi onaylamadı.",
+        });
+      });
+      setDeliveryRows((current) => current.map((item) => {
+        const latest = outcome.get(item.id);
+        return latest ? { ...item, ...latest } : item;
+      }));
+      const stillFailed = pending.filter((item) => !outcome.get(item.id)?.ok);
+      setFailedLinkMessages(stillFailed);
+      setInfo(`Alternatif API denemesi: ${pending.length - stillFailed.length} onaylı, ${stillFailed.length} onaysız. Başarılı alıcılara tekrar gönderim yapılmadı.`);
+    } catch (error: any) {
+      setInfo(error?.message || "Alternatif API denemesi başarısız.");
     } finally {
       setBusy(false);
     }
@@ -428,6 +466,22 @@ function PortalLinkManager({
       {info ? (
         <div className="mt-3 rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-600">
           {info}
+        </div>
+      ) : null}
+      {failedLinkMessages.length > 0 ? (
+        <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3">
+          <p className="mb-2 text-xs font-bold text-amber-900">
+            {failedLinkMessages.length} alıcı için mHatsapp onayı alınmadı. Mesaj iletilmiş olma ihtimaline karşı, aşağıdaki işlem yalnızca açık onayınızla ikinci bir deneme yapar.
+          </p>
+          <button type="button" disabled={busy}
+            onClick={() => {
+              if (window.confirm("Yalnızca önceki denemede onay alınamayan " + failedLinkMessages.length + " alıcıya alternatif API üzerinden tekrar mesaj gönderilsin mi? Mükerrer mesaj ihtimali vardır.")) {
+                void retryFailedViaStandard();
+              }
+            }}
+            className="rounded-lg bg-amber-700 px-4 py-2 text-xs font-black text-white disabled:opacity-50">
+            {busy ? "Gönderim sürüyor…" : `Onaysız ${failedLinkMessages.length} Alıcıyı Alternatif API ile Dene`}
+          </button>
         </div>
       ) : null}
       {deliveryRows.length > 0 ? (
