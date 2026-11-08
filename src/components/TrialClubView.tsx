@@ -269,25 +269,6 @@ export default function TrialClubView({
     setError("");
   };
 
-  const runStaffExamAction = async (exam: TrialClubExam, action: "publish-answer-key" | "repair" | "evaluate" | "publish-results" | "archive") => {
-    if (mode !== "staff") return;
-    setSaving(true);
-    setError("");
-    setNotice("");
-    try {
-      await requestJson(`/api/behavior/teacher-links/${encodeURIComponent(token)}/trial-club/exams/${encodeURIComponent(exam.id)}/action`, {
-        method: "POST",
-        body: JSON.stringify({ action }),
-      });
-      setNotice(action === "publish-answer-key" ? "CEVAP ANAHTARI YAYINLANDI." : action === "publish-results" ? "SONUÇLAR YAYINLANDI." : action === "archive" ? "SINAV ARŞİVLENDİ." : "İŞLEM TAMAMLANDI.");
-      await load();
-    } catch (reason: any) {
-      setError(reason?.message || "SINAV İŞLEMİ TAMAMLANAMADI.");
-    } finally {
-      setSaving(false);
-    }
-  };
-
   const saveTargets = async () => {
     if (!selectedExam || !payload.canEditTargets || mode !== "portal") return;
     setSaving(true);
@@ -634,15 +615,6 @@ export default function TrialClubView({
                           <strong className="block text-[13px] font-black text-slate-950">{exam.examName || `${exam.examNumber}. DENEME`}</strong>
                           {exam.publishedResult ? <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[8px] font-black text-indigo-700">SONUÇ YAYIMLANDI</span> : exam.electronic ? <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[7px] font-black text-emerald-700">ELEKTRONİK OPTİK</span> : null}
                         </span>
-                        {mode === "staff" ? (
-                          <span className="mt-2 grid grid-cols-2 gap-1.5" onClick={(event) => event.stopPropagation()}>
-                            <span role="button" tabIndex={0} onClick={() => void runStaffExamAction(exam, "publish-answer-key")} className="rounded-lg bg-emerald-700 px-2 py-1.5 text-center text-[8px] font-black text-white">Cevap anahtarını yayınla</span>
-                            <span role="button" tabIndex={0} onClick={() => void runStaffExamAction(exam, "repair")} className="rounded-lg bg-amber-600 px-2 py-1.5 text-center text-[8px] font-black text-white">Hataları gider</span>
-                            <span role="button" tabIndex={0} onClick={() => void runStaffExamAction(exam, "evaluate")} className="rounded-lg bg-indigo-700 px-2 py-1.5 text-center text-[8px] font-black text-white">Sınavı değerlendir</span>
-                            <span role="button" tabIndex={0} onClick={() => void runStaffExamAction(exam, "publish-results")} className="rounded-lg bg-fuchsia-700 px-2 py-1.5 text-center text-[8px] font-black text-white">Sonuçları yayınla</span>
-                            <span role="button" tabIndex={0} onClick={() => void runStaffExamAction(exam, "archive")} className="col-span-2 rounded-lg bg-slate-700 px-2 py-1.5 text-center text-[8px] font-black text-white">Arşive kaldır</span>
-                          </span>
-                        ) : null}
                         <span className="mt-1 block text-[9px] font-black text-indigo-600">{formatDate(exam.examDate)}</span>
                         <span className="mt-1 block text-[9px] font-bold text-slate-400">
                           {mode === "staff" ? `${exam.gradeLevel}. SINIF · ` : ""}{totalQuestionCount(exam)} SORU · {exam.subjects.length} DERS
