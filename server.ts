@@ -14886,6 +14886,90 @@ Sadece ve sadece geÃ§erli bir JSON objesi dÃ¶ndÃ¼r. Metin aÃ§Ä±klamas�
   };
   const trialTimedDuration = (exam: any) => Math.max(1, Math.min(600, Number(exam?.electronicDurationMinutes || 120)));
   const trialTimedEnd = (exam: any) => { const start = trialTimedStart(exam); return start ? start + trialTimedDuration(exam) * 60_000 : 0; };
+
+  // BEGIN STUDENT_EXAM_OPENING_REMINDERS_V2
+  // Only the student carrying a valid portal token may read these notices.
+  app.get("/api/public-portal/:token/exam-opening-reminders", (request, response) => {
+    try {
+      const portal: any = findPublicPortalByToken(String(request.params.token || ""));
+      if (!portal || String(portal.kind || "") !== "student") {
+        return response.status(404).json({ error: "Öğrenci bağlantısı bulunamadı." });
+      }
+      const now = Date.now();
+      const latest = now + 48 * 60 * 60 * 1000;
+      const inWindow = (stamp: number) => Number.isFinite(stamp) && stamp >= now && stamp <= latest;
+      const studentSchool = String(portal.schoolId || "school-main");
+      const studentGrade = trialClubGrade(portal.classroom);
+      const studentId = trialClubText(portal.studentId);
+      const studentNo = trialClubNumber(portal.studentNumber);
+      const normal = (v: unknown) => trialClubText(v).toLocaleUpperCase("tr-TR").replace(/\s+/g," ");
+      const studentClass = normal(portal.classroom).replace(/[\s\-_/]+/g,"");
+      const studentRegistered = Boolean(trialClubRegistrationForPortal(portal));
+      const formatMoment = (stamp: number) => new Intl.DateTimeFormat("tr-TR", {
+        timeZone: "Europe/Istanbul", weekday: "long", day: "2-digit", month: "2-digit",
+        year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false,
+      }).format(new Date(stamp));
+      const rows: Array<{id:string;title:string;detail:string}> = [];
+      for (const exam of (listDocuments("exams") as any[])) {
+        if (!exam || exam.active === false || exam.deleted === true) continue;
+        if (exam.schoolId && String(exam.schoolId) !== studentSchool) continue;
+        const group = trialClubText(exam.participantGroup).toLocaleLowerCase("tr-TR");
+        const club = isTrialClubExamRecord(exam);
+        if (club && !studentRegistered) continue;
+        if (!club && group && group !== "school") continue;
+        const examGrade = trialClubGrade(exam.gradeLevel);
+        const exactGrade = trialClubText(exam.gradeLevel).toLocaleUpperCase("tr-TR");
+        if (studentGrade && examGrade && examGrade !== studentGrade) continue;
+        if (!examGrade && exactGrade === "YKS" && studentGrade && !["11","12"].includes(studentGrade)) continue;
+        // School exams are assigned to the selected grade; club exams to registered club members.
+        const startsAt = trialTimedStart(exam);
+        if (!inWindow(startsAt)) continue;
+        const electronic = isElectronicTrialClubExam(exam);
+        if (electronic && Array.isArray(exam.studentTxtRecords) &&
+            exam.studentTxtRecords.some((record: any) => trialClubRecordMatchesPortal(record, portal))) continue;
+        const duration = Number(exam.electronicDurationMinutes || exam.durationMinutes || exam.examDurationMinutes || 0);
+        const label = trialClubText(exam.examName || exam.name || exam.title || exam.examType || "Deneme sınavı");
+        const detail = [
+          "Başlangıç: " + formatMoment(startsAt),
+          Number.isFinite(duration) && duration > 0 ? "Süre: " + Math.round(duration) + " dakika" : "",
+          electronic && club ? "Deneme Kulübü → Sınav butonundan elektronik optik formunu doldurun." : "",
+          electronic && club ? "Sınavı bitirince Kaydet butonuna tıklamayı unutmayın. Kayıt tek seferliktir." : "",
+          club ? "Katılımcı: Deneme Kulübü (Kayıt Merkezi)" : "Katılımcı: Okul Öğrencileri",
+        ].filter(Boolean).join(" · ");
+        rows.push({ id:"exam:"+String(exam.id || exam.__documentId), title:"Sınav hatırlatması: "+label, detail });
+      }
+      // Seat assignments are included only for this student's own matching record.
+      const seatingRows = listDocuments("studentAppAnnouncements") as any[];
+      for (const row of seatingRows) {
+        if (!row || String(row.source) !== "exam-seating") continue;
+        if (row.schoolId && String(row.schoolId) !== studentSchool) continue;
+        const rowId = trialClubText(row.recipientStudentId);
+        const rowNo = trialClubNumber(row.recipientStudentNumber);
+        if (!((studentId && rowId === studentId) || (studentNo && rowNo === studentNo))) continue;
+        const rawDate = trialClubText(row.examDate || row.date);
+        const rawClock = trialClubText(row.examTime || row.startTime);
+        const datetime = /T\d{1,2}:\d{2}/.test(rawDate) ? rawDate : rawClock ? rawDate.slice(0,10) + "T" + rawClock : "";
+        const time = datetime ? Date.parse(/(?:Z|[+-]\d{2}:?\d{2})$/.test(datetime) ? datetime : datetime + "+03:00") : NaN;
+        if (!inWindow(time)) continue;
+        const course = trialClubText(row.courseName || row.subjectName || row.lessonName || row.examName || row.title || "Ortak sınav");
+        const detail = [
+          "Tarih ve saat: "+formatMoment(time),
+          row.buildingName ? "Bina: "+trialClubText(row.buildingName) : "",
+          row.roomName || row.classroomName ? "Salon/Sınıf: "+trialClubText(row.roomName || row.classroomName) : "",
+          row.seatNumber != null && String(row.seatNumber) !== "" ? "Sıra No: "+String(row.seatNumber) : "",
+          "Modül: Ortak Sınavlar",
+        ].filter(Boolean).join(" · ");
+        rows.push({ id:"seating:"+String(row.id || ""),title:"Ortak sınav: "+course,detail });
+      }
+      response.setHeader("Cache-Control","private, no-store");
+      return response.json({reminders:rows});
+    } catch (error) {
+      console.error("[Exam opening reminders]",error);
+      return response.status(500).json({error:"Sınav hatırlatmaları yüklenemedi."});
+    }
+  });
+  // END STUDENT_EXAM_OPENING_REMINDERS_V2
+
   const trialAnswerKey = (exam: any) => {
     const definitions = trialClubSubjectDefinitions(exam);
     const questions = exam?.questions && typeof exam.questions === "object" ? exam.questions : {};
