@@ -74,12 +74,15 @@ mergedOptic=replace_region(mergedOptic,latestOptic,'  const openExam = (exam: Tr
 mergedOptic=replace_region(mergedOptic,latestOptic,'  const setElectronicAnswer = (subjectName: string, questionIndex: number, option: string) => {','  const formatCountdown = (milliseconds: number) => {')
 # Preserve the live JSX around the booklet button; only add revision tracking
 # to its existing click handler. The button markup varies between deployments.
-bookletCalls=list(re.finditer(r'setElectronicBooklet\\s*\\(\\s*booklet\\s*\\)\\s*;',mergedOptic))
-require(len(bookletCalls)==1,"Expected one booklet selection handler; found "+str(len(bookletCalls)))
-bookletCall=bookletCalls[0]
-handlerTail=mergedOptic[bookletCall.end():bookletCall.end()+180].split("}",1)[0]
-if "setElectronicRevision" not in handlerTail:
-    mergedOptic=mergedOptic[:bookletCall.end()]+ " setElectronicRevision((value) => value + 1);"+mergedOptic[bookletCall.end():]
+# The source handler is a one-line setter in all supported deployments.
+# Replace its setter alone, without assuming how the surrounding button is styled.
+plainBooklet="setElectronicBooklet(booklet);"
+trackedBooklet="setElectronicBooklet(booklet); setElectronicRevision((value) => value + 1);"
+if mergedOptic.count(trackedBooklet)==1:
+    pass
+else:
+    require(mergedOptic.count(plainBooklet)==1,"Expected one booklet handler; refusing ambiguous update")
+    mergedOptic=mergedOptic.replace(plainBooklet,trackedBooklet,1)
 mergedOptic=replace_once_or_already(mergedOptic,'Sınav sona ermiştir. Şu andan itibaren cevaplama işlemi yapılamayacaktır. Kaydet tuşuna basarak optik formu kapatabilirsiniz.','Sınav süresi doldu. Kaydedilmiş cevaplar otomatik olarak kesinleştirilir ve değerlendirmeye alınır.')
 mergedOptic=replace_once_or_already(mergedOptic,'{!pending && !exam.finalized ? <><div className=','{!pending && !expired && !exam.finalized ? <><div className=')
 require('persistElectronicDraft' in mergedOptic and 'electronicAutoSaveQueue' in mergedOptic,"Draft save not applied")
