@@ -230,6 +230,27 @@ assertion("mobileExamSubjectLabel" in portal or "questionOffset" in portal,"exis
 print("Building Vite assets in staging...")
 run(["npm","run","build"],cwd=STAGE)
 assertion((STAGE/"dist"/"index.html").is_file(),"Vite build output missing")
+# Validate changed TypeScript syntax, including server routes, before touching production.
+syntax_check = r"""
+const fs = require("fs"), ts = require("typescript");
+let errors = 0;
+for (const file of process.argv.slice(1)) {
+  const source = fs.readFileSync(file, "utf8");
+  const result = ts.transpileModule(source, {
+    fileName: file, reportDiagnostics: true,
+    compilerOptions: { jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext }
+  });
+  for (const d of result.diagnostics || []) {
+    if (d.category === ts.DiagnosticCategory.Error) {
+      process.stderr.write(file + ": " + ts.flattenDiagnosticMessageText(d.messageText, " ") + "\\n");
+      errors++;
+    }
+  }
+}
+process.exit(errors ? 1 : 0);
+"""
+run(["node","-e",syntax_check,*[str(STAGE/p) for p in paths if p.endswith(".ts") or p.endswith(".tsx")]],cwd=LIVE)
+
 # Basic server syntax/TS transpile check without starting the server.
 run(["node",str(LIVE/"node_modules"/"typescript"/"bin"/"tsc"),"--noEmit","--pretty","false",
      "--skipLibCheck","--allowJs","false"],cwd=STAGE) if os.environ.get("REMINDER_STRICT_TSC")=="1" else None
